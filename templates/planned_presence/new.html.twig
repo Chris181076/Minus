@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PlannedPresence{% endblock %}
+
+{% block body %}
+    <h1>Create new PlannedPresence</h1>
+
+    {{ include('planned_presence/_form.html.twig') }}
+
+    <a href="{{ path('app_planned_presence_index') }}">back to list</a>
+{% endblock %}

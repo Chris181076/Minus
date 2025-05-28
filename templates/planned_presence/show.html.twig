@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PlannedPresence{% endblock %}
+
+{% block body %}
+    <h1>PlannedPresence</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ planned_presence.id }}</td>
+            </tr>
+            <tr>
+                <th>Week_day</th>
+                <td>{{ planned_presence.weekDay ? planned_presence.weekDay|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Arrival_time</th>
+                <td>{{ planned_presence.arrivalTime ? planned_presence.arrivalTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Departure_time</th>
+                <td>{{ planned_presence.departureTime ? planned_presence.departureTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Created_at</th>
+                <td>{{ planned_presence.createdAt ? planned_presence.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_planned_presence_index') }}">back to list</a>
+
+    <a href="{{ path('app_planned_presence_edit', {'id': planned_presence.id}) }}">edit</a>
+
+    {{ include('planned_presence/_delete_form.html.twig') }}
+{% endblock %}

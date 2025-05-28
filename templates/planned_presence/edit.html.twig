@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PlannedPresence{% endblock %}
+
+{% block body %}
+    <h1>Edit PlannedPresence</h1>
+
+    {{ include('planned_presence/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_planned_presence_index') }}">back to list</a>
+
+    {{ include('planned_presence/_delete_form.html.twig') }}
+{% endblock %}

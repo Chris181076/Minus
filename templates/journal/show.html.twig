@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Journal{% endblock %}
+
+{% block body %}
+    <h1>Journal</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ journal.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ journal.date ? journal.date|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Meal</th>
+                <td>{{ journal.meal }}</td>
+            </tr>
+            <tr>
+                <th>Nap</th>
+                <td>{{ journal.nap ? journal.nap|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Diaper_time</th>
+                <td>{{ journal.diaperTime ? journal.diaperTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Diaper_type</th>
+                <td>{{ journal.diaperType }}</td>
+            </tr>
+            <tr>
+                <th>Activity</th>
+                <td>{{ journal.activity }}</td>
+            </tr>
+            <tr>
+                <th>Note</th>
+                <td>{{ journal.note }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_journal_index') }}">back to list</a>
+
+    <a href="{{ path('app_journal_edit', {'id': journal.id}) }}">edit</a>
+
+    {{ include('journal/_delete_form.html.twig') }}
+{% endblock %}

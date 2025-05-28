@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ChildPresence{% endblock %}
+
+{% block body %}
+    <h1>Create new ChildPresence</h1>
+
+    {{ include('child_presence/_form.html.twig') }}
+
+    <a href="{{ path('app_child_presence_index') }}">back to list</a>
+{% endblock %}

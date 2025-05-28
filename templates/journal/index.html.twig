@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Journal index{% endblock %}
+
+{% block body %}
+    <h1>Journal index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Meal</th>
+                <th>Nap</th>
+                <th>Diaper_time</th>
+                <th>Diaper_type</th>
+                <th>Activity</th>
+                <th>Note</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for journal in journals %}
+            <tr>
+                <td>{{ journal.id }}</td>
+                <td>{{ journal.date ? journal.date|date('Y-m-d') : '' }}</td>
+                <td>{{ journal.meal }}</td>
+                <td>{{ journal.nap ? journal.nap|date('H:i:s') : '' }}</td>
+                <td>{{ journal.diaperTime ? journal.diaperTime|date('H:i:s') : '' }}</td>
+                <td>{{ journal.diaperType }}</td>
+                <td>{{ journal.activity }}</td>
+                <td>{{ journal.note }}</td>
+                <td>
+                    <a href="{{ path('app_journal_show', {'id': journal.id}) }}">show</a>
+                    <a href="{{ path('app_journal_edit', {'id': journal.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_journal_new') }}">Create new</a>
+{% endblock %}

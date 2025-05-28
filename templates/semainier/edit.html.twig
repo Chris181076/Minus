@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Semainier{% endblock %}
+
+{% block body %}
+    <h1>Edit Semainier</h1>
+
+    {{ include('semainier/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_semainier_index') }}">back to list</a>
+
+    {{ include('semainier/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Semainier index{% endblock %}
+
+{% block body %}
+    <h1>Semainier index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Week_start_date</th>
+                <th>Created_at</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for semainier in semainiers %}
+            <tr>
+                <td>{{ semainier.id }}</td>
+                <td>{{ semainier.weekStartDate ? semainier.weekStartDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ semainier.createdAt ? semainier.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_semainier_show', {'id': semainier.id}) }}">show</a>
+                    <a href="{{ path('app_semainier_edit', {'id': semainier.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_semainier_new') }}">Create new</a>
+{% endblock %}

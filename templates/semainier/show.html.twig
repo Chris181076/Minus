@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Semainier{% endblock %}
+
+{% block body %}
+    <h1>Semainier</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ semainier.id }}</td>
+            </tr>
+            <tr>
+                <th>Week_start_date</th>
+                <td>{{ semainier.weekStartDate ? semainier.weekStartDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Created_at</th>
+                <td>{{ semainier.createdAt ? semainier.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_semainier_index') }}">back to list</a>
+
+    <a href="{{ path('app_semainier_edit', {'id': semainier.id}) }}">edit</a>
+
+    {{ include('semainier/_delete_form.html.twig') }}
+{% endblock %}

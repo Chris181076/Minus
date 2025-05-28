@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ChildPresence{% endblock %}
+
+{% block body %}
+    <h1>ChildPresence</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ child_presence.id }}</td>
+            </tr>
+            <tr>
+                <th>Day</th>
+                <td>{{ child_presence.day ? child_presence.day|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Present</th>
+                <td>{{ child_presence.present ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Arrival_time</th>
+                <td>{{ child_presence.arrivalTime ? child_presence.arrivalTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Departure_time</th>
+                <td>{{ child_presence.departureTime ? child_presence.departureTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Note</th>
+                <td>{{ child_presence.note }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_child_presence_index') }}">back to list</a>
+
+    <a href="{{ path('app_child_presence_edit', {'id': child_presence.id}) }}">edit</a>
+
+    {{ include('child_presence/_delete_form.html.twig') }}
+{% endblock %}

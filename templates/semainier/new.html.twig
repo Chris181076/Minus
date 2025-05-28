@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Semainier{% endblock %}
+
+{% block body %}
+    <h1>Create new Semainier</h1>
+
+    {{ include('semainier/_form.html.twig') }}
+
+    <a href="{{ path('app_semainier_index') }}">back to list</a>
+{% endblock %}

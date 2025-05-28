@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PlannedPresence index{% endblock %}
+
+{% block body %}
+    <h1>PlannedPresence index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Week_day</th>
+                <th>Arrival_time</th>
+                <th>Departure_time</th>
+                <th>Created_at</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for planned_presence in planned_presences %}
+            <tr>
+                <td>{{ planned_presence.id }}</td>
+                <td>{{ planned_presence.weekDay ? planned_presence.weekDay|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ planned_presence.arrivalTime ? planned_presence.arrivalTime|date('H:i:s') : '' }}</td>
+                <td>{{ planned_presence.departureTime ? planned_presence.departureTime|date('H:i:s') : '' }}</td>
+                <td>{{ planned_presence.createdAt ? planned_presence.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_planned_presence_show', {'id': planned_presence.id}) }}">show</a>
+                    <a href="{{ path('app_planned_presence_edit', {'id': planned_presence.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_planned_presence_new') }}">Create new</a>
+{% endblock %}

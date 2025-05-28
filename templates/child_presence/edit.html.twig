@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit ChildPresence{% endblock %}
+
+{% block body %}
+    <h1>Edit ChildPresence</h1>
+
+    {{ include('child_presence/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_child_presence_index') }}">back to list</a>
+
+    {{ include('child_presence/_delete_form.html.twig') }}
+{% endblock %}

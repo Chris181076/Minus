@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ChildPresence index{% endblock %}
+
+{% block body %}
+    <h1>ChildPresence index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Day</th>
+                <th>Present</th>
+                <th>Arrival_time</th>
+                <th>Departure_time</th>
+                <th>Note</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for child_presence in child_presences %}
+            <tr>
+                <td>{{ child_presence.id }}</td>
+                <td>{{ child_presence.day ? child_presence.day|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ child_presence.present ? 'Yes' : 'No' }}</td>
+                <td>{{ child_presence.arrivalTime ? child_presence.arrivalTime|date('H:i:s') : '' }}</td>
+                <td>{{ child_presence.departureTime ? child_presence.departureTime|date('H:i:s') : '' }}</td>
+                <td>{{ child_presence.note }}</td>
+                <td>
+                    <a href="{{ path('app_child_presence_show', {'id': child_presence.id}) }}">show</a>
+                    <a href="{{ path('app_child_presence_edit', {'id': child_presence.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_child_presence_new') }}">Create new</a>
+{% endblock %}

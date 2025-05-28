@@ -1,0 +1,23 @@
+<nav>
+    <ul>
+        <li><a href="{{ path('app_page') }}">Accueil</a></li>
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <li><a href="{{ path('admin_dashboard') }}">Espace Admin</a></li>
+        {% endif %}
+
+        {% if is_granted('ROLE_EDUC') %}
+            <li><a href="{{ path('educ_dashboard') }}">Espace Éducateur</a></li>
+        {% endif %}
+
+        {% if is_granted('ROLE_PARENT') %}
+            <li><a href="{{ path('parent_dashboard') }}">Espace Parent</a></li>
+        {% endif %}
+
+        {% if app.user %}
+            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+        {% else %}
+            <li><a href="{{ path('app_login') }}">Connexion</a></li>
+        {% endif %}
+    </ul>
+</nav>
