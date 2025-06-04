@@ -1,0 +1,10 @@
+<nav id="navAdmin">
+<picture id="logo"> 
+    <img src="{{ asset('images/logo.png') }}" alt="logo">
+</picture>
+        {% if app.user %}
+            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+        {% else %}
+            <li><a href="{{ path('app_login') }}">Connexion</a></li>
+        {% endif %}
+</nav>

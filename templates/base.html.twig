@@ -11,7 +11,11 @@
         {% endblock %}
 
         {% block javascripts %}
+            {% if is_granted('ROLE_ADMIN') %}
+            {% include '_partials/_navbarAdmin.html.twig' %}
+            {% else %}
             {% include '_partials/_navbar.html.twig' %}
+            {% endif %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
