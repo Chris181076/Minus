@@ -1,4 +1,156 @@
 *{
     padding:0;
     margin:0;
+    list-style-type: none;
+    text-decoration: none;
+    font-family: "Nunito Sans", sans-serif;;
+}
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+nav>#logo>img{
+    width: 17.125rem;
+    height: 7.875rem;
+    object-fit: cover;
+}
+nav>ul{
+    display: flex;
+    flex-direction: row;
+}
+nav>ul>li{
+    margin: 2rem 5rem;
+    width: 17.5rem;
+    height: 4.125rem;
+    font-size: 1.5rem;
+    color: #813EB2;
+    font-weight: bold;
+    border: 1.5px solid #A97FC8;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#messageAccueil>h1{
+    font-size: 1.5rem;
+    margin: 5rem 0;
+    text-align: center;
+}
+.card{
+    width: 16rem;
+    height: 28rem;
+    border: 2px solid #FF61AF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    border-radius: 20px;
+}
+.card>h3,p{
+    color:#813EB2;
+    text-align: center;
+}
+.card>h3{
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.card>p{
+    font-size: 1.25rem;
+    text-align: center;
+}
+.card>img{
+    width: 6rem;
+    height: 6rem;
+    border: 1.5px solid #A97FC8;
+    border-radius: 50%;
+}
+#cardAccueil{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#projetPedagogique>h1{
+    color: #813EB2;
+    font-size: 2rem;
+    text-align: center;
+    margin: 5rem 0;
+}
+#projetPedagogique>p{
+    color: #000;
+    text-align: start;
+    margin: 0 5rem;
+    margin-bottom: 5rem;
+}
+#cardTemoignages{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 5rem;
+}
+#temoignages>#cardTemoignages>.cardT{
+    width: 16rem;
+    height: 30.5rem;
+    border: 2px solid #FF61AF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0 1rem;
+    border-radius: 20px;
+}
+#temoignages>h1{
+    color: #813EB2;
+    text-align: center;
+    margin-bottom: 5rem;
+}
+#temoignages>#cardTemoignages>.cardT>img{
+    margin: 0 auto;
+    width: 2rem;
+    height: 1.47rem;
+}
+#temoignages>#cardTemoignages>.cardT>p{
+    color: #FF61AF;
+}
+#temoignages>#cardTemoignages>.cardT>.mauve{
+    color: #A97FC8;
+}
+#contact{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#contact>h1{
+    color: #813EB2;
+    text-align: center;
+}
+#contact>img{
+    width: 6rem;
+    height: 6rem;
+    border: 1.5px solid #A97FC8;
+    border-radius: 50%;
+}
+#coordonnees{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 5rem 0;
+}
+.coordonnee{
+    display: flex;
+    flex-direction: row;
+}
+.coordonnee>img{
+    width: 2.0625rem;
+    height: 2.0625rem;
+    margin-right: 1rem;
+}
+.coordonnee>p{
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
 }

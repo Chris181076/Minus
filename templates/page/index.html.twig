@@ -1,16 +1,91 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Les Minus{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
 
-<div class="example-wrapper">
-    <h1>Hello! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/Minus/src/Controller/PageController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/Minus/templates/page/index.html.twig</code></li>
-    </ul>
+<div id="messageAccueil">
+    <h1>Nous accueillons vos enfants âgés de 10 semaines à 3 ans</h1>
 </div>
+<div id="cardAccueil">
+    <div class="card">
+        <h3>HORAIRES</h3>
+        <p>Du lundi au vendredi, de 8h à 18h00</p>
+        <img src="{{ asset('images/horaires.png') }}" alt="horaires">
+    </div>
+    <div class="card">
+        <h3>ACCUEIL</h3>
+        <p>Nous accueillons les enfants de manière régulière, 1 à 5 jours par semaine</p>
+        <img src="{{ asset('images/accueil.png') }}" alt="accueil">
+    </div>
+    <div class="card">
+        <h3>Prise en charge par la CAF</h3>
+        <p>Une prise en charge est possible en fonction de votre situation professionnelle, de la compositon de votre foyer et de vos revenus</p>
+        <img src="{{ asset('images/caf.png') }}" alt="caf"></div>
+    </div>
+<div id="projetPedagogique">
+    <h1>Notre projet pédagogique</h1>
+    <p>
+    Chez Les Minus, nous croyons que chaque enfant est unique et grandit à son rythme.  Notre projet pédagogique repose sur le respect, l’écoute et l’éveil des tout-petits dans un cadre sécurisant et bienveillant.<br><br>
+
+    <span class="center">Nous nous engageons à :<br><br>
+
+        🧡 Favoriser l’autonomie des enfants par des activités adaptées à leur âge.<br><br>
+
+        🎨 Stimuler leur curiosité grâce à des jeux libres, créatifs et sensoriels.<br><br>
+
+        🫂 Encourager la socialisation, dans un petit groupe permettant à chacun de trouver sa place.<br><br>
+
+        🌿 Respecter les rythmes individuels (sommeil, repas, besoins affectifs).<br><br>
+
+        👨‍👩‍👧 Créer un lien de confiance avec les familles, en favorisant les échanges quotidiens.<br><br>
+        </span>
+
+    Notre équipe pluridisciplinaire accompagne les enfants dans leur développement global (affectif, moteur, cognitif) en s’appuyant sur des valeurs humaines fortes.
+    </p>
+</div>
+<div id="temoignages">
+    <h1>Témoignages</h1>
+    <div id="cardTemoignages">
+    <div class="cardT">
+            <img src="{{ asset("images/guillemets.png") }}" alt="guillemets">
+            <p>"Les Minus, c’est bien plus qu’une crèche. On sent que chaque enfant est connu, écouté, respecté. Léo rentre à la maison avec le sourire.”</p>
+            <p class="mauve">Julie, maman de Léo (2 ans)</p>
+    </div>
+    <div class="cardT">
+            <img src="{{ asset("images/guillemets.png") }}" alt="guillemets">
+            <p>"Les Minus, c’est bien plus qu’une crèche. On sent que chaque enfant est connu, écouté, respecté. Léo rentre à la maison avec le sourire.”</p>
+            <p class="mauve">Julie, maman de Léo (2 ans)</p>
+    </div>
+    <div class="cardT">
+            <img src="{{ asset("images/guillemets.png") }}" alt="guillemets">
+            <p>"Les Minus, c’est bien plus qu’une crèche. On sent que chaque enfant est connu, écouté, respecté. Léo rentre à la maison avec le sourire.”</p>
+            <p class="mauve">Julie, maman de Léo (2 ans)</p>
+    </div>
+        <div class="cardT">
+            <img src="{{ asset("images/guillemets.png") }}" alt="guillemets">
+            <p>"En tant que parent seul, j’ai trouvé ici un vrai soutien. L’équipe est à l’écoute, flexible et très humaine. Jules s’épanouit, et moi, je me sens accompagné. Merci Les Minus !"</p>
+            <p class="mauve">David, papa solo de Jules (2 ans et demi)</p>
+    </div>
+    </div>
+</div>
+<div id="contact">
+    <h1>Pour toutes questions, <br> n’hésitez pas à nous contacter</h1>
+    <img src="{{ asset("images/contact.png") }}" alt="contact">
+</div>
+<div id="coordonnees">
+    <div class="coordonnee">
+    <img src="{{ asset("images/adresse.png")}}" alt="adresse">
+    <p>Micro-crèche Les Minus <br> 12 rue des Lutins <br> 75012 Paris</p>
+    </div>
+    <div class="coordonnee">
+    <img src="{{ asset("images/tel.png")}}" alt="tel">
+    <p>01 84 25 36 78</p>
+    </div>
+    <div class="coordonnee">
+    <img src="{{ asset("images/mail.png")}}" alt="mail">
+    <p>contact@lesminus.fr</p>
+    </div>
+</div>
+
 {% endblock %}
