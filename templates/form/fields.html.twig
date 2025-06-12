@@ -1,0 +1,16 @@
+{% block icon_widget %}
+    <div class="icon-choice d-flex flex-wrap gap-3">
+        {% for child in form %}
+            <div class="icon-option">
+                {{ form_widget(child, {'attr': {'class': 'd-none'}}) }}
+                <label for="{{ child.vars.id }}" class="d-flex flex-column align-items-center">
+                    <img src="{{ child.vars.attr['data-image'] }}" 
+                         alt="{{ child.vars.label }}"
+                         class="icon-img"
+                         style="width: 64px; height: 64px; object-fit: cover; cursor: pointer;">
+                    <span>{{ child.vars.label }}</span>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

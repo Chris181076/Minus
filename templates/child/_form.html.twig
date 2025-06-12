@@ -1,4 +1,28 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
+{% form_theme form.icon 'form/icon_widget.html.twig' %}
+
+{{ form_start(form, { attr: { id: 'mon_formulaire' } }) }}
+    {# Liste tous les champs sauf 'icons' #}
+    {{ form_row(form.firstName) }}
+    {{ form_row(form.lastName) }}
+    {{ form_row(form.birthDate) }}
+    {{ form_row(form.medicalNotes) }}
+    {{ form_row(form.created_at) }}
+    {{ form_row(form.allergies) }}
+    {{ form_row(form.specialDiets) }}
+    {{ form_row(form.childGroup) }}
+
+    {# Section personnalisée pour les icônes #}
+<div class="form-group">
+    {{ form_label(form.icon) }}
+    {{ form_widget(form.icon) }}
+
+    {% if form.icon.vars.value %}
+        <img src="{{ asset('icons/' ~ form.icon.vars.value.path) }}"
+             alt="Icône sélectionnée"
+             class="mt-2"
+             style="width: 50px; height: auto;">
+    {% endif %}
+</div>
+
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

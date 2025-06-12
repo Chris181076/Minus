@@ -1,8 +1,8 @@
 *{
     padding:0;
     margin:0;
-    list-style-type: none;
-    text-decoration: none;
+    list-style-type: none!important; 
+    text-decoration: none!important;
     font-family: "Nunito Sans", sans-serif;;
 }
 body{
@@ -13,56 +13,129 @@ body{
     justify-content: center;
     align-items: center;
 }
-nav{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between; 
-  align-items: center;
-  max-width: 100%;
-  overflow-x: hidden;
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 2rem;
+    overflow-x: hidden;
 }
-nav>#logo>img{
+
+nav > #logo > img {
+    width: 17.125rem;
+    height: 7.875rem;
+    object-fit: cover;
+    flex: 0 0 auto;
+}
+
+nav > ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    flex-grow: 1;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+}
+
+nav > ul > li {
+    width: 14rem;
+    height: 4.125rem;
+    font-size: 1.5rem;
+    color: #813EB2 !important;
+    font-weight: bold;
+    border: 1.5px solid #A97FC8;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+}
+#navAdmin {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 2rem;
+    overflow-x: hidden;
+}
+
+#navAdmin > picture {
+    flex: 0 0 auto;
+    max-width: 17.125rem;
+}
+
+#navAdmin > picture > img {
     width: 17.125rem;
     height: 7.875rem;
     object-fit: cover;
 }
-nav>ul{
+
+#navAdmin > ul {
     display: flex;
     flex-direction: row;
-}
-nav>ul>li{
-    margin: 2rem 5rem;
-    width: 17.5rem;
-    height: 4.125rem;
-    font-size: 1.5rem;
-    color: #813EB2;
-    font-weight: bold;
-    border: 1.5px solid #A97FC8;
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#navAdmin{
-    display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; 
+    justify-content: flex-end;
     align-items: center;
-    
+    gap: 1rem;
+    flex-grow: 1;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
 }
-#navAdmin>li{
-    margin: 2rem 5rem;
-    width: 17.5rem;
+
+#navAdmin > ul > li {
+    width: 14rem;
     height: 4.125rem;
     font-size: 1.5rem;
-    color: #813EB2;
+    color: #813EB2 !important;
     font-weight: bold;
     border: 1.5px solid #A97FC8;
     border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 1rem;
 }
+ #page_container{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 100vh;
+ }
+
+
+/* ========== Responsive (optionnel mais recommandé) ========== */
+/*@media (max-width: 1000px) {
+    nav,
+    #navAdmin {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav > ul,
+    #navAdmin > ul {
+        justify-content: center;
+        width: 100%;
+    }
+
+    nav > ul > li,
+    #navAdmin > ul > li {
+        width: 100%;
+        max-width: 20rem;
+        justify-content: center;
+    }
+}
+
+
 /* Accueil */
 
 #messageAccueil>h1{
@@ -188,6 +261,7 @@ nav>ul>li{
 #accueilAdmin>h1{
     font-size: 1.5rem;
     text-align: center;
+    margin-bottom: 1.5rem;
 }
 .sidebar{
     width: 220px;
@@ -197,7 +271,133 @@ nav>ul>li{
     margin-left: 2rem;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: fit-content;
+    background-color: white;
+    z-index: 10;
+    margin-top: 1rem;
 }
 .sidebar>a{
     margin: 1.5rem 0;
+}
+
+.admin-body {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+}
+.main-content {
+    flex-grow: 1;
+}
+#admin-layout {
+    width: 100%;
+}
+
+.admin-body {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+}
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+}
+/* Child_form */
+
+#mon_formulaire>div{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+}
+#mon_formulaire>div>label{
+    font-size: 1.5rem;
+    color: #813EB2;
+}
+#mon_formulaire>div>select{
+    text-align: center;
+}
+#mon_formulaire>div>select>option{
+    padding-top: 20px;
+}
+#mon_formulaire>div>#child_form_medicalNotes{
+    width: 22.5rem;
+    height: 10rem;
+    padding: 20px;
+}
+#child_form_firstName, #child_form_lastName, #child_form_birthDate, #child_form_created_at, #child_form_childGroup{
+    width: 20rem;
+     height: 3.8rem;
+     font-size: 1.2rem;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding: 1rem;
+}
+/* Masquer les radios par défaut */
+.icon-radio {
+    display: none;
+}
+
+/* Style des icônes */
+.icon-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.icon-option label {
+    cursor: pointer;
+    display: block;
+}
+
+.icon-thumbnail {
+    width: 50px;
+    height: 50px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+/* Style quand sélectionné */
+.icon-radio:checked + label .icon-thumbnail {
+    border-color: #4CAF50;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* Fiches des Minus - Admin*/
+.child-item{
+    display: flex;
+    flex-direction: column;
+}
+#grid_fiches_minus{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    margin-top: 2rem;
+    gap: 4rem;
+}
+.child-item>img{
+    width: 10rem;
+    height: 10rem;
+}
+.childName{
+    text-align: center;
+    border: 1px solid;
+    border-radius: 20px;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+.childName>a {
+  color: inherit;
+  text-decoration: none;
 }

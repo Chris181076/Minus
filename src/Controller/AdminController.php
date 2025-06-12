@@ -15,4 +15,9 @@ final class AdminController extends AbstractController
             'controller_name' => 'AdminController',
         ]);
     }
+        #[Route('/admin/dashboard/child', name: 'app_admin_dashboard_child')]
+    public function childDashboard(): Response
+    {
+        return $this->render('admin/dashboard_child.html.twig');
+    }
 }

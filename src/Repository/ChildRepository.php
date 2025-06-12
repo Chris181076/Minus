@@ -16,20 +16,16 @@ class ChildRepository extends ServiceEntityRepository
         parent::__construct($registry, Child::class);
     }
 
-//    /**
-//     * @return Child[] Returns an array of Child objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+/** 
+ * @return Child[] Returns an array of Child objects
+ */
+public function findActiveChildren(): array
+{
+    return $this->createQueryBuilder('c')
+        ->orderBy('c.lastName', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
 
 //    public function findOneBySomeField($value): ?Child
 //    {

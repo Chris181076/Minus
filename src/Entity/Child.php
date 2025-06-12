@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Icon;
 
 #[ORM\Entity(repositoryClass: ChildRepository::class)]
+
+
 class Child
 {
     #[ORM\Id]
@@ -49,9 +52,6 @@ class Child
     #[ORM\ManyToMany(targetEntity: SpecialDiet::class, inversedBy: 'children')]
     private Collection $specialDiets;
 
-    #[ORM\ManyToOne]
-    private ?Icon $Icons = null;
-
     #[ORM\ManyToOne(inversedBy: 'children')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Group $childGroup = null;
@@ -76,6 +76,21 @@ class Child
         $this->journals = new ArrayCollection();
         $this->journal = new ArrayCollection();
     }
+    #[ORM\ManyToOne(targetEntity: Icon::class)]
+    #[ORM\JoinColumn(name: "icons_id", referencedColumnName: "id", nullable: true)]
+    private ?Icon $icon = null;
+
+    public function getIcon(): ?Icon
+    {
+    return $this->icon;
+    }
+
+    public function setIcon(?Icon $icon): static
+    {
+    $this->icon = $icon;
+    return $this;
+    }
+
 
     public function getId(): ?int
     {
@@ -216,19 +231,6 @@ class Child
 
         return $this;
     }
-
-    public function getIcons(): ?Icon
-    {
-        return $this->Icons;
-    }
-
-    public function setIcons(?Icon $Icons): static
-    {
-        $this->Icons = $Icons;
-
-        return $this;
-    }
-
     public function getChildGroup(): ?Group
     {
         return $this->childGroup;
@@ -278,4 +280,5 @@ class Child
     {
         return $this->journal;
     }
+
 }

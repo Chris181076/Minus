@@ -1,0 +1,16 @@
+{% block icon_widget %}
+<div class="icon-selection">
+    {% for child in form %}
+        <div class="icon-option">
+            {{ form_widget(child, { attr: { class: 'icon-radio' } }) }}
+            <label for="{{ child.vars.id }}">
+                <img 
+                    src="{{ child.vars.attr['data-image'] }}" 
+                    alt="{{ child.vars.label }}"
+                    class="icon-thumbnail"
+                >
+            </label>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -27,28 +27,30 @@ class ChildForm extends AbstractType
             ->add('created_at', null, [
                 'widget' => 'single_text',
             ])
-            ->add('users', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
             ->add('allergies', EntityType::class, [
                 'class' => Allergy::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
             ])
             ->add('specialDiets', EntityType::class, [
                 'class' => SpecialDiet::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
             ])
-            ->add('Icons', EntityType::class, [
+           ->add('icon', EntityType::class, [
                 'class' => Icon::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
+                'expanded' => true,
+                'multiple' => false,
+                'choice_attr' => function($icon) {
+            return ['data-image' => $icon->getPath()];
+            },
+            'block_prefix' => 'icon',
             ])
+            
             ->add('childGroup', EntityType::class, [
                 'class' => Group::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }

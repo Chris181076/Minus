@@ -35,16 +35,24 @@ class Icon
 
         return $this;
     }
+// src/Entity/Icon.php
 
-    public function getPath(): ?string
-    {
-        return $this->path;
+public function getPath(): ?string
+{
+    if (!$this->path) {
+        return null;
     }
+    
+    // Retourne le chemin absolu correct
+    return '/icons/' . $this->path;
+}
 
-    public function setPath(string $path): static
-    {
-        $this->path = $path;
-
-        return $this;
-    }
+public function setPath(string $path): static
+{
+    // Nettoie le chemin pour ne garder que le nom du fichier
+    $cleanPath = str_replace(['icons/', 'public/'], '', $path);
+    $this->path = basename($cleanPath);
+    
+    return $this;
+}
 }

@@ -1,0 +1,20 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Fiche des Minus{% endblock %}
+
+
+{% block body %}
+<h1>Fiche des Minus</h1>
+<div class='center'>
+<div id="grid_fiches_minus">
+    {% for child in children %}
+        <div class="child-item">
+            {% if child.icon is defined and child.icon %}
+                <img src="{{ asset(child.icon.path) }}" alt="Icône de {{ child.firstName }}">
+            {% endif %}
+            <span class='childName' style="color: #{{ child.childGroup.colorCode }}"><a href="">{{ child.firstName|capitalize }} {{ child.lastName|capitalize }}</a></span>
+        </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

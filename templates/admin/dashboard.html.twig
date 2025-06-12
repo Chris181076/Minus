@@ -1,23 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
-{% block title %}admin{% endblock %}
+{% block title %}Accueil Admin{% endblock %}
 
 {% block body %}
-
-<div id="accueilAdmin">
-    <h1>Accueil Espace Admin</h1>
-    <h1>Bienvenue, {{ app.user.firstname }}</h1>
-</div>
-<div class="sidebar">
-<a href="">Fiche des Minus</a>
-<a href="">Suivi quotidien des Minus  </a>
-<a href="">Journaux des Minus</a>
-<a href="">Semaine des Minus</a>
-<a href="">Petits Mots</a>
-<a href="">Reçus</a>
-<a href="">Envoyés</a>
-<a href="">A envoyer</a>
-<a href="">Gestion des rôles</a>
-<a href="{{ path('app_child_new') }}">Créer un profil enfant</a>
-</div>
+    <div id="accueilAdmin">
+        <h1>Accueil Espace Admin</h1>
+        <h1>Bienvenue, {{ app.user.firstname }}</h1>
+    </div>
 {% endblock %}
+
