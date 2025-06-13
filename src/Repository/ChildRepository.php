@@ -27,6 +27,17 @@ public function findActiveChildren(): array
         ->getResult();
 }
 
+
+public function findChildrenWithPresenceForDay(string $day): array
+{
+    return $this->createQueryBuilder('c')
+        ->leftJoin('c.childPresences', 'p')
+        ->addSelect('p')
+        ->where('LOWER(p.day) = :day')
+        ->setParameter('day', strtolower($day))
+        ->getQuery()
+        ->getResult();
+}
 //    public function findOneBySomeField($value): ?Child
 //    {
 //        return $this->createQueryBuilder('c')

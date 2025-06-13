@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\Child;
+use App\Repository\ChildRepository;
 
 final class AdminController extends AbstractController
 {
@@ -15,9 +17,22 @@ final class AdminController extends AbstractController
             'controller_name' => 'AdminController',
         ]);
     }
-        #[Route('/admin/dashboard/child', name: 'app_admin_dashboard_child')]
-    public function childDashboard(): Response
+ #[Route('/admin/dashboard/child', name: 'app_admin_dashboard_child')]
+public function childDashboard(ChildRepository $childRepository): Response
+{
+    $children = $childRepository->findAll();
+
+    return $this->render('admin/dashboardChild.html.twig', [
+        'children' => $children,
+    ]);
+}
+   #[Route('/admin/dashboardChild/{id}', name: 'app_child_show', methods: ['GET'])]
+    public function show(Child $child): Response
     {
-        return $this->render('admin/dashboard_child.html.twig');
+    return $this->render('Child/show.html.twig', [
+        'child' => $child,
+    ]);
     }
+
+
 }

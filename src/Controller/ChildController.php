@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
+
 #[Route('/child')]
 final class ChildController extends AbstractController
 {
@@ -45,15 +46,7 @@ final class ChildController extends AbstractController
     ]);
 }
 
-    #[Route('/{id}', name: 'app_child_show', methods: ['GET'])]
-    public function show(Child $child): Response
-    {
-        return $this->render('child/show.html.twig', [
-            'child' => $child,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
+     #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Child $child, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ChildForm::class, $child);
@@ -89,13 +82,5 @@ final class ChildController extends AbstractController
         'project_dir' => $params->get('kernel.project_dir')
     ]);
     }
-    #[Route('/admin/dashboardChild', name: 'app_admin_dashboardChild')]
-   public function showChildren(ChildRepository $childRepository): Response
-{
-    $children = $childRepository->findActiveChildren(); 
 
-    return $this->render('admin/dashboardChild.html.twig', [
-        'children' => $children,
-    ]);
-}
 }

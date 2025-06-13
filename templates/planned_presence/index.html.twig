@@ -19,10 +19,9 @@
         <tbody>
         {% for planned_presence in planned_presences %}
             <tr>
-                <td>{{ planned_presence.id }}</td>
+                
                 <td>{{ planned_presence.weekDay ? planned_presence.weekDay|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ planned_presence.arrivalTime ? planned_presence.arrivalTime|date('H:i:s') : '' }}</td>
-                <td>{{ planned_presence.departureTime ? planned_presence.departureTime|date('H:i:s') : '' }}</td>
                 <td>{{ planned_presence.createdAt ? planned_presence.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('app_planned_presence_show', {'id': planned_presence.id}) }}">show</a>

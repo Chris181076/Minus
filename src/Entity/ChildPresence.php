@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\ChildPresenceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\child;
 
 #[ORM\Entity(repositoryClass: ChildPresenceRepository::class)]
 class ChildPresence
@@ -21,10 +24,10 @@ class ChildPresence
     private ?bool $present = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $arrival_time = null;
+    private ?\DateTimeImmutable $arrival_time = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $departure_time = null;
+    private ?\DateTimeImmutable $departure_time = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
@@ -32,6 +35,21 @@ class ChildPresence
     #[ORM\ManyToOne(inversedBy: 'childPresences')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Semainier $semainier = null;
+
+    #[ORM\ManyToOne(inversedBy: 'relation')]
+    private ?Child $child = null;
+
+    /**
+     * @var Collection<int, Child>
+     */
+    #[ORM\OneToMany(targetEntity: Child::class, mappedBy: 'childPresence')]
+    private Collection $relation;
+  
+
+    public function __construct()
+    {
+        $this->relation = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -67,7 +85,7 @@ class ChildPresence
         return $this->arrival_time;
     }
 
-    public function setArrivalTime(\DateTime $arrival_time): static
+    public function setArrivalTime(?\DateTimeInterface $arrival_time): static
     {
         $this->arrival_time = $arrival_time;
 
@@ -79,7 +97,7 @@ class ChildPresence
         return $this->departure_time;
     }
 
-    public function setDepartureTime(\DateTime $departure_time): static
+    public function setDepartureTime(\DateTimeImmutable $departure_time): static
     {
         $this->departure_time = $departure_time;
 
@@ -106,6 +124,48 @@ class ChildPresence
     public function setSemainier(?Semainier $semainier): static
     {
         $this->semainier = $semainier;
+
+        return $this;
+    }
+
+    public function getChild(): ?Child
+    {
+        return $this->child;
+    }
+
+    public function setChild(?Child $child): static
+    {
+        $this->child = $child;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Child>
+     */
+    public function getRelation(): Collection
+    {
+        return $this->relation;
+    }
+
+    public function addRelation(Child $relation): static
+    {
+        if (!$this->relation->contains($relation)) {
+            $this->relation->add($relation);
+            $relation->setChildPresence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Child $relation): static
+    {
+        if ($this->relation->removeElement($relation)) {
+            // set the owning side to null (unless already changed)
+            if ($relation->getChildPresence() === $this) {
+                $relation->setChildPresence(null);
+            }
+        }
 
         return $this;
     }

@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Icon;
 
+
 #[ORM\Entity(repositoryClass: ChildRepository::class)]
 
 
@@ -75,10 +76,20 @@ class Child
         $this->specialDiets = new ArrayCollection();
         $this->journals = new ArrayCollection();
         $this->journal = new ArrayCollection();
+        $this->childPresences = new ArrayCollection();
     }
     #[ORM\ManyToOne(targetEntity: Icon::class)]
     #[ORM\JoinColumn(name: "icons_id", referencedColumnName: "id", nullable: true)]
     private ?Icon $icon = null;
+
+    /**
+     * @var Collection<int, ChildPresence>
+     */
+    #[ORM\OneToMany(targetEntity: ChildPresence::class, mappedBy: 'child')]
+    private Collection $childPresences;
+ 
+    #[ORM\ManyToOne(inversedBy: 'relation')]
+    private ?ChildPresence $childPresence = null;
 
     public function getIcon(): ?Icon
     {
@@ -279,6 +290,48 @@ class Child
     public function getJournal(): Collection
     {
         return $this->journal;
+    }
+
+    /**
+     * @return Collection<int, ChildPresence>
+     */
+    public function getRelation(): Collection
+    {
+        return $this->childPresences;
+    }
+
+    public function addRelation(ChildPresence $relation): static
+    {
+        if (!$this->childPresences->contains($relation)) {
+            $this->childPresences->add($relation);
+            $relation->setChild($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(ChildPresence $childPresences): static
+    {
+        if ($this->childPresences->removeElement($childPresences)) {
+            // set the owning side to null (unless already changed)
+            if ($childPresences->getChild() === $this) {
+                $childPresences->setChild(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getChildPresence(): ?ChildPresence
+    {
+        return $this->childPresence;
+    }
+
+    public function setChildPresence(?ChildPresence $childPresence): static
+    {
+        $this->childPresence = $childPresence;
+
+        return $this;
     }
 
 }
