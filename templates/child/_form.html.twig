@@ -10,6 +10,14 @@
     {{ form_row(form.allergies) }}
     {{ form_row(form.specialDiets) }}
     {{ form_row(form.childGroup) }}
+    <h3>Présences prévues</h3>
+{% for presenceForm in form.plannedPresences %}
+    <div class="planned-presence">
+        {{ form_row(presenceForm.week_day) }}
+        {{ form_row(presenceForm.arrival_time) }}
+        {{ form_row(presenceForm.departure_time) }}
+    </div>
+{% endfor %}
 
     {# Section personnalisée pour les icônes #}
 <div class="form-group">
@@ -24,5 +32,6 @@
     {% endif %}
 </div>
 
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -5,30 +5,44 @@
 {% block body %}
     <h1>PlannedPresence</h1>
 
-    <table class="table">
-        <tbody>
+    {% set days = {
+    'Lundi': 'Monday',
+    'Mardi': 'Tuesday',
+    'Mercredi': 'Wednesday',
+    'Jeudi': 'Thursday',
+    'Vendredi': 'Friday'
+} %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jour</th>
+            <th>Arrivée</th>
+            <th>Départ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for label, day in days %}
             <tr>
-                <th>Id</th>
-                <td>{{ planned_presence.id }}</td>
+                <td>{{ label }}</td>
+                {% set found = false %}
+                {% for presence in presences %}
+                    {% if presence.week_day == day %}
+                        <td>{{ presence.arrival_time ? presence.arrival_time|date('H:i') : '–' }}</td>
+                        <td>{{ presence.departure_time ? presence.departure_time|date('H:i') : '–' }}</td>
+                        {% set found = true %}
+                        
+                    {% endif %}
+                {% endfor %}
+                {% if not found %}
+                    <td>–</td>
+                    <td>–</td>
+                {% endif %}
             </tr>
-            <tr>
-                <th>Week_day</th>
-                <td>{{ planned_presence.weekDay ? planned_presence.weekDay|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Arrival_time</th>
-                <td>{{ planned_presence.arrivalTime ? planned_presence.arrivalTime|date('H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Departure_time</th>
-                <td>{{ planned_presence.departureTime ? planned_presence.departureTime|date('H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Created_at</th>
-                <td>{{ planned_presence.createdAt ? planned_presence.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        {% endfor %}
+    </tbody>
+</table>
+
 
     <a href="{{ path('app_planned_presence_index') }}">back to list</a>
 

@@ -8,10 +8,12 @@ use App\Entity\Group;
 use App\Entity\Icon;
 use App\Entity\SpecialDiet;
 use App\Entity\User;
+use App\Form\PlannedPresenceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class ChildForm extends AbstractType
 {
@@ -48,12 +50,18 @@ class ChildForm extends AbstractType
             'block_prefix' => 'icon',
             ])
             
-            ->add('childGroup', EntityType::class, [
+          ->add('childGroup', EntityType::class, [
                 'class' => Group::class,
                 'choice_label' => 'name',
             ])
-        ;
-    }
+            ->add('plannedPresences', CollectionType::class, [
+                'entry_type' => PlannedPresenceForm::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+            ]);
+        }
 
     public function configureOptions(OptionsResolver $resolver): void
     {

@@ -6,6 +6,7 @@ use App\Entity\Child;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 /**
  * @extends ServiceEntityRepository<Child>
  */
@@ -38,6 +39,7 @@ public function findChildrenWithPresenceForDay(string $day): array
         ->getQuery()
         ->getResult();
 }
+
 //    public function findOneBySomeField($value): ?Child
 //    {
 //        return $this->createQueryBuilder('c')

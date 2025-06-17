@@ -15,7 +15,7 @@ class PlannedPresence
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $week_day = null;
+    private ?string $week_day = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTime $arrival_time = null;
@@ -26,24 +26,27 @@ class PlannedPresence
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'relation')]
+    private ?Child $child = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getWeekDay(): ?\DateTimeImmutable
+    public function getWeekDay(): ?string
     {
         return $this->week_day;
     }
 
-    public function setWeekDay(\DateTimeImmutable $week_day): static
+    public function setWeekDay(string $week_day): static
     {
         $this->week_day = $week_day;
 
         return $this;
     }
 
-    public function getArrivalTime(): ?\DateTime
+    public function getArrivalTime(): ?\DateTimeInterface
     {
         return $this->arrival_time;
     }
@@ -67,7 +70,7 @@ class PlannedPresence
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->created_at;
     }
@@ -75,6 +78,18 @@ class PlannedPresence
     public function setCreatedAt(\DateTimeInterface $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getChild(): ?Child
+    {
+        return $this->child;
+    }
+
+    public function setChild(?Child $child): static
+    {
+        $this->child = $child;
 
         return $this;
     }

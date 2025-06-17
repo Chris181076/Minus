@@ -41,10 +41,13 @@ final class PlannedPresenceController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_planned_presence_show', methods: ['GET'])]
-    public function show(PlannedPresence $plannedPresence): Response
-    {
+    #[Route('/{id}', name: 'app_planned_presence_show', methods: ['GET', 'POST'])]
+    public function show(int $id, PlannedPresenceRepository $repo): Response
+{
+    $plannedPresence = $repo->find($id);
+    if (!$plannedPresence) {
+        throw $this->createNotFoundException('PlannedPresence not found');
+    }
         return $this->render('planned_presence/show.html.twig', [
             'planned_presence' => $plannedPresence,
         ]);

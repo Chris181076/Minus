@@ -1,4 +1,8 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="form-group">
+        {{ form_row(form.week_day) }}
+        {{ form_row(form.arrival_time) }}
+        {{ form_row(form.departure_time) }}
+    </div>
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

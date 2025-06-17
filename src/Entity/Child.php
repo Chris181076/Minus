@@ -77,6 +77,7 @@ class Child
         $this->journals = new ArrayCollection();
         $this->journal = new ArrayCollection();
         $this->childPresences = new ArrayCollection();
+        $this->plannedPresences = new ArrayCollection();
     }
     #[ORM\ManyToOne(targetEntity: Icon::class)]
     #[ORM\JoinColumn(name: "icons_id", referencedColumnName: "id", nullable: true)]
@@ -91,6 +92,36 @@ class Child
     #[ORM\ManyToOne(inversedBy: 'relation')]
     private ?ChildPresence $childPresence = null;
 
+  #[ORM\OneToMany(mappedBy: 'child', targetEntity: PlannedPresence::class, cascade: ['persist', 'remove'])]
+    private Collection $plannedPresences;
+    /**
+    * @return Collection<int, PlannedPresence>
+    */
+    public function getPlannedPresences(): Collection
+    {
+    return $this->plannedPresences;
+    }
+
+    public function addPlannedPresence(PlannedPresence $plannedPresence): static
+    {
+        if (!$this->plannedPresences->contains($plannedPresence)) {
+            $this->plannedPresences[] = $plannedPresence;
+            $plannedPresence->setChild($this);
+        }
+
+    return $this;
+    }
+    public function removePlannedPresence(PlannedPresence $plannedPresence): static
+    {
+        if ($this->plannedPresences->removeElement($plannedPresence)) {
+            // Défaire le lien côté PlannedPresence
+            if ($plannedPresence->getChild() === $this) {
+                $plannedPresence->setChild(null);
+            }
+    }
+
+    return $this;
+    }
     public function getIcon(): ?Icon
     {
     return $this->icon;

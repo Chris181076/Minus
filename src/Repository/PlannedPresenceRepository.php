@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\PlannedPresence;
+use App\Entity\Child;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,7 +16,15 @@ class PlannedPresenceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, PlannedPresence::class);
     }
-
+public function findByChildOrderedByWeekday(Child $child): array
+{
+    return $this->createQueryBuilder('p')
+        ->andWhere('p.child = :child')
+        ->setParameter('child', $child)
+        ->orderBy('p.week_day', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
     //    /**
     //     * @return PlannedPresence[] Returns an array of PlannedPresence objects
     //     */

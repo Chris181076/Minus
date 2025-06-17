@@ -76,21 +76,45 @@
     {% endif %}
 
     <h2>Horaires</h2>
-    <table class="table">
-        <thead>
+   {% set days = {
+    'Lundi': 'Monday',
+    'Mardi': 'Tuesday',
+    'Mercredi': 'Wednesday',
+    'Jeudi': 'Thursday',
+    'Vendredi': 'Friday'
+} %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jour</th>
+            <th>Arrivée</th>
+            <th>Départ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for label, day in days %}
             <tr>
-                <th>Jour</th>
-                <th>Horaires</th>
+                <td>{{ label }}</td>
+                {% set found = false %}
+                {% for presence in presences %}
+                    {% if presence.week_day == day %}
+                        <td>{{ presence.arrival_time ? presence.arrival_time|date('H:i') : '–' }}</td>
+                        <td>{{ presence.departure_time ? presence.departure_time|date('H:i') : '–' }}</td>
+                        {% set found = true %}
+                        {% break %}
+                    {% endif %}
+                {% endfor %}
+                {% if not found %}
+                    <td>–</td>
+                    <td>–</td>
+                {% endif %}
             </tr>
-        </thead>
-        <tbody>
-            <tr><td>Lundi</td><td>9h00 - 17h00</td></tr>
-            <tr><td>Mardi</td><td><!-- à remplir --></td></tr>
-            <tr><td>Mercredi</td><td><!-- à remplir --></td></tr>
-            <tr><td>Jeudi</td><td><!-- à remplir --></td></tr>
-            <tr><td>Vendredi</td><td><!-- à remplir --></td></tr>
-        </tbody>
-    </table>
+        {% endfor %}
+    </tbody>
+</table>
+
+
 
     <a href="{{ path('app_child_index') }}">back to list</a>
 

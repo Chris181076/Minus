@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use App\Entity\PlannedPresence;
 
 
 
@@ -27,17 +28,31 @@ final class ChildController extends AbstractController
     }
 
     #[Route('/new', name: 'app_child_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+public function new(Request $request, EntityManagerInterface $entityManager): Response
 {
     $child = new Child();
+
+    $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    foreach ($days as $day) {
+        $presence = new PlannedPresence();
+        $presence->setWeekDay($day); 
+        $presence->setChild($child);
+        $child->addPlannedPresence($presence);
+    }
+
     $form = $this->createForm(ChildForm::class, $child);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+        // Tu peux gérer createdAt ici si besoin
+        foreach ($child->getPlannedPresences() as $presence) {
+            $presence->setCreatedAt(new \DateTime());
+        }
+
         $entityManager->persist($child);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_child_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_child_index');
     }
 
     return $this->render('child/new.html.twig', [
@@ -46,7 +61,7 @@ final class ChildController extends AbstractController
     ]);
 }
 
-     #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Child $child, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ChildForm::class, $child);
@@ -74,13 +89,13 @@ final class ChildController extends AbstractController
 
         return $this->redirectToRoute('app_child_index', [], Response::HTTP_SEE_OTHER);
     }
+
     #[Route('/test-image', name: 'app_test_image')]
     public function testImage(ParameterBagInterface $params): Response
     {
-    return $this->render('test_image.html.twig', [
-        'image_path' => '/uploads/icons/princess.png',
-        'project_dir' => $params->get('kernel.project_dir')
-    ]);
+        return $this->render('test_image.html.twig', [
+            'image_path' => '/uploads/icons/princess.png',
+            'project_dir' => $params->get('kernel.project_dir')
+        ]);
     }
-
 }
