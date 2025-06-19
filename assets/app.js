@@ -1,4 +1,7 @@
 import './bootstrap.js';
+import './presence.js';
+
+
 /*
  * Welcome to your app's main JavaScript file!
  *

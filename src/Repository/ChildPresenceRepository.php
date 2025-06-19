@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ChildPresence;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,8 +16,31 @@ class ChildPresenceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ChildPresence::class);
     }
+    public function updateChildPresence(ChildPresence $cp): void
+    {
+    $this->_em->persist($cp);
+    $this->_em->flush();
+    }
+    public function findTodayPresenceForChild(int $childId, DateTimeImmutable $date): ?ChildPresence
+    {
+        return $this->createQueryBuilder('cp')
+            ->andWhere('cp.child = :childId')
+            ->andWhere('cp.day = :date')
+            ->setParameter('childId', $childId)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-
+    public function saveDeparture(ChildPresence $childPresence): void
+    {
+        try {
+            $this->_em->persist($childPresence);
+            $this->_em->flush();
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Erreur lors de l\'enregistrement du départ: ' . $e->getMessage());
+        }
+    }
     //    /**
     //     * @return ChildPresence[] Returns an array of ChildPresence objects
     //     */

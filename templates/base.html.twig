@@ -12,9 +12,7 @@
         {% block stylesheets %}
         {% endblock %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+
    
     </head>
 <body>
@@ -30,6 +28,9 @@
     <main class="main-content">
         {% block body %}{% endblock %}
     </main>
+      {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
 </body>
 
 

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Child;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\PlannedPresence;
 
 
 /**
@@ -29,13 +30,13 @@ public function findActiveChildren(): array
 }
 
 
-public function findChildrenWithPresenceForDay(string $day): array
+public function findByChildOrderedByWeekday(Child $child): array
 {
-    return $this->createQueryBuilder('c')
-        ->leftJoin('c.childPresences', 'p')
-        ->addSelect('p')
-        ->where('LOWER(p.day) = :day')
-        ->setParameter('day', strtolower($day))
+    return $this->createQueryBuilder('p')
+        ->where('p.child = :child')
+        ->from('App\Entity\PlannedPresence', 'p')
+        ->setParameter('child', $child)
+        ->orderBy('p.weekDay', 'ASC')
         ->getQuery()
         ->getResult();
 }

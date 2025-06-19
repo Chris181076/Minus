@@ -1,4 +1,21 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<div>
+    {{ form_label(form.arrivalTime) }}
+    {{ form_widget(form.arrivalTime) }}
+</div>
+
+<div>
+    {{ form_label(form.departureTime) }}
+    {{ form_widget(form.departureTime) }}
+</div>
+
+<div>
+    {{ form_label(form.note) }}
+    {{ form_widget(form.note) }}
+</div>
+
+<button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+
 {{ form_end(form) }}
+

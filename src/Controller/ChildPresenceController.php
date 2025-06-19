@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Child;
 use App\Entity\ChildPresence;
+use App\Entity\Semainier;
 use App\Form\ChildPresenceForm;
 use App\Repository\ChildPresenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,12 +15,14 @@ use App\Repository\ChildRepository;
 use \DateInterval;
 use \DateTimeImmutable;
 use DateTimeZone;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\SemainierRepository;
 
 #[Route('/child/presence')]
 final class ChildPresenceController extends AbstractController
 {
     #[Route(name: 'app_child_presence_index', methods: ['GET'])]
-public function index(ChildPresenceRepository $childPresenceRepository, ChildRepository $childRepository): Response
+    public function index(ChildPresenceRepository $childPresenceRepository, ChildRepository $childRepository): Response
 {
     $now = new \DateTimeImmutable('now');
     $monday = $now->modify('monday this week');
@@ -93,61 +96,191 @@ public function index(ChildPresenceRepository $childPresenceRepository, ChildRep
     }
 
     #[Route('/{id}', name: 'app_child_presence_delete', methods: ['POST'])]
-    public function delete(Request $request, ChildPresence $childPresence, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$childPresence->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($childPresence);
-            $entityManager->flush();
+public function delete(Request $request, ChildPresence $childPresence, EntityManagerInterface $entityManager): Response
+{
+    // Vérifier le token CSRF
+    $token = $request->request->get('_token');
+    if (!$this->isCsrfTokenValid('delete'.$childPresence->getId(), $token)) {
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => false, 
+                'message' => 'Token CSRF invalide'
+            ], 403);
+        }
+        throw $this->createAccessDeniedException('Token CSRF invalide');
+    }
+
+    try {
+        $entityManager->remove($childPresence);
+        $entityManager->flush();
+
+        // Si c'est une requête AJAX, retourner JSON
+        if ($request->isXmlHttpRequest()) {
+            return $this->json(['success' => true]);
         }
 
         return $this->redirectToRoute('app_child_presence_index', [], Response::HTTP_SEE_OTHER);
+        
+    } catch (\Exception $e) {
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => false, 
+                'message' => 'Erreur lors de la suppression: ' . $e->getMessage()
+            ], 500);
+        }
+        throw $e;
     }
-    #[Route('/{day?}', name: 'app_daily_planning', methods: ['GET'])]
-    public function dailyPlanning($day, ChildRepository $childRepository, ChildPresenceRepository $presenceRepo): Response
-{
-    $now = new \DateTimeImmutable('now');
-    $monday = $now->modify('monday this week');
+}
 
-    $days = [];
-    for ($i = 0; $i < 5; $i++) {
-        $days[] = $monday->add(new \DateInterval("P{$i}D"));
+
+
+#[Route('/mark-arrival/{id}', name: 'app_mark_arrival', methods: ['POST'])]
+public function markArrival(
+    Child $child,
+    EntityManagerInterface $em,
+    SemainierRepository $semainierRepo,
+): JsonResponse {
+    try {
+        $timezone = new DateTimeZone('Europe/Paris');
+        $now = new DateTimeImmutable('now', $timezone);
+        $today = $now->setTime(0, 0);
+
+        // Recherche ou création du semainier pour la semaine en cours
+        $semainier = $semainierRepo->findOneBy(['week_start_date' => $today]);
+        if (!$semainier) {
+            $semainier = new Semainier();
+            $semainier->setWeekStartDate($today);
+            $em->persist($semainier);
+        }
+
+        $presence = new ChildPresence();
+        $presence
+            ->setChild($child)
+            ->setDay($today)
+            ->setArrivalTime($now)
+            ->setSemainier($semainier)
+            ->setPresent(true);
+        
+        $em->persist($presence);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'arrivalTime' => $presence->getArrivalTime()->format('c'), // Format ISO pour JS
+            'presenceId' => $presence->getId()
+        ]);
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+    #[Route('/mark-departure/{id}', name: 'app_mark_departure', methods: ['POST'])]
+    public function markDeparture(
+    int $id,
+    ChildPresenceRepository $presenceRepo,
+    EntityManagerInterface $em
+    ): JsonResponse {
+    $childPresence = $presenceRepo->find($id);
+
+    if (!$childPresence) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Présence non trouvée'
+        ], 404);
     }
 
-    if (!$day) {
-        $day = $days[0]->format('Y-m-d');
+    if ($childPresence->getDepartureTime() !== null) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Le départ a déjà été marqué'
+        ], 400);
     }
 
-    $dateObj = new \DateTimeImmutable($day);
-    $children = $childRepository->findAll();
-
-    // Map des présences par enfant ID
-    $presences = $presenceRepo->findBy(['day' => $dateObj]);
-    $presenceMap = [];
-    foreach ($presences as $presence) {
-        $presenceMap[$presence->getChild()->getId()] = $presence;
-    }
-
-    return $this->render('ChildPresence/index_admin.html.twig', [
-        'day' => $day,
-        'days' => $days,
-        'children' => $children,
-        'presenceMap' => $presenceMap,
-    ]);
-    }
-
-    
-#[Route('/child/presence/mark-departure/{id}', name: 'app_mark_departure', methods: ['POST'])]
-public function markDeparture(ChildPresence $childPresence, EntityManagerInterface $em): Response
-{
-    date_default_timezone_set('Europe/Paris');
-    $now = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+    $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
     $childPresence->setDepartureTime($now);
+
     $em->flush();
 
     return $this->json([
         'success' => true,
-        'departureTime' => $childPresence->getDepartureTime()->format('H:i:s'),
+        'departureTime' => $childPresence->getDepartureTime()->format('c')
     ]);
 }
-    
+
+
+    #[Route('/{day?}', name: 'app_daily_planning', methods: ['GET'])]
+    public function dailyPlanning(
+        ?string $day=null): Response {
+        $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Paris'));
+        $monday = $now->modify('monday this week');
+        
+        // Generate week days
+        $days = [];
+        for ($i = 0; $i < 5; $i++) {
+            $days[] = $monday->add(new \DateInterval("P{$i}D"));
+        }
+
+        // Use first day if none specified
+        if (!$day) {
+            $day = $days[0]->format('Y-m-d');
+        }
+
+        $dateObj = new \DateTimeImmutable($day, new \DateTimeZone('Europe/Paris'));
+        $dateObj = $dateObj->setTime(0, 0, 0);
+        
+        $children = $childRepository->findAll();
+        // Map presences by child ID
+        $presences = $presenceRepo->findBy(['day' => $dateObj]);
+        $presenceMap = [];
+        foreach ($presences as $presence) {
+            $presenceMap[$presence->getChild()->getId()] = $presence;
+        }
+
+        return $this->render('child_presence/index_admin.html.twig', [
+            'day' => $day,
+            'days' => $days,
+            'children' => $children,
+            'presenceMap' => $presenceMap,
+        ]);
+    }
+    #[Route('/sync/{day}', name: 'app_child_presence_sync', methods: ['GET'])]
+public function syncPresences(
+    string $day,
+    ChildPresenceRepository $presenceRepo,
+    ChildRepository $childRepo
+): JsonResponse {
+    try {
+        $dateObj = new \DateTimeImmutable($day, new \DateTimeZone('Europe/Paris'));
+        $dateObj = $dateObj->setTime(0, 0, 0);
+        
+        // Récupérer toutes les présences pour ce jour
+        $presences = $presenceRepo->findBy(['day' => $dateObj]);
+        
+        // Construire le tableau de présences pour le localStorage
+        $presenceData = [];
+        foreach ($presences as $presence) {
+            $childId = $presence->getChild()->getId();
+            $presenceData[$childId] = [
+                'presenceId' => $presence->getId(),
+                'childId' => $childId,
+                'arrivalTime' => $presence->getArrivalTime() ? $presence->getArrivalTime()->format('c') : null,
+                'departureTime' => $presence->getDepartureTime() ? $presence->getDepartureTime()->format('c') : null,
+            ];
+        }
+        
+        return $this->json([
+            'success' => true,
+            'presences' => $presenceData
+        ]);
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
 }

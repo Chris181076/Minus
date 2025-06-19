@@ -9,6 +9,8 @@ use App\Entity\Child;
 use App\Repository\ChildRepository;
 use App\Repository\PlannedPresenceRepository;
 
+
+
 final class AdminController extends AbstractController
 {
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
@@ -31,7 +33,7 @@ public function childDashboard(ChildRepository $childRepository): Response
     public function show(Child $child, PlannedPresenceRepository $presenceRepo): Response
     {
         $presences = $presenceRepo->findByChildOrderedByWeekday($child);
-    return $this->render('Child/show.html.twig', [
+        return $this->render('Child/show_admin.html.twig', [
         'child' => $child,
         'presences' => $presences,
     ]);

@@ -7,7 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\child;
+use App\Entity\Child;
+use \DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: ChildPresenceRepository::class)]
 class ChildPresence
@@ -18,16 +19,16 @@ class ChildPresence
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?\DateTime $day = null;
+    private ?\DateTimeImmutable $day = null;
 
     #[ORM\Column]
-    private ?bool $present = null;
+    private bool $present = false;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeImmutable $arrival_time = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable:true)]
+    private ?\DateTimeImmutable $arrivalTime = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeImmutable $departure_time = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable:true)]
+    private ?\DateTimeImmutable $departureTime = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
@@ -35,6 +36,7 @@ class ChildPresence
     #[ORM\ManyToOne(inversedBy: 'childPresences')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Semainier $semainier = null;
+ 
 
     #[ORM\ManyToOne(inversedBy: 'relation')]
     private ?Child $child = null;
@@ -56,50 +58,50 @@ class ChildPresence
         return $this->id;
     }
 
-    public function getDay(): ?\DateTime
+    public function getDay(): ?\DateTimeImmutable
     {
         return $this->day;
     }
 
-    public function setDay(\DateTime $day): static
+    public function setDay(\DateTimeImmutable $day): static
     {
         $this->day = $day;
 
         return $this;
     }
 
-    public function isPresent(): ?bool
+    public function isPresent(): bool
     {
         return $this->present;
     }
 
-    public function setPresent(bool $present): static
+    public function setPresent(bool $present): self
     {
         $this->present = $present;
 
         return $this;
     }
 
-    public function getArrivalTime(): ?\DateTime
+    public function getArrivalTime(): ?\DateTimeImmutable
     {
-        return $this->arrival_time;
+        return $this->arrivalTime;
     }
 
-    public function setArrivalTime(?\DateTimeInterface $arrival_time): static
+    public function setArrivalTime(?\DateTimeImmutable $arrivalTime): static
     {
-        $this->arrival_time = $arrival_time;
+        $this->arrivalTime = $arrivalTime;
 
         return $this;
     }
 
-    public function getDepartureTime(): ?\DateTime
+    public function getDepartureTime(): ?\DateTimeImmutable
     {
-        return $this->departure_time;
+        return $this->departureTime;
     }
 
-    public function setDepartureTime(\DateTimeImmutable $departure_time): static
+    public function setDepartureTime(\DateTimeImmutable $departureTime): static
     {
-        $this->departure_time = $departure_time;
+        $this->departureTime = $departureTime;
 
         return $this;
     }

@@ -8,72 +8,70 @@
 
     <table class="table">
         <thead>
-            <ul>
-                {% for date in days %}
-                <li>
-                <a href="{{ path('app_daily_planning', {'day': date|date('Y-m-d')}) }}">
-                {{ date|date('D d M') }}
-                </a>
-                </li>
-                {% endfor %}
-            </ul>
-            <tr>  
-                <th>Enfants</th>           
-                <th>Day</th>
-                <th>Present</th>
-                <th>Arrival_time</th>
-                <th>Departure_time</th>
-                <th>Note</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-{% for child in children %}
-    {% set child_presence = presenceMap[child.id] ?? null %}
-    <tr>
-        <td>{{ child.firstName ~ ' ' ~ child.lastName }}</td>
-        <td>
-            {% if child_presence %}
-                🟢
-            {% else %}
-                🔴
-            {% endif %}
-        </td>
-        <td>
-            {% if not child_presence %}
-                <button class="mark-arrival-btn" data-id="{{ child.id }}">Présent</button>
-            {% else %}
-                Oui
-            {% endif %}
-        </td>
-        <td class="arrival-time" data-id="{{ child_presence ? child_presence.id : '' }}">
-            {{ child_presence and child_presence.arrivalTime ? child_presence.arrivalTime|date('H:i:s') : '' }}
-        </td>
-        <td>
-            {% if child_presence and child_presence.arrivalTime and not child_presence.departureTime %}
-                <button class="mark-departure-btn" data-id="{{ child_presence.id }}">Départ</button>
-            {% elseif child_presence and child_presence.departureTime %}
-                ✔️
-            {% endif %}
-        </td>
-        <td class="departure-time" data-id="{{ child_presence ? child_presence.id : '' }}">
-            {{ child_presence and child_presence.departureTime ? child_presence.departureTime|date('H:i:s') : '' }}
-        </td>
-        <td>{{ child_presence ? child_presence.note : '' }}</td>
-        <td>
-            {% if child_presence %}
-                <a href="{{ path('app_child_presence_show', {'id': child_presence.id}) }}">voir</a>
-                <a href="{{ path('app_child_presence_edit', {'id': child_presence.id}) }}">modifier</a>
-            {% endif %}
-        </td>
+    <tr>  
+        <th>Enfants</th>
+        <th>Status</th> <!-- Nouvelle colonne pour l'icône -->
+        <th>Présent</th>
+        <th>Arrivée</th>
+        <th>Départ</th>
+        <th>Action Départ</th> <!-- Nouvelle colonne -->
+        <th>Note</th>
+        <th>Actions</th>
     </tr>
-{% else %}
-    <tr><td colspan="8">Aucun enregistrement</td></tr>
-{% endfor %}
-
-</tbody>
+</thead>
+<tbody>
+            {% for child in children %}
+                {% set child_presence = presenceMap[child.id] ?? null %}
+                <tr data-child-id="{{ child.id }}">
+                    <td>{{ child.firstName }} {{ child.lastName }}</td>
+                    <td class="status-cell">
+                        {% if child_presence %}🟢{% else %}🔴{% endif %}
+                    </td>
+                    <td class="presence-cell">
+                        {% if not child_presence %}
+                            <button class="btn btn-sm btn-success mark-arrival-btn" 
+                                    data-id="{{ child.id }}">
+                                Présent
+                            </button>
+                        {% else %}
+                            Oui
+                        {% endif %}
+                    </td>
+                    <td class="arrival-time">
+                        {% if child_presence and child_presence.arrivalTime %}
+                            {{ child_presence.arrivalTime|date('H:i') }}
+                        {% endif %}
+                    </td>
+                    <td class="departure-time">
+                        {% if child_presence and child_presence.departureTime %}
+                            {{ child_presence.departureTime|date('H:i') }}
+                        {% endif %}
+                    </td>
+                    <td class="departure-action">
+                        {% if child_presence and child_presence.arrivalTime and not child_presence.departureTime %}
+                            <button class="btn btn-sm btn-warning mark-departure-btn" 
+                                    data-id="{{ child_presence.id }}">
+                                Départ
+                            </button>
+                        {% elseif child_presence and child_presence.departureTime %}
+                            ✔️
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ child_presence ? child_presence.note : '' }}
+                    </td>
+                    <td class="actions-cell">
+                        {% if child_presence %}
+                            <a href="{{ path('app_child_presence_show', {'id': child_presence.id}) }}">voir</a>
+                            <a href="{{ path('app_child_presence_edit', {'id': child_presence.id}) }}">modifier</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+    
+        </tbody>
 
     </table>
-
+    <button id="refreshPresences">🔁 Recharger les présences</button>
     <a href="{{ path('app_child_presence_new') }}">Create new</a>
 {% endblock %}

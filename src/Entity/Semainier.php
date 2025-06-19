@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SemainierRepository::class)]
+#[ORM\HasLifecycleCallbacks] // ← CORRECTION : placée ici, sur la classe
 class Semainier
 {
     #[ORM\Id]
@@ -20,6 +21,12 @@ class Semainier
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\PrePersist] // ← CORRECTION : ajouté pour déclencher ce callback
+    public function onPrePersist(): void
+    {
+        $this->created_at = new \DateTimeImmutable();
+    }
 
     /**
      * @var Collection<int, ChildPresence>
@@ -45,7 +52,6 @@ class Semainier
     public function setWeekStartDate(\DateTimeImmutable $week_start_date): static
     {
         $this->week_start_date = $week_start_date;
-
         return $this;
     }
 
@@ -57,7 +63,6 @@ class Semainier
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
@@ -82,7 +87,6 @@ class Semainier
     public function removeChildPresence(ChildPresence $childPresence): static
     {
         if ($this->childPresences->removeElement($childPresence)) {
-            // set the owning side to null (unless already changed)
             if ($childPresence->getSemainier() === $this) {
                 $childPresence->setSemainier(null);
             }
