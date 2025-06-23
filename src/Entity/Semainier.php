@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\SemainierRepository;
+use App\Entity\Child;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ChildRepository;
+use App\Controller\ChildPresenceRepository;
 
 #[ORM\Entity(repositoryClass: SemainierRepository::class)]
 #[ORM\HasLifecycleCallbacks] // ← CORRECTION : placée ici, sur la classe
@@ -16,7 +19,7 @@ class Semainier
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'date_immutable', unique: true)]
     private ?\DateTimeImmutable $week_start_date = null;
 
     #[ORM\Column]

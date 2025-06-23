@@ -1,30 +1,35 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
-{% block title %}Semainier{% endblock %}
+{% block title %}Semainier index{% endblock %}
 
 {% block body %}
-    <h1>Semainier</h1>
+    <h1>Semainier du : {{ startOfWeek|date('d/m/Y') }}</h1>
 
-    <table class="table">
-        <tbody>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Enfant</th>
+            {% for day in weekDays %}
+                <th>{{ day|slice(0, 3) }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in presencesByChild %}
             <tr>
-                <th>Id</th>
-                <td>{{ semainier.id }}</td>
+                <td>{{ entry.child.firstName }} {{ entry.child.lastName }}</td>
+                {% for day in weekDays %}
+                    <td>{{ entry.days[day] ?? '-' }}</td>
+                {% endfor %}
             </tr>
+        {% else %}
             <tr>
-                <th>Week_start_date</th>
-                <td>{{ semainier.weekStartDate ? semainier.weekStartDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td colspan="{{ weekDays|length + 1 }}">Aucune présence trouvée</td>
             </tr>
-            <tr>
-                <th>Created_at</th>
-                <td>{{ semainier.createdAt ? semainier.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <a href="{{ path('app_semainier_index') }}">back to list</a>
 
-    <a href="{{ path('app_semainier_edit', {'id': semainier.id}) }}">edit</a>
-
-    {{ include('semainier/_delete_form.html.twig') }}
+    <a href="{{ path('app_semainier_new') }}">Create new</a>
 {% endblock %}

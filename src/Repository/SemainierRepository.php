@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Entity\Semainier;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\ChildPresence;
+use App\Entity\Child;
+use App\Repository\ChildPresenceRepository;
 
 /**
  * @extends ServiceEntityRepository<Semainier>
@@ -15,6 +18,13 @@ class SemainierRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Semainier::class);
     }
+public function findAllMondays(): array
+{
+    $all = $this->findAll();
+    return array_filter($all, function($semainier) {
+        return $semainier->getWeekStartDate() && $semainier->getWeekStartDate()->format('N') == 1; // 1 = lundi
+    });
+}
 
     //    /**
     //     * @return Semainier[] Returns an array of Semainier objects

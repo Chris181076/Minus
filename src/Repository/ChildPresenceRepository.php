@@ -6,6 +6,7 @@ use App\Entity\ChildPresence;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Child;
 
 /**
  * @extends ServiceEntityRepository<ChildPresence>
@@ -41,6 +42,27 @@ class ChildPresenceRepository extends ServiceEntityRepository
             throw new \RuntimeException('Erreur lors de l\'enregistrement du départ: ' . $e->getMessage());
         }
     }
+
+public function findByChildAndDateRange(Child $child, \DateTimeInterface $start, \DateTimeInterface $end): array
+    {
+    return $this->createQueryBuilder('cp')
+        ->andWhere('cp.child = :child')
+        ->andWhere('cp.arrivalTime BETWEEN :start AND :end')
+        ->setParameter('child', $child)
+        ->setParameter('start', $start)
+        ->setParameter('end', $end)
+        ->getQuery()
+        ->getResult();
+    }
+    public function findAllMondays(): array
+{
+    return $this->createQueryBuilder('s')
+    ->where('DAYOFWEEK(s.week_start_date) = 2') // 2 = lundi en MySQL
+    ->orderBy('s.week_start_date', 'DESC')
+    ->getQuery()
+    ->getResult();
+}
+    }
     //    /**
     //     * @return ChildPresence[] Returns an array of ChildPresence objects
     //     */
@@ -65,4 +87,4 @@ class ChildPresenceRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-}
+
