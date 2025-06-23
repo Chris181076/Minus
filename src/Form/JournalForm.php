@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\ChildPresence;
 
 class JournalForm extends AbstractType
 {
@@ -16,6 +17,7 @@ class JournalForm extends AbstractType
         $builder
             ->add('date', null, [
                 'widget' => 'single_text',
+                'attr' => ['readonly' => true],
             ])
             ->add('meal')
             ->add('nap')
@@ -23,10 +25,7 @@ class JournalForm extends AbstractType
             ->add('diaper_type')
             ->add('activity')
             ->add('note')
-            ->add('child', EntityType::class, [
-                'class' => Child::class,
-                'choice_label' => 'id',
-            ])
+           
         ;
     }
 

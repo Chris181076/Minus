@@ -1,50 +1,43 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
 {% block title %}Journal{% endblock %}
 
 {% block body %}
-    <h1>Journal</h1>
-
-    <table class="table">
-        <tbody>
+    <h1>Journal de {{ child.firstName }} {{ child.lastName }}</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Repas</th>
+            <th>Sieste</th>
+            <th>Couches</th>
+            <th>Activité</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for journal in journals %}
             <tr>
-                <th>Id</th>
-                <td>{{ journal.id }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ journal.date ? journal.date|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Meal</th>
+                <td>{{ journal.date|date('d/m/Y') }}</td>
                 <td>{{ journal.meal }}</td>
-            </tr>
-            <tr>
-                <th>Nap</th>
-                <td>{{ journal.nap ? journal.nap|date('H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Diaper_time</th>
-                <td>{{ journal.diaperTime ? journal.diaperTime|date('H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Diaper_type</th>
-                <td>{{ journal.diaperType }}</td>
-            </tr>
-            <tr>
-                <th>Activity</th>
+                <td>{{ journal.nap ? journal.nap|date('H:i') : '' }}</td>
+                <td>{{ journal.diaperType }} {{ journal.diaperTime ? journal.diaperTime|date('H:i') : '' }}</td>
                 <td>{{ journal.activity }}</td>
-            </tr>
-            <tr>
-                <th>Note</th>
                 <td>{{ journal.note }}</td>
+                <td>
+            <a href="{{ path('app_journal_edit', {'id': journal.id}) }}">edit</a>
+            {{ include('journal/_delete_form.html.twig', { journal: journal }) }}
+        </td>
+
             </tr>
-        </tbody>
-    </table>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucun journal pour cet enfant.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <a href="{{ path('app_admin_dashboard_journal') }}">back to list</a>
 
-    <a href="{{ path('app_journal_index') }}">back to list</a>
 
-    <a href="{{ path('app_journal_edit', {'id': journal.id}) }}">edit</a>
-
-    {{ include('journal/_delete_form.html.twig') }}
 {% endblock %}

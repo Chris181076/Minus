@@ -17,6 +17,8 @@ use \DateTimeImmutable;
 use DateTimeZone;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\SemainierRepository;
+use App\Repository\JournalRepository;
+use App\Entity\Journal;
 
 #[Route('/child/presence')]
 final class ChildPresenceController extends AbstractController
@@ -139,35 +141,47 @@ public function markArrival(
     Child $child,
     EntityManagerInterface $em,
     SemainierRepository $semainierRepo,
+    JournalRepository $journalRepo,
 ): JsonResponse {
     try {
-        $timezone = new DateTimeZone('Europe/Paris');
-        $now = new DateTimeImmutable('now', $timezone);
+        $timezone = new \DateTimeZone('Europe/Paris');
+        $now = new \DateTimeImmutable('now', $timezone);
         $today = $now->setTime(0, 0);
 
+        // Recherche ou création du journal du jour pour cet enfant
+        $existingJournal = $journalRepo->findOneByChildAndDate($child, $today);
+        if (!$existingJournal) {
+            $journal = new \App\Entity\Journal();
+            $journal->setChild($child);
+            $journal->setDate($today);
+            $em->persist($journal);
+        }
+
         // Recherche ou création du semainier pour la semaine en cours
-        $semainier = $semainierRepo->findOneBy(['week_start_date' => $today]);
+        $monday = $now->modify('monday this week')->setTime(0, 0);
+        $semainier = $semainierRepo->findOneBy(['week_start_date' => $monday]);
         if (!$semainier) {
-            $semainier = new Semainier();
-            $semainier->setWeekStartDate($today);
+            $semainier = new \App\Entity\Semainier();
+            $semainier->setWeekStartDate($monday);
             $em->persist($semainier);
         }
 
-        $presence = new ChildPresence();
+        $presence = new \App\Entity\ChildPresence();
         $presence
             ->setChild($child)
             ->setDay($today)
             ->setArrivalTime($now)
             ->setSemainier($semainier)
             ->setPresent(true);
-        
+
         $em->persist($presence);
         $em->flush();
 
         return $this->json([
             'success' => true,
-            'arrivalTime' => $presence->getArrivalTime()->format('c'), // Format ISO pour JS
-            'presenceId' => $presence->getId()
+            'arrivalTime' => $presence->getArrivalTime()->format('c'),
+            'presenceId' => $presence->getId(),
+            'journalId' => $journalId ? $journalId->getId() : null
         ]);
     } catch (\Exception $e) {
         return $this->json([

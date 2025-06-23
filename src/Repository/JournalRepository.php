@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Journal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\child;
 
 /**
  * @extends ServiceEntityRepository<Journal>
@@ -15,7 +16,25 @@ class JournalRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Journal::class);
     }
-
+    public function findAllJournalByChild(Child $child): array
+{
+    return $this->createQueryBuilder('j')
+        ->andWhere('j.child = :child')
+        ->setParameter('child', $child)
+        ->orderBy('j.date', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+public function findOneByChildAndDate(Child $child, \DateTimeInterface $date): ?Journal
+{
+    return $this->createQueryBuilder('j')
+        ->andWhere('j.child = :child')
+        ->andWhere('j.date = :date')
+        ->setParameter('child', $child)
+        ->setParameter('date', $date->format('Y-m-d')) // si champ Doctrine "date" est de type date
+        ->getQuery()
+        ->getOneOrNullResult();
+}
 //    /**
 //     * @return Journal[] Returns an array of Journal objects
 //     */

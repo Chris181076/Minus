@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Enfants</th>
                 <th>Date</th>
                 <th>Meal</th>
                 <th>Nap</th>
@@ -22,7 +22,7 @@
         <tbody>
         {% for journal in journals %}
             <tr>
-                <td>{{ journal.id }}</td>
+                <td>{{journal.child.firstName}} {{journal.child.lastName}}</td>
                 <td>{{ journal.date ? journal.date|date('Y-m-d') : '' }}</td>
                 <td>{{ journal.meal }}</td>
                 <td>{{ journal.nap ? journal.nap|date('H:i:s') : '' }}</td>
@@ -43,5 +43,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_journal_new') }}">Create new</a>
+    <a href="{{ path('app_journal_new', { presenceId: presence.id }) }}">Create new</a>
 {% endblock %}

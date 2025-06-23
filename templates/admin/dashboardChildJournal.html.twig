@@ -1,0 +1,30 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Journal des Minus{% endblock %}
+
+
+{% block body %}
+<h1>Journal des Minus</h1>
+<div class='center'>
+<div id="grid_fiches_minus">
+    {% for child in children %}
+        <div class="child-item">
+            {% if child.icon is defined and child.icon %}
+                <img src="{{ asset(child.icon.path) }}" alt="Icône de {{ child.firstName }}">
+            {% endif %}
+            <span class='childName' style="color: #{{ child.childGroup.colorCode }}">
+            <a href="{% if presences[child.id] %}
+    {{ path('app_journal_new', {'presenceId': presences[child.id].id}) }}
+{% else %}
+    # 
+{% endif %}" 
+title="{% if not presences[child.id] %}L'enfant n'est pas encore arrivé{% endif %}">
+    {{ child.firstName|capitalize }} {{ child.lastName|capitalize }}
+</a>
+
+            </span>
+        </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

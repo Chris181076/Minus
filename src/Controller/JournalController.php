@@ -10,10 +10,49 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\ChildPresence;
+use App\Repository\ChildPresenceRepository;
+use App\Entity\Child;
 
 #[Route('/journal')]
 final class JournalController extends AbstractController
 {
+ #[Route('/new/{presenceId}', name: 'app_journal_new', methods: ['GET', 'POST'])]
+public function new(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    ChildPresenceRepository $presenceRepo,
+    int $presenceId
+): Response {
+    $presence = $presenceRepo->find($presenceId);
+
+    if (!$presence) {
+        throw $this->createNotFoundException('Présence non trouvée pour ID ' . $presenceId);
+    }
+    $child = $presence->getChild();
+    $journal = new Journal();
+    $journal->setDate($presence->getArrivalTime()->setTime(0, 0));
+    $journal->setChild($presence->getChild());
+
+    $form = $this->createForm(JournalForm::class, $journal);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($journal);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_journal_index');
+    }
+
+    return $this->render('journal/new.html.twig', [
+        'journal' => $journal,
+        'form' => $form,
+        'child' => $child,
+    ]);
+}
+
+
+
     #[Route(name: 'app_journal_index', methods: ['GET'])]
     public function index(JournalRepository $journalRepository): Response
     {
@@ -22,33 +61,13 @@ final class JournalController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_journal_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $journal = new Journal();
-        $form = $this->createForm(JournalForm::class, $journal);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($journal);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_journal_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('journal/new.html.twig', [
-            'journal' => $journal,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_journal_show', methods: ['GET'])]
+    /*#[Route('/{id}', name: 'app_journal_single', methods: ['GET'])]
     public function show(Journal $journal): Response
     {
         return $this->render('journal/show.html.twig', [
             'journal' => $journal,
         ]);
-    }
+    }*/
 
     #[Route('/{id}/edit', name: 'app_journal_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Journal $journal, EntityManagerInterface $entityManager): Response
