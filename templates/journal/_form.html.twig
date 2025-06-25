@@ -1,10 +1,73 @@
 {{ form_start(form) }}
-    {{ form_row(form.date) }}
-    {{ form_row(form.meal) }}
-    {{ form_row(form.nap) }}
-    {{ form_row(form.diaper_time) }}
-    {{ form_row(form.diaper_type) }}
-    {{ form_row(form.activity) }}
-    {{ form_row(form.note) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+{{ form_row(form.date) }}
+
+<table>
+  <thead>
+    <tr>
+      <th>Heure</th>
+      <th>Action</th>
+      <th>Description</th>
+      <th>Note</th>
+    </tr>
+  </thead>
+  <tbody id="entries-wrapper"
+    data-prototype="
+      <tr>
+        <td>{{ form_widget(form.entries.vars.prototype.heure)|e('html_attr') }}</td>
+        <td>{{ form_widget(form.entries.vars.prototype.action)|e('html_attr') }}</td>
+        <td>{{ form_widget(form.entries.vars.prototype.description)|e('html_attr') }}</td>
+        <td>{{ form_widget(form.entries.vars.prototype.note)|e('html_attr') }}</td>
+      </tr>
+    ">
+    {% for entry in form.entries %}
+      {% if entry.vars.data is not null and (entry.vars.data.heure or entry.vars.data.action or entry.vars.data.description or entry.vars.data.note) %}
+      <tr class="journal-entry-row">
+        <td>{{ form_widget(entry.heure) }}</td>
+        <td>{{ form_widget(entry.action) }}</td>
+        <td>{{ form_widget(entry.description) }}</td>
+        <td>{{ form_widget(entry.note) }}</td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+    <script src="{{ asset('public/js/entriesButton.js') }}"></script>
+  </tbody>
+</table>
+
+{# Table affichage lecture seule des entrées du journal #}
+{% set today = "now"|date("Y-m-d") %}
+{% if journal.date|date("Y-m-d") == today %}
+  <table>
+    <thead>
+      <tr>
+        <th>Heure</th>
+        <th>Action</th>
+        <th>Description</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in journal.entries %}
+        <tr>
+          <td>{{ entry.heure ? entry.heure|date('H:i') : '' }}</td>
+          <td>{{ entry.action }}</td>
+          <td>{{ entry.description }}</td>
+          <td>{{ entry.note }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="4">Aucune entrée pour aujourd'hui.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Pas de journal pour aujourd'hui.</p>
+{% endif %}
+
+<button type="submit">Enregistrer</button>
+<button type="button" id="add-entry-btn">Ajouter une entrée</button>
+
 {{ form_end(form) }}
+
+
+
+

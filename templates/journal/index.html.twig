@@ -20,26 +20,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for journal in journals %}
-            <tr>
-                <td>{{journal.child.firstName}} {{journal.child.lastName}}</td>
-                <td>{{ journal.date ? journal.date|date('Y-m-d') : '' }}</td>
-                <td>{{ journal.meal }}</td>
-                <td>{{ journal.nap ? journal.nap|date('H:i:s') : '' }}</td>
-                <td>{{ journal.diaperTime ? journal.diaperTime|date('H:i:s') : '' }}</td>
-                <td>{{ journal.diaperType }}</td>
-                <td>{{ journal.activity }}</td>
-                <td>{{ journal.note }}</td>
-                <td>
-                    <a href="{{ path('app_journal_show', {'id': journal.id}) }}">show</a>
-                    <a href="{{ path('app_journal_edit', {'id': journal.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">no records found</td>
-            </tr>
-        {% endfor %}
+            <p>Page journaux en construction.</p>
         </tbody>
     </table>
 

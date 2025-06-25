@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\ChildPresence;
 use App\Repository\ChildPresenceRepository;
 use App\Entity\Child;
+use App\Service\JournalParser;
+use App\Entity\JournalEntry;
 
 #[Route('/journal')]
 final class JournalController extends AbstractController
@@ -22,6 +24,7 @@ public function new(
     Request $request,
     EntityManagerInterface $entityManager,
     ChildPresenceRepository $presenceRepo,
+    JournalRepository $journalRepo,
     int $presenceId
 ): Response {
     $presence = $presenceRepo->find($presenceId);
@@ -29,35 +32,54 @@ public function new(
     if (!$presence) {
         throw $this->createNotFoundException('Présence non trouvée pour ID ' . $presenceId);
     }
+
+    $date = $presence->getArrivalTime()->setTime(0, 0);
     $child = $presence->getChild();
-    $journal = new Journal();
-    $journal->setDate($presence->getArrivalTime()->setTime(0, 0));
-    $journal->setChild($presence->getChild());
+
+    // Rechercher un journal existant
+    $journal = $journalRepo->findOneBy([
+        'child' => $child,
+        'date' => $date,
+    ]);
+
+    // Sinon, on en crée un
+    if (!$journal) {
+        $journal = new Journal();
+        $journal->setDate($date);
+        $journal->setChild($child);
+    }
 
     $form = $this->createForm(JournalForm::class, $journal);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+        foreach ($journal->getEntries() as $entry) {
+        $entry->setJournal($journal);
+        }
+
         $entityManager->persist($journal);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_journal_index');
+        return $this->redirectToRoute('app_admin_dashboard_journal');
     }
 
     return $this->render('journal/new.html.twig', [
-        'journal' => $journal,
-        'form' => $form,
+        'form' => $form->createView(),
         'child' => $child,
+        'journal'=> $journal,
     ]);
 }
 
 
 
+
     #[Route(name: 'app_journal_index', methods: ['GET'])]
-    public function index(JournalRepository $journalRepository): Response
+    public function index(JournalRepository $journalRepository, ChildPresenceRepository $presenceRepo): Response
     {
+        $presence = $presenceRepo->findOneBy([], ['arrivalTime' => 'DESC']);
         return $this->render('journal/index.html.twig', [
             'journals' => $journalRepository->findAll(),
+            'presence' => $presence,
         ]);
     }
 

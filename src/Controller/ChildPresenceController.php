@@ -155,9 +155,12 @@ public function markArrival(
             $journal->setChild($child);
             $journal->setDate($today);
             $em->persist($journal);
-        }
+        } else {
+    $journal = $existingJournal;
+}
 
         // Recherche ou création du semainier pour la semaine en cours
+    
         $monday = $now->modify('monday this week')->setTime(0, 0);
         $semainier = $semainierRepo->findOneBy(['week_start_date' => $monday]);
         if (!$semainier) {
@@ -181,7 +184,7 @@ public function markArrival(
             'success' => true,
             'arrivalTime' => $presence->getArrivalTime()->format('c'),
             'presenceId' => $presence->getId(),
-            'journalId' => $journalId ? $journalId->getId() : null
+            'journalId' => $journal ? $journal->getId() : null
         ]);
     } catch (\Exception $e) {
         return $this->json([
