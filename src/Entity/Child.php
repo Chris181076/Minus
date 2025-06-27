@@ -7,13 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Icon;
-use App\Entity\PlannedPresence;
-
 
 #[ORM\Entity(repositoryClass: ChildRepository::class)]
-
-
 class Child
 {
     #[ORM\Id]
@@ -36,21 +31,9 @@ class Child
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'children')]
-    private Collection $users;
-
-    /**
-     * @var Collection<int, Allergy>
-     */
     #[ORM\ManyToMany(targetEntity: Allergy::class, inversedBy: 'children')]
     private Collection $allergies;
 
-    /**
-     * @var Collection<int, SpecialDiet>
-     */
     #[ORM\ManyToMany(targetEntity: SpecialDiet::class, inversedBy: 'children')]
     private Collection $specialDiets;
 
@@ -58,82 +41,30 @@ class Child
     #[ORM\JoinColumn(nullable: false)]
     private ?Group $childGroup = null;
 
-    /**
-     * @var Collection<int, Journal>
-     */
-    #[ORM\OneToMany(targetEntity: Journal::class, mappedBy: 'child')]
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: Journal::class, cascade: ['persist', 'remove'])]
     private Collection $journals;
 
-    /**
-     * @var Collection<int, Journal>
-     */
-    #[ORM\OneToMany(targetEntity: Journal::class, mappedBy: 'children')]
-    private Collection $journal;
+    #[ORM\ManyToOne(targetEntity: Icon::class)]
+    #[ORM\JoinColumn(name: 'icons_id', referencedColumnName: 'id', nullable: true)]
+    private ?Icon $icon = null;
+
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: ChildPresence::class, cascade: ['persist', 'remove'])]
+    private Collection $childPresences;
+
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: PlannedPresence::class, cascade: ['persist', 'remove'])]
+    private Collection $plannedPresences;
+
+    #[ORM\ManyToOne(inversedBy: 'Children')]
+    private ?User $user = null;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
         $this->allergies = new ArrayCollection();
         $this->specialDiets = new ArrayCollection();
         $this->journals = new ArrayCollection();
-        $this->journal = new ArrayCollection();
         $this->childPresences = new ArrayCollection();
         $this->plannedPresences = new ArrayCollection();
     }
-    #[ORM\ManyToOne(targetEntity: Icon::class)]
-    #[ORM\JoinColumn(name: "icons_id", referencedColumnName: "id", nullable: true)]
-    private ?Icon $icon = null;
-
-    /**
-     * @var Collection<int, ChildPresence>
-     */
-    #[ORM\OneToMany(targetEntity: ChildPresence::class, mappedBy: 'child')]
-    private Collection $childPresences;
- 
-    #[ORM\ManyToOne(inversedBy: 'relation')]
-    private ?ChildPresence $childPresence = null;
-
-  #[ORM\OneToMany(mappedBy: 'child', targetEntity: PlannedPresence::class, cascade: ['persist', 'remove'])]
-    private Collection $plannedPresences;
-    /**
-    * @return Collection<int, PlannedPresence>
-    */
-    public function getPlannedPresences(): Collection
-    {
-    return $this->plannedPresences;
-    }
-
-    public function addPlannedPresence(PlannedPresence $plannedPresence): static
-    {
-        if (!$this->plannedPresences->contains($plannedPresence)) {
-            $this->plannedPresences[] = $plannedPresence;
-            $plannedPresence->setChild($this);
-        }
-
-    return $this;
-    }
-    public function removePlannedPresence(PlannedPresence $plannedPresence): static
-    {
-        if ($this->plannedPresences->removeElement($plannedPresence)) {
-            // Défaire le lien côté PlannedPresence
-            if ($plannedPresence->getChild() === $this) {
-                $plannedPresence->setChild(null);
-            }
-    }
-
-    return $this;
-    }
-    public function getIcon(): ?Icon
-    {
-    return $this->icon;
-    }
-
-    public function setIcon(?Icon $icon): static
-    {
-    $this->icon = $icon;
-    return $this;
-    }
-
 
     public function getId(): ?int
     {
@@ -145,10 +76,9 @@ class Child
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): static
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -157,10 +87,9 @@ class Child
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): static
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -169,10 +98,9 @@ class Child
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTimeImmutable $birthDate): static
+    public function setBirthDate(\DateTimeImmutable $birthDate): self
     {
         $this->birthDate = $birthDate;
-
         return $this;
     }
 
@@ -181,10 +109,9 @@ class Child
         return $this->medicalNotes;
     }
 
-    public function setMedicalNotes(?string $medicalNotes): static
+    public function setMedicalNotes(?string $medicalNotes): self
     {
         $this->medicalNotes = $medicalNotes;
-
         return $this;
     }
 
@@ -193,177 +120,152 @@ class Child
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): static
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addChild($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeChild($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Allergy>
-     */
-    public function getAllergies(): Collection
-    {
-        return $this->allergies;
-    }
-
-    public function addAllergy(Allergy $allergy): static
-    {
-        if (!$this->allergies->contains($allergy)) {
-            $this->allergies->add($allergy);
-        }
-
-        return $this;
-    }
-
-    public function removeAllergy(Allergy $allergy): static
-    {
-        $this->allergies->removeElement($allergy);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, SpecialDiet>
-     */
-    public function getSpecialDiets(): Collection
-    {
-        return $this->specialDiets;
-    }
-
-    public function addSpecialDiet(SpecialDiet $specialDiet): static
-    {
-        if (!$this->specialDiets->contains($specialDiet)) {
-            $this->specialDiets->add($specialDiet);
-        }
-
-        return $this;
-    }
-
-    public function removeSpecialDiet(SpecialDiet $specialDiet): static
-    {
-        $this->specialDiets->removeElement($specialDiet);
-
-        return $this;
-    }
     public function getChildGroup(): ?Group
     {
         return $this->childGroup;
     }
 
-    public function setChildGroup(?Group $childGroup): static
+    public function setChildGroup(?Group $group): self
     {
-        $this->childGroup = $childGroup;
-
+        $this->childGroup = $group;
         return $this;
     }
 
-    /**
-     * @return Collection<int, Journal>
-     */
+    public function getIcon(): ?Icon
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(?Icon $icon): self
+    {
+        $this->icon = $icon;
+        return $this;
+    }
+
+    /** @return Collection<int, Allergy> */
+    public function getAllergies(): Collection
+    {
+        return $this->allergies;
+    }
+
+    public function addAllergy(Allergy $allergy): self
+    {
+        if (!$this->allergies->contains($allergy)) {
+            $this->allergies->add($allergy);
+        }
+        return $this;
+    }
+
+    public function removeAllergy(Allergy $allergy): self
+    {
+        $this->allergies->removeElement($allergy);
+        return $this;
+    }
+
+    /** @return Collection<int, SpecialDiet> */
+    public function getSpecialDiets(): Collection
+    {
+        return $this->specialDiets;
+    }
+
+    public function addSpecialDiet(SpecialDiet $diet): self
+    {
+        if (!$this->specialDiets->contains($diet)) {
+            $this->specialDiets->add($diet);
+        }
+        return $this;
+    }
+
+    public function removeSpecialDiet(SpecialDiet $diet): self
+    {
+        $this->specialDiets->removeElement($diet);
+        return $this;
+    }
+
+    /** @return Collection<int, Journal> */
     public function getJournals(): Collection
     {
         return $this->journals;
     }
 
-    public function addJournal(Journal $journal): static
+    public function addJournal(Journal $journal): self
     {
         if (!$this->journals->contains($journal)) {
             $this->journals->add($journal);
             $journal->setChild($this);
         }
-
         return $this;
     }
 
-    public function removeJournal(Journal $journal): static
+    public function removeJournal(Journal $journal): self
     {
-        if ($this->journals->removeElement($journal)) {
-            // set the owning side to null (unless already changed)
-            if ($journal->getChild() === $this) {
-                $journal->setChild(null);
-            }
+        if ($this->journals->removeElement($journal) && $journal->getChild() === $this) {
+            $journal->setChild(null);
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Journal>
-     */
-    public function getJournal(): Collection
-    {
-        return $this->journal;
-    }
-
-    /**
-     * @return Collection<int, ChildPresence>
-     */
-    public function getRelation(): Collection
+    /** @return Collection<int, ChildPresence> */
+    public function getChildPresences(): Collection
     {
         return $this->childPresences;
     }
 
-    public function addRelation(ChildPresence $relation): static
+    public function addChildPresence(ChildPresence $presence): self
     {
-        if (!$this->childPresences->contains($relation)) {
-            $this->childPresences->add($relation);
-            $relation->setChild($this);
+        if (!$this->childPresences->contains($presence)) {
+            $this->childPresences->add($presence);
+            $presence->setChild($this);
         }
-
         return $this;
     }
 
-    public function removeRelation(ChildPresence $childPresences): static
+    public function removeChildPresence(ChildPresence $presence): self
     {
-        if ($this->childPresences->removeElement($childPresences)) {
-            // set the owning side to null (unless already changed)
-            if ($childPresences->getChild() === $this) {
-                $childPresences->setChild(null);
-            }
+        if ($this->childPresences->removeElement($presence) && $presence->getChild() === $this) {
+            $presence->setChild(null);
         }
-
         return $this;
     }
 
-    public function getChildPresence(): ?ChildPresence
+    /** @return Collection<int, PlannedPresence> */
+    public function getPlannedPresences(): Collection
     {
-        return $this->childPresence;
+        return $this->plannedPresences;
     }
 
-    public function setChildPresence(?ChildPresence $childPresence): static
+    public function addPlannedPresence(PlannedPresence $presence): self
     {
-        $this->childPresence = $childPresence;
-
+        if (!$this->plannedPresences->contains($presence)) {
+            $this->plannedPresences->add($presence);
+            $presence->setChild($this);
+        }
         return $this;
     }
 
+    public function removePlannedPresence(PlannedPresence $presence): self
+    {
+        if ($this->plannedPresences->removeElement($presence) && $presence->getChild() === $this) {
+            $presence->setChild(null);
+        }
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 }

@@ -19,7 +19,7 @@
         <th>Actions</th>
     </tr>
 </thead>
-<tbody>
+<tbody data-turbo="false">
             {% for child in children %}
                 {% set child_presence = presenceMap[child.id] ?? null %}
                 <tr data-child-id="{{ child.id }}">
@@ -72,6 +72,5 @@
         </tbody>
 
     </table>
-    <button id="refreshPresences">🔁 Recharger les présences</button>
     <a href="{{ path('app_child_presence_new') }}">Create new</a>
 {% endblock %}

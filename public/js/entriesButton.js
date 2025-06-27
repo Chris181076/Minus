@@ -2,6 +2,7 @@ document.addEventListener('turbo:load', () => {
     const collectionHolder = document.getElementById('entries-wrapper');
     const addEntryBtn = document.getElementById('add-entry-btn');
 
+    // ✅ Protection à l’intérieur du turbo:load
     if (!collectionHolder || !addEntryBtn) return;
 
     // Supprimer les anciennes lignes avec la classe .journal-entry-row
@@ -11,14 +12,13 @@ document.addEventListener('turbo:load', () => {
     let index = collectionHolder.querySelectorAll('tr').length;
 
     addEntryBtn.addEventListener('click', () => {
-        // Supprimer les lignes précédentes ajoutées dynamiquement
         collectionHolder.querySelectorAll('.journal-entry-row').forEach(row => row.remove());
 
         const prototype = collectionHolder.dataset.prototype;
         const newForm = prototype.replace(/__name__/g, index);
 
         const newRow = document.createElement('tr');
-        newRow.classList.add('journal-entry-row'); // important pour ciblage
+        newRow.classList.add('journal-entry-row');
         newRow.innerHTML = newForm;
 
         collectionHolder.appendChild(newRow);
@@ -27,4 +27,5 @@ document.addEventListener('turbo:load', () => {
         addEntryBtn.disabled = true;
     });
 });
+
 

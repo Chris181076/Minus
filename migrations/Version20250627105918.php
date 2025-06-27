@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250613082041 extends AbstractMigration
+final class Version20250627105918 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,19 +21,19 @@ final class Version20250613082041 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE child DROP FOREIGN KEY FK_22B3542954B9D732
+            ALTER TABLE child DROP FOREIGN KEY FK_22B3542929AC98EA
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_22B3542954B9D732 ON child
+            DROP INDEX IDX_22B3542929AC98EA ON child
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE child CHANGE icon_id child_presence_id INT DEFAULT NULL
+            ALTER TABLE child CHANGE child_presence_id user_id INT DEFAULT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE child ADD CONSTRAINT FK_22B3542929AC98EA FOREIGN KEY (child_presence_id) REFERENCES child_presence (id)
+            ALTER TABLE child ADD CONSTRAINT FK_22B35429A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_22B3542929AC98EA ON child (child_presence_id)
+            CREATE INDEX IDX_22B35429A76ED395 ON child (user_id)
         SQL);
     }
 
@@ -41,19 +41,19 @@ final class Version20250613082041 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE child DROP FOREIGN KEY FK_22B3542929AC98EA
+            ALTER TABLE child DROP FOREIGN KEY FK_22B35429A76ED395
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_22B3542929AC98EA ON child
+            DROP INDEX IDX_22B35429A76ED395 ON child
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE child CHANGE child_presence_id icon_id INT DEFAULT NULL
+            ALTER TABLE child CHANGE user_id child_presence_id INT DEFAULT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE child ADD CONSTRAINT FK_22B3542954B9D732 FOREIGN KEY (icon_id) REFERENCES icon (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+            ALTER TABLE child ADD CONSTRAINT FK_22B3542929AC98EA FOREIGN KEY (child_presence_id) REFERENCES child_presence (id) ON UPDATE NO ACTION ON DELETE NO ACTION
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_22B3542954B9D732 ON child (icon_id)
+            CREATE INDEX IDX_22B3542929AC98EA ON child (child_presence_id)
         SQL);
     }
 }

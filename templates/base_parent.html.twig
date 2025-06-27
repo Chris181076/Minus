@@ -1,4 +1,3 @@
-{# templates/base_admin.html.twig #}
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,19 +14,15 @@
 </head>
 
 <body>
-    {% if is_granted('ROLE_ADMIN') %}
-    {% include '_partials/_navbarAdmin.html.twig' %}
-    {% elseif is_granted('ROLE_PARENT')%}
+    {% if is_granted('ROLE_PARENT')%}
     {% include '_partials/_navbar_parent.html.twig' %}
     {% endif %}
 
     <div class="admin-layout" style="display: flex;">
-        {% include '_partials/_side_bar.html.twig' %}
+        {% include '_partials/_side_bar_parent.html.twig' %}
 
         <main class="main-content" style="flex: 1; padding: 2rem;">
             {% block body %}{% endblock %}
         </main>
     </div>
 </body>
-
-</html>

@@ -21,15 +21,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
@@ -60,14 +54,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Child>
      */
-    #[ORM\ManyToMany(targetEntity: Child::class, inversedBy: 'users')]
-    private Collection $children;
+    #[ORM\OneToMany(targetEntity: Child::class, mappedBy: 'user')]
+    private Collection $Children;
 
     public function __construct()
     {
         $this->sentMessages = new ArrayCollection();
         $this->receivedMessages = new ArrayCollection();
-        $this->children = new ArrayCollection();
+        $this->Children = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -83,45 +77,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -130,16 +106,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
@@ -151,7 +122,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhoneNumber(string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
-
         return $this;
     }
 
@@ -163,7 +133,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -175,7 +144,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -187,34 +155,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
     /**
      * @return Collection<int, Message>
      */
-    public function getsentMessages(): Collection
+    public function getSentMessages(): Collection
     {
         return $this->sentMessages;
     }
 
-    public function addsentMessages(Message $sentMessages): static
+    public function addSentMessage(Message $sentMessage): static
     {
-        if (!$this->sentMessages->contains($sentMessages)) {
-            $this->sentMessages->add($sentMessages);
-            $sentMessages->addSender($this);
+        if (!$this->sentMessages->contains($sentMessage)) {
+            $this->sentMessages->add($sentMessage);
+            $sentMessage->addSender($this);
         }
-
         return $this;
     }
 
-    public function removesentMessages(Message $sentMessages): static
+    public function removeSentMessage(Message $sentMessage): static
     {
-        if ($this->sentMessages->removeElement($sentMessages)) {
-            $sentMessages->removeSender($this);
+        if ($this->sentMessages->removeElement($sentMessage)) {
+            $sentMessage->removeSender($this);
         }
-
         return $this;
     }
 
@@ -232,7 +197,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->receivedMessages->add($receivedMessage);
             $receivedMessage->addRecipient($this);
         }
-
         return $this;
     }
 
@@ -241,8 +205,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->receivedMessages->removeElement($receivedMessage)) {
             $receivedMessage->removeRecipient($this);
         }
-
         return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->roles, true);
+    }
+
+    public function isParent(): bool
+    {
+        return in_array('ROLE_PARENT', $this->roles, true);
+    }
+
+    public function isEducateur(): bool
+    {
+        return in_array('ROLE_EDUCATEUR', $this->roles, true);
     }
 
     /**
@@ -250,13 +233,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getChildren(): Collection
     {
-        return $this->children;
+        return $this->Children;
     }
 
     public function addChild(Child $child): static
     {
-        if (!$this->children->contains($child)) {
-            $this->children->add($child);
+        if (!$this->Children->contains($child)) {
+            $this->Children->add($child);
+            $child->setUser($this);
         }
 
         return $this;
@@ -264,7 +248,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeChild(Child $child): static
     {
-        $this->children->removeElement($child);
+        if ($this->Children->removeElement($child)) {
+            // set the owning side to null (unless already changed)
+            if ($child->getUser() === $this) {
+                $child->setUser(null);
+            }
+        }
 
         return $this;
     }

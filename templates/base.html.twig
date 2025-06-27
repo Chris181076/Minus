@@ -24,14 +24,20 @@
     {% else %}
         {% include '_partials/_navbar.html.twig' %}
     {% endif %}
+    {% if is_granted('ROLE_PARENT') %}
+                {% include '_partials/_side_bar_parent.html.twig' %}
+    {% endif %}
 
     <main class="main-content">
-        {% block body %}{% endblock %}
-    </main>
-      {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% block body %}
         {% endblock %}
+    </main>
+    
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
 </body>
+
 
 
 </html>

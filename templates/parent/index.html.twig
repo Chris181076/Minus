@@ -1,7 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_parent.html.twig' %}
 
-{% block title %}Hello ParentController!{% endblock %}
-
+{% block title %}Bienvenue{% endblock %}
+ 
 {% block body %}
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
@@ -9,12 +9,6 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/Minus/src/Controller/ParentController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/Minus/templates/parent/index.html.twig</code></li>
-    </ul>
+    <h1>Bienvenue {{firstName}}</h1>
 </div>
 {% endblock %}
