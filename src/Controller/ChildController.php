@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Child;
+use App\Entity\ChildPresence;
 use App\Form\ChildForm;
 use App\Repository\ChildRepository;
 use App\Repository\IconRepository;
@@ -13,6 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Entity\PlannedPresence;
+use Symfony\Component\Security\Core\Security;
+use App\Repository\ChildPresenceRepository;
+use App\Repository\PlannedPresenceRepository;
 
 
 
@@ -31,6 +35,7 @@ final class ChildController extends AbstractController
 public function new(Request $request, EntityManagerInterface $entityManager): Response
 {
     $child = new Child();
+    $child->setUser($this->getUser());
 
     $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     foreach ($days as $day) {
@@ -62,22 +67,48 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
 }
 
     #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Child $child, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(ChildForm::class, $child);
-        $form->handleRequest($request);
+public function edit(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository): Response
+{
+    $plannedPresences = $child->getPlannedPresences();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+    // Si pas de plannedPresences, créer des présences par défaut (lundi à vendredi)
+    if ($plannedPresences->isEmpty()) {
+        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        foreach ($days as $day) {
+            $presence = new PlannedPresence();
+            $presence->setWeekDay($day);
+            $presence->setArrivalTime(null);
+            $presence->setDepartureTime(null);
+            $presence->setChild($child);
+            $presence->setCreatedAt(new \DateTimeImmutable());
+            $child->addPlannedPresence($presence);
+        }
+    }
 
+    $form = $this->createForm(ChildForm::class, $child, [
+    'is_admin' => $this->isGranted('ROLE_ADMIN'),
+    ]);
+    $form->handleRequest($request);
+
+    $template = $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig';
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->flush();
+
+        if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_child_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->render('child/edit.html.twig', [
-            'child' => $child,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_child_show', ['id' => $child->getId()], Response::HTTP_SEE_OTHER);
     }
+     $children = $childRepository->findBy(['user' => $this->getUser()]);
+    return $this->render('child/edit.html.twig', [
+        'child' => $child,
+        'form' => $form->createView(),
+        'base_template' => $template,  
+        'children' => $children,      
+    ]);
+}
+
 
     #[Route('/{id}', name: 'app_child_delete', methods: ['POST'])]
     public function delete(Request $request, Child $child, EntityManagerInterface $entityManager): Response
@@ -90,12 +121,25 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         return $this->redirectToRoute('app_child_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/test-image', name: 'app_test_image')]
-    public function testImage(ParameterBagInterface $params): Response
+    #[Route('/show/{id}', name: 'app_child_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository, PlannedPresenceRepository $plannedPresenceRepository): Response
     {
-        return $this->render('test_image.html.twig', [
-            'image_path' => '/uploads/icons/princess.png',
-            'project_dir' => $params->get('kernel.project_dir')
-        ]);
+    $user = $this->getUser(); // Pas besoin d’injecter Security
+    $children = $childRepository->findBy(['user' => $user]);
+
+    $template = $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig';
+
+    // Début de la semaine (lundi)
+    $plannedPresences = $plannedPresenceRepository->findByChildOrderedByWeekday($child);
+
+    return $this->render('child/show.html.twig', [
+        'child' => $child,
+        'children' => $children,
+        'base_template' => $template,
+        'planned_presences' => $plannedPresences,
+        'user' => $user,
+    ]);
     }
+
+
 }

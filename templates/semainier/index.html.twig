@@ -3,32 +3,46 @@
 {% block title %}Semainier index{% endblock %}
 
 {% block body %}
-    <h1>Semainier index</h1>
+    <h1>Semainiers</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Week_start_date</th>
-                <th>actions</th>
+                <th>Semaine</th>
+                <th>Présences planifiées</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for semainier in semainiers %}
             <tr>
-               
                 <td>{{ semainier.weekStartDate|date('d/m/Y') }}</td>
                 <td>
-                    <a href="{{ path('app_semainier_show', {'id': semainier.id}) }}">show</a>
-                    <a href="{{ path('app_semainier_edit', {'id': semainier.id}) }}">edit</a>
+                    <ul>
+                        {% for presence in semainier.plannedPresences %}
+                            <li>
+                                {{ presence.child.firstName }} :
+                                {{ presence.weekDay }} de
+                                {{ presence.arrivalTime|date('H:i') }}
+                                à {{ presence.departureTime|date('H:i') }}
+                            </li>
+                        {% else %}
+                            <li>Aucune présence planifiée</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <a href="{{ path('app_semainier_show', {'id': semainier.id}) }}">Voir</a>
+                    <a href="{{ path('app_semainier_edit', {'id': semainier.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="3">Aucun semainier trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_semainier_new') }}">Create new</a>
+    <a href="{{ path('app_semainier_new') }}">Créer un nouveau semainier</a>
 {% endblock %}

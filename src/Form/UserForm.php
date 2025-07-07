@@ -15,31 +15,11 @@ class UserForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            ->add('roles')
-            ->add('password')
-            ->add('phoneNumber')
             ->add('firstName')
             ->add('lastName')
-            ->add('created_at', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('sentMessages', EntityType::class, [
-                'class' => Message::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
-            ->add('receivedMessages', EntityType::class, [
-                'class' => Message::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
-            ->add('children', EntityType::class, [
-                'class' => Child::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
-        ;
+            ->add('email')
+            ->add('phoneNumber')
+            ->add('relationship');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

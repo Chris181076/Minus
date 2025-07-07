@@ -6,6 +6,7 @@ use App\Entity\Child;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\PlannedPresence;
+use App\Entity\User;
 
 
 /**
@@ -37,6 +38,15 @@ public function findByChildOrderedByWeekday(Child $child): array
         ->from('App\Entity\PlannedPresence', 'p')
         ->setParameter('child', $child)
         ->orderBy('p.weekDay', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
+    public function findByUser(User $user): array
+{
+    return $this->createQueryBuilder('c')
+        ->andWhere('c.user = :user')
+        ->setParameter('user', $user)
         ->getQuery()
         ->getResult();
 }

@@ -40,7 +40,11 @@ class Semainier
     public function __construct()
     {
         $this->childPresences = new ArrayCollection();
+        $this->plannedPresences = new ArrayCollection();
     }
+
+    #[ORM\OneToMany(mappedBy: 'semainier', targetEntity: PlannedPresence::class)]
+    private Collection $plannedPresences;
 
     public function getId(): ?int
     {
@@ -97,4 +101,28 @@ class Semainier
 
         return $this;
     }
+
+    public function removeAllPlannedPresences(EntityManagerInterface $em): void
+    {
+    foreach ($this->plannedPresences as $plannedPresence) {
+        $em->remove($plannedPresence);
+    }
+    }
+    public function addPlannedPresence(PlannedPresence $plannedPresence): static
+    {
+    if (!$this->plannedPresences->contains($plannedPresence)) {
+        $this->plannedPresences->add($plannedPresence);
+        $plannedPresence->setSemainier($this);
+    }
+
+    return $this;
+}
+
+/**
+ * @return Collection<int, PlannedPresence>
+ */
+public function getPlannedPresences(): Collection
+{
+    return $this->plannedPresences;
+}
 }

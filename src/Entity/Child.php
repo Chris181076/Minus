@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: ChildRepository::class)]
 class Child
 {
@@ -28,7 +29,7 @@ class Child
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $medicalNotes = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\ManyToMany(targetEntity: Allergy::class, inversedBy: 'children')]
@@ -51,7 +52,7 @@ class Child
     #[ORM\OneToMany(mappedBy: 'child', targetEntity: ChildPresence::class, cascade: ['persist', 'remove'])]
     private Collection $childPresences;
 
-    #[ORM\OneToMany(mappedBy: 'child', targetEntity: PlannedPresence::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: PlannedPresence::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $plannedPresences;
 
     #[ORM\ManyToOne(inversedBy: 'Children')]

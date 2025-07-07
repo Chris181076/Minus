@@ -8,12 +8,16 @@ use App\Entity\Group;
 use App\Entity\Icon;
 use App\Entity\SpecialDiet;
 use App\Entity\User;
-use App\Form\PlannedPresenceType;
+use App\Form\PlannedPresenceForm;
+use App\Entity\PlannedPresence;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use App\Form\UserForm;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+
 
 class ChildForm extends AbstractType
 {
@@ -25,10 +29,17 @@ class ChildForm extends AbstractType
             ->add('birthDate', null, [
                 'widget' => 'single_text',
             ])
-            ->add('medicalNotes')
-            ->add('created_at', null, [
-                'widget' => 'single_text',
+            ->add('user', UserForm::class, [
+            'label' => 'Responsable légal',
             ])
+            ->add('medicalNotes');
+            if($options['is_admin']){
+            $builder->add('created_at', null, [
+                'widget' => 'single_text',
+            ]);
+            }
+        
+        $builder
             ->add('allergies', EntityType::class, [
                 'class' => Allergy::class,
                 'choice_label' => 'name',
@@ -48,25 +59,29 @@ class ChildForm extends AbstractType
             return ['data-image' => $icon->getPath()];
             },
             'block_prefix' => 'icon',
-            ])
-            
-          ->add('childGroup', EntityType::class, [
+            ]);
+            if($options['is_admin']){
+            $builder->add('childGroup', EntityType::class, [
                 'class' => Group::class,
                 'choice_label' => 'name',
             ])
+            
             ->add('plannedPresences', CollectionType::class, [
-                'entry_type' => PlannedPresenceForm::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
+            'entry_type' => PlannedPresenceForm::class,
+            'allow_add' => true,
+            'allow_delete' => true,
+            'by_reference' => false,
+            'label' => false,
             ]);
+        }
+           
         }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Child::class,
+            'is_admin' => false,
         ]);
     }
 }

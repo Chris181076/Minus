@@ -15,6 +15,7 @@ use App\Repository\ChildRepository;
 use App\Entity\ChildPresence;
 use App\Repository\ChildPresenceRepository;
 use App\Service\WeekHelper;
+use App\Repository\PlannedPresenceRepository;
 
 #[Route('/semainier')]
 final class SemainierController extends AbstractController
@@ -24,7 +25,12 @@ public function index(SemainierRepository $semainierRepository, WeekHelper $week
 {
     [$start, $end] = $weekHelper->getWeekStartAndEnd();
 
+    // On récupère les semainiers de la semaine avec leurs plannedPresences
     $semainiers = $semainierRepository->createQueryBuilder('s')
+        ->leftJoin('s.plannedPresences', 'pp') // jointure pour charger les données
+        ->addSelect('pp')
+        ->leftJoin('pp.child', 'c') // si tu veux afficher aussi l'enfant dans Twig
+        ->addSelect('c')
         ->where('s.week_start_date BETWEEN :start AND :end')
         ->setParameter('start', $start)
         ->setParameter('end', $end)
@@ -33,12 +39,13 @@ public function index(SemainierRepository $semainierRepository, WeekHelper $week
         ->getResult();
 
     return $this->render('semainier/index.html.twig', [
-        'semainiers' => $semainiers, $semainierRepository->findAllMondays(),
+        'semainiers' => $semainiers,
         'week_days' => $weekHelper->getWeekDays(),
         'week_start' => $start,
         'week_end' => $end,
     ]);
 }
+
 
     #[Route('/new', name: 'app_semainier_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

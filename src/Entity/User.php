@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Child::class, mappedBy: 'user')]
     private Collection $Children;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $relationship = null;
+
     public function __construct()
     {
         $this->sentMessages = new ArrayCollection();
@@ -254,6 +257,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $child->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRelationship(): ?string
+    {
+        return $this->relationship;
+    }
+
+    public function setRelationship(?string $relationship): static
+    {
+        $this->relationship = $relationship;
 
         return $this;
     }

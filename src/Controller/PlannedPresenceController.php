@@ -30,15 +30,22 @@ final class PlannedPresenceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $planning = new PlannedPresence();
+            $planning->setChild($child);
+            $planning->setDay('Monday'); // par exemple
+            $planning->setStartHour(new \DateTime('08:00'));
+            $planning->setEndHour(new \DateTime('16:00'));
             $entityManager->persist($plannedPresence);
+            $entityManager->persist($child);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_planned_presence_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_planned_presence_index', ['id' => $child->getId()]);
         }
 
         return $this->render('planned_presence/new.html.twig', [
             'planned_presence' => $plannedPresence,
             'form' => $form,
+            'child' => $child,
         ]);
     }
     #[Route('/{id}', name: 'app_planned_presence_show', methods: ['GET', 'POST'])]

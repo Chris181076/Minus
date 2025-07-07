@@ -1,0 +1,31 @@
+{% extends base_template %} 
+
+{% block title %}Planning de mon Minus{% endblock %}
+
+{% block body %}
+   <h2>Planning de {{ child.firstname }}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Jour</th>
+            <th>Heure de début</th>
+            <th>Heure de fin</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for presence in planned_presences %}
+    <tr>
+        <td>{{ presence.weekDay }}</td>
+        <td>{{ presence.arrivalTime ? presence.arrivalTime|date('H:i') : '_'}}</td>
+        <td>{{ presence.departureTime ? presence.departureTime|date('H:i') : '_'}}</td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="3">Aucun planning défini.</td>
+    </tr>
+{% endfor %}
+
+    </tbody>
+</table>
+{% endblock %}

@@ -6,6 +6,8 @@ use App\Entity\PlannedPresence;
 use App\Entity\Child;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Semainier;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<PlannedPresence>
@@ -21,10 +23,29 @@ public function findByChildOrderedByWeekday(Child $child): array
     return $this->createQueryBuilder('p')
         ->andWhere('p.child = :child')
         ->setParameter('child', $child)
-        ->orderBy('p.week_day', 'ASC')
+        ->orderBy(
+            "CASE p.week_day
+                WHEN 'Monday' THEN 1
+                WHEN 'Tuesday' THEN 2
+                WHEN 'Wednesday' THEN 3
+                WHEN 'Thursday' THEN 4
+                WHEN 'Friday' THEN 5
+                ELSE 6
+            END", 'ASC'
+        )
         ->getQuery()
         ->getResult();
 }
+public function assignPlannedPresencesToSemainier(Semainier $semainier, array $plannedPresences, EntityManagerInterface $em): void
+{
+    foreach ($plannedPresences as $presence) {
+        $presence->setSemainier($semainier);
+        $em->persist($presence); // Nécessaire si les entités sont nouvelles ou modifiées
+    }
+
+    $em->flush(); // Sauvegarde dans la base
+}
+
     //    /**
     //     * @return PlannedPresence[] Returns an array of PlannedPresence objects
     //     */

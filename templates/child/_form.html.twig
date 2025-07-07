@@ -6,32 +6,35 @@
     {{ form_row(form.lastName) }}
     {{ form_row(form.birthDate) }}
     {{ form_row(form.medicalNotes) }}
+    {% if is_granted('ROLE_ADMIN') %}
     {{ form_row(form.created_at) }}
+    {% endif %}
     {{ form_row(form.allergies) }}
     {{ form_row(form.specialDiets) }}
+    {% if is_granted('ROLE_ADMIN') %}
     {{ form_row(form.childGroup) }}
-    <h3>Présences prévues</h3>
-{% for presenceForm in form.plannedPresences %}
-    <div class="planned-presence">
-        {{ form_row(presenceForm.week_day) }}
-        {{ form_row(presenceForm.arrival_time) }}
-        {{ form_row(presenceForm.departure_time) }}
-    </div>
-{% endfor %}
+    {% endif %}
+{% if form.plannedPresences is defined %}
+<h3>Présences prévues</h3>
+<div data-prototype="{{ form_widget(form.plannedPresences.vars.prototype)|e('html_attr') }}">
+    {% for pres in form.plannedPresences %}
+        <div class="planned-presence">
+            {{ form_row(pres.week_day) }}
+            {{ form_row(pres.arrival_time) }}
+            {{ form_row(pres.departure_time) }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
 
-    {# Section personnalisée pour les icônes #}
+<h3>Responsable légal</h3>
+{{ form_row(form.user) }}
+
+
+{# Section personnalisée pour les icônes #}
 <div class="form-group">
     {{ form_label(form.icon) }}
     {{ form_widget(form.icon) }}
-
-    {% if form.icon.vars.value %}
-        <img src="{{ asset('icons/' ~ form.icon.vars.value.path) }}"
-             alt="Icône sélectionnée"
-             class="mt-2"
-             style="width: 50px; height: auto;">
-    {% endif %}
-</div>
-
 
 <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

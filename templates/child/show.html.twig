@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends base_template %}
 
 {% block title %}Child{% endblock %}
 
@@ -11,7 +11,7 @@
     <h2>Informations générales</h2>
     <table class="table">
         <tbody>
-            <tr><th>Id</th><td>{{ child.id }}</td></tr>
+            
             <tr><th>Prénom</th><td>{{ child.firstName|capitalize }}</td></tr>
             <tr><th>Nom</th><td>{{ child.lastName|capitalize }}</td></tr>
             <tr><th>Date de naissance</th><td>{{ child.birthDate ? child.birthDate|date('d/m/Y') : 'Non renseignée' }}</td></tr>
@@ -42,7 +42,7 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p>Aucun traitement en cours.</p>
+        <p>Aucun traitement en cours.</p> 
     {% endif %}
 
     <h3>Autres informations</h3>
@@ -56,45 +56,54 @@
         </ul>
     {% else %}
         <p>Aucun régime spécial renseigné.</p>
+    {% endif %} 
+
+    <h2>Planning de la semaine</h2>
+
+    {% if planned_presences is defined and planned_presences|length > 0 %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Jour</th>
+                <th>Heure d'arrivée</th>
+                <th>Heure de départ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for presence in planned_presences %}
+                <tr>
+                    <td>{{ presence.weekDay }}</td>
+                    <td>{{ presence.arrivalTime ? presence.arrivalTime|date('H:i') : '—' }}</td>
+                    <td>{{ presence.departureTime ? presence.departureTime|date('H:i') : '—' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>Aucune présence enregistrée pour cette semaine.</p>
     {% endif %}
 
     <h2>Responsables légaux</h2>
 
-    {% if child.users|length > 0 %}
-        {% for user in child.users %}
-            <h3>Responsable {{ loop.index }} :</h3>
+    {% if child.user %}
+        
             <ul>
-                <li>Nom : {{ user.lastName|capitalize }}</li>
-                <li>Prénom : {{ user.firstName|capitalize }}</li>
-                <li>Téléphone : {{ user.phone ?: 'Non renseigné' }}</li>
-                <li>Email : {{ user.email ?: 'Non renseigné' }}</li>
-                <li>Lien avec l’enfant : {{ user.relationship ?: 'Non renseigné' }}</li>
+                <li>Nom : {{ child.user.lastName|capitalize }}</li>
+                <li>Prénom : {{ child.user.firstName|capitalize }}</li>
+                <li>Email : {{ child.user.email }}</li>
+                <li>Téléphone : {{ child.user.phoneNumber }}</li>
+                <li>Lien avec l’enfant : {{ child.user.relationship ?: 'Non renseigné' }}</li>
             </ul>
-        {% endfor %}
+      
     {% else %}
         <p>Aucun responsable légal renseigné.</p>
     {% endif %}
-
-    <h2>Horaires</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Jour</th>
-                <th>Horaires</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>Lundi</td><td>9h00 - 17h00</td></tr>
-            <tr><td>Mardi</td><td><!-- à remplir --></td></tr>
-            <tr><td>Mercredi</td><td><!-- à remplir --></td></tr>
-            <tr><td>Jeudi</td><td><!-- à remplir --></td></tr>
-            <tr><td>Vendredi</td><td><!-- à remplir --></td></tr>
-        </tbody>
-    </table>
-
+    {% if is_granted('ROLE_ADMIN')  %}
     <a href="{{ path('app_child_index') }}">back to list</a>
-
+    {{ include('child/_delete_form.html.twig') }}
+    {% endif %}
     <a href="{{ path('app_child_edit', {'id': child.id}) }}">edit</a>
 
-    {{ include('child/_delete_form.html.twig') }}
+
+
 {% endblock %}

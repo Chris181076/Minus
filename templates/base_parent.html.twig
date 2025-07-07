@@ -19,7 +19,9 @@
     {% endif %}
 
     <div class="admin-layout" style="display: flex;">
-        {% include '_partials/_side_bar_parent.html.twig' %}
+    {% for child in children %}
+        {% include '_partials/_side_bar_parent.html.twig' with { child: child } %}
+    {% endfor %}
 
         <main class="main-content" style="flex: 1; padding: 2rem;">
             {% block body %}{% endblock %}

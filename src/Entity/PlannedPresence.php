@@ -17,17 +17,34 @@ class PlannedPresence
     #[ORM\Column]
     private ?string $week_day = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $arrival_time = null;
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $arrival_time = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $departure_time = null;
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $departure_time = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'relation')]
+    #[ORM\ManyToOne(inversedBy: 'plannedPresences')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Child $child = null;
+
+    #[ORM\ManyToOne(targetEntity: Semainier::class, inversedBy: 'plannedPresences')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Semainier $semainier = null;
+
+
+    public function getSemainier(): ?Semainier
+    {
+    return $this->semainier;
+    }
+
+    public function setSemainier(?Semainier $semainier): static
+    {
+    $this->semainier = $semainier;
+    return $this;
+    }
 
     public function getId(): ?int
     {
@@ -51,7 +68,7 @@ class PlannedPresence
         return $this->arrival_time;
     }
 
-    public function setArrivalTime(\DateTime $arrival_time): static
+    public function setArrivalTime(?\DateTimeInterface $arrival_time): static
     {
         $this->arrival_time = $arrival_time;
 
@@ -63,7 +80,7 @@ class PlannedPresence
         return $this->departure_time;
     }
 
-    public function setDepartureTime(\DateTime $departure_time): static
+    public function setDepartureTime(?\DateTimeInterface $departure_time): static
     {
         $this->departure_time = $departure_time;
 
@@ -93,4 +110,6 @@ class PlannedPresence
 
         return $this;
     }
+
+
 }
