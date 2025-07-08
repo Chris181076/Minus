@@ -21,28 +21,33 @@ use App\Repository\PlannedPresenceRepository;
 final class SemainierController extends AbstractController
 {
 #[Route(name: 'app_semainier_index', methods: ['GET'])]
-public function index(SemainierRepository $semainierRepository, WeekHelper $weekHelper): Response
+public function index(SemainierRepository $semainierRepository, WeekHelper $weekHelper, ChildRepository $childRepository): Response
 {
     [$start, $end] = $weekHelper->getWeekStartAndEnd();
-
+    $children = $childRepository->findAll();
     // On récupère les semainiers de la semaine avec leurs plannedPresences
     $semainiers = $semainierRepository->createQueryBuilder('s')
         ->leftJoin('s.plannedPresences', 'pp') // jointure pour charger les données
         ->addSelect('pp')
-        ->leftJoin('pp.child', 'c') // si tu veux afficher aussi l'enfant dans Twig
+        ->leftJoin('pp.child', 'c') 
         ->addSelect('c')
-        ->where('s.week_start_date BETWEEN :start AND :end')
+        ->where('pp.arrival_time BETWEEN :start AND :end OR pp.departure_time BETWEEN :start AND :end')
         ->setParameter('start', $start)
         ->setParameter('end', $end)
         ->orderBy('s.week_start_date', 'DESC')
+        ->orderBy('s.week_start_date', 'DESC')
+        ->distinct()
         ->getQuery()
         ->getResult();
+        
 
     return $this->render('semainier/index.html.twig', [
         'semainiers' => $semainiers,
         'week_days' => $weekHelper->getWeekDays(),
         'week_start' => $start,
         'week_end' => $end,
+        'weekDays' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        'children' => $children,
     ]);
 }
 
@@ -81,35 +86,39 @@ public function show(
     $presencesByChild = [];
     $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-    foreach ($children as $child) {
-        $presences = $childPresenceRepository->findByChildAndDateRange($child, $startOfWeek, $endOfWeek);
 
-        foreach ($presences as $presence) {
-            $day = $presence->getArrivalTime()?->format('l');
-            $arrival = $presence->getArrivalTime();
-            $departure = $presence->getDepartureTime();
+// Synchronise les PlannedPresence du semainier avec les ChildPresence réelles de la semaine
+foreach ($children as $child) {
+    $presences = $childPresenceRepository->findByChildAndDateRange($child, $startOfWeek, $endOfWeek);
 
-            $presencesByChild[$child->getId()]['child'] = $child;
-
-            if ($arrival && $departure) {
-                $presencesByChild[$child->getId()]['days'][$day] = sprintf(
-                    '%sh%02d / %sh%02d',
-                    $arrival->format('H'),
-                    $arrival->format('i'),
-                    $departure->format('H'),
-                    $departure->format('i')
-                );
-            } elseif ($arrival) {
-                $presencesByChild[$child->getId()]['days'][$day] = sprintf(
-                    '%sh%02d / -',
-                    $arrival->format('H'),
-                    $arrival->format('i')
-                );
-            } else {
-                $presencesByChild[$child->getId()]['days'][$day] = '-';
+    foreach ($presences as $presence) {
+        // Recherche ou crée la PlannedPresence correspondante
+        $plannedPresence = null;
+        foreach ($semainier->getPlannedPresences() as $pp) {
+            if (
+                $pp->getChild() === $child &&
+                $pp->getWeekDay() === $presence->getArrivalTime()?->format('l')
+            ) {
+                $plannedPresence = $pp;
+                break;
             }
         }
+        if (!$plannedPresence) {
+            // Crée une nouvelle PlannedPresence si besoin
+            $plannedPresence = new \App\Entity\PlannedPresence();
+            $plannedPresence->setChild($child);
+            $plannedPresence->setSemainier($semainier);
+            $plannedPresence->setWeekDay($presence->getArrivalTime()?->format('l'));
+            $semainier->addPlannedPresence($plannedPresence);
+        }
+        // Met à jour les horaires
+        $plannedPresence->setArrivalTime($presence->getArrivalTime());
+        $plannedPresence->setDepartureTime($presence->getDepartureTime());
     }
+}
+$entityManager = $this->getDoctrine()->getManager();
+$entityManager->flush();
+    
 
     return $this->render('semainier/show.html.twig', [
         'semainier' => $semainier,

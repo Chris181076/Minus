@@ -15,6 +15,7 @@ use App\Repository\ChildPresenceRepository;
 use App\Entity\Child;
 use App\Service\JournalParser;
 use App\Entity\JournalEntry;
+use App\Repository\ChildRepository;
 
 #[Route('/journal')]
 final class JournalController extends AbstractController
@@ -70,10 +71,7 @@ public function new(
     ]);
 }
 
-
-
-
-    #[Route(name: 'app_journal_index', methods: ['GET'])]
+    #[Route('/index', name: 'app_journal_index', methods: ['GET'])]
     public function index(JournalRepository $journalRepository, ChildPresenceRepository $presenceRepo): Response
     {
         $presence = $presenceRepo->findOneBy([], ['arrivalTime' => 'DESC']);
@@ -83,13 +81,30 @@ public function new(
         ]);
     }
 
-    /*#[Route('/{id}', name: 'app_journal_single', methods: ['GET'])]
-    public function show(Journal $journal): Response
+    #[Route('/{id}', name: 'app_journal_single', methods: ['GET'])]
+    public function show(Journal $journal, ChildRepository $childRepository): Response
     {
-        return $this->render('journal/show.html.twig', [
-            'journal' => $journal,
-        ]);
-    }*/
+    $user = $this->getUser(); 
+    $child = $journal->getChild();
+
+    // Récupère les enfants du parent connecté
+    $children = [];
+    if ($this->isGranted('ROLE_PARENT')) {
+        $children = $childRepository->findBy(['user' => $user]);
+      }
+
+    $journals = $child->getJournals();
+    $template = $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig';
+
+    return $this->render('journal/show.html.twig', [
+        'journal' => $journal,
+        'child' => $child,
+        'journals' => $journals,
+        'children' => $children, 
+        'base_template' => $template,
+    ]);
+}
+
 
     #[Route('/{id}/edit', name: 'app_journal_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Journal $journal, EntityManagerInterface $entityManager): Response
@@ -119,4 +134,28 @@ public function new(
 
         return $this->redirectToRoute('app_journal_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/journal-du-jour/{id}', name: 'app_journal_today', methods: ['GET'])]
+    public function today(
+    Child $child,
+    JournalRepository $journalRepository,
+    ChildRepository $childRepository
+    ): Response {
+    $user = $this->getUser();
+
+    // Vérification sécurité
+    if ($child->getUser() !== $user) {
+        throw $this->createAccessDeniedException('Cet enfant ne vous appartient pas.');
+    }
+
+    $journal = $journalRepository->findTodayJournalByChildAndUser($child, $user);
+
+
+    return $this->render('journal/show.html.twig', [
+        'journal' => $journal,
+        'child' => $child,
+        'base_template' => $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig',
+    ]);
+    }
+
 }

@@ -24,17 +24,21 @@ use App\Form\ChildForm;
 final class ParentController extends AbstractController
 {
     #[Route('/parent/dashboard', name: 'parent_dashboard')]
-    public function dashboard(Security $security, ChildRepository $childRepository): Response
-    {
-        $user=$security->getUser();
-        $firstName = $user->getFirstName();
-        $children = $childRepository->findByUser($user);
-        return $this->render('parent/index.html.twig', [
-            'controller_name' => 'ParentController',
-            'firstName' => $firstName,
-            'children' => $children,
-        ]);
-    }
+public function dashboard(Security $security, ChildRepository $childRepository): Response
+{
+    $user = $security->getUser();
+    $children = $childRepository->findByUser($user);
+    $child = $children[0] ?? null;
+    $firstName = $user->getFirstName();
+
+    return $this->render('parent/index.html.twig', [
+        'children' => $children,
+        'child' => $child,
+        'base_template' => 'base_parent.html.twig',
+        'firstName' => $firstName,
+    ]);
+}
+
   #[Route('/parent/planningMinus/{id}', name: 'planningMinus')]
 public function showChildPlanning(Child $child, EntityManagerInterface $em, ChildRepository $childRepo, PlannedPresenceRepository $plannedPresenceRepository, Semainier $semainier): Response
 {

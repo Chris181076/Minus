@@ -5,31 +5,43 @@
 {% block body %}
     <h1>Semainier du : {{ startOfWeek|date('d/m/Y') }}</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Enfant</th>
-            {% for day in weekDays %}
-                <th>{{ day|slice(0, 3) }}</th>
-            {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in presencesByChild %}
+    <table class="table">
+        <thead>
             <tr>
-                <td>{{ entry.child.firstName }} {{ entry.child.lastName }}</td>
+                <th>Enfant</th>
                 {% for day in weekDays %}
-                    <td>{{ entry.days[day] ?? '-' }}</td>
+                    <th>{{ day|slice(0, 3) }}</th>
                 {% endfor %}
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="{{ weekDays|length + 1 }}">Aucune présence trouvée</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
-    <a href="{{ path('app_semainier_new') }}">Create new</a>
+        </thead>
+        <tbody>
+            {% for child in children %}
+                <tr>
+                    <td>{{ child.firstName }} {{ child.lastName }}</td>
+                    {% for day in weekDays %}
+                        <td>
+                            {% set planned = null %}
+                            {% for pp in semainier.plannedPresences %}
+                                {% if pp.child.id == child.id and pp.weekDay == day %}
+                                    {% set planned = pp %}
+                                    {% break %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if planned %}
+                                {{ planned.arrivalTime ? planned.arrivalTime|date('H:i') : '-' }}
+                                /
+                                {{ planned.departureTime ? planned.departureTime|date('H:i') : '-' }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="{{ weekDays|length + 1 }}">Aucun enfant trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

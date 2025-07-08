@@ -1,7 +1,7 @@
 <div class='sidebar'>
 <a href='{{ path('app_child_show', {id:child.id})  }}'>Fiche de {{child.firstName}}</a> 
 <a href='{{ path('planningMinus', {id:child.id})  }}'>Planning de mon Minus</a>
-<a href=''>Journal de mon Minus</a>
+<a href='{{ path('app_journal_today', { id: child.id }) }}'>Journal de mon Minus</a>
 <a href=''>Petits mots</a>
 <a href=''>Reçus</a>
 <a href=''>A envoyer</a>

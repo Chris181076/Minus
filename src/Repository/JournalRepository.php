@@ -5,7 +5,8 @@ namespace App\Repository;
 use App\Entity\Journal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\child;
+use App\Entity\Child;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Journal>
@@ -35,6 +36,20 @@ public function findOneByChildAndDate(Child $child, \DateTimeInterface $date): ?
         ->getQuery()
         ->getOneOrNullResult();
 }
+public function findTodayJournalByChildAndUser(Child $child, User $user): ?Journal
+{
+    return $this->createQueryBuilder('j')
+        ->join('j.child', 'c')
+        ->andWhere('j.child = :child')
+        ->andWhere('c.user = :user')
+        ->andWhere('j.date = :today')  // si tu as un champ 'date' dans Journal
+        ->setParameter('child', $child)
+        ->setParameter('user', $user)
+        ->setParameter('today', new \DateTimeImmutable('today'))
+        ->getQuery()
+        ->getOneOrNullResult();
+}
+
 //    /**
 //     * @return Journal[] Returns an array of Journal objects
 //     */

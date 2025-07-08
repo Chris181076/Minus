@@ -44,8 +44,8 @@ public function findByChildOrderedByWeekday(Child $child): array
 
     public function findByUser(User $user): array
 {
-    return $this->createQueryBuilder('c')
-        ->andWhere('c.user = :user')
+    return $this->createQueryBuilder('child')
+        ->andWhere('child.user = :user')
         ->setParameter('user', $user)
         ->getQuery()
         ->getResult();

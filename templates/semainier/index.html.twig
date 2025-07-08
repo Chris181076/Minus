@@ -1,48 +1,47 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
 {% block title %}Semainier index{% endblock %}
 
 {% block body %}
-    <h1>Semainiers</h1>
+    <h1>Semainier du : {{ week_start|date('d/m/Y') }}</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Semaine</th>
-                <th>Présences planifiées</th>
-                <th>Actions</th>
+                <th>Enfant</th>
+                {% for day in weekDays %}
+                    <th>{{ day|slice(0, 3) }}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
-        {% for semainier in semainiers %}
-            <tr>
-                <td>{{ semainier.weekStartDate|date('d/m/Y') }}</td>
-                <td>
-                    <ul>
-                        {% for presence in semainier.plannedPresences %}
-                            <li>
-                                {{ presence.child.firstName }} :
-                                {{ presence.weekDay }} de
-                                {{ presence.arrivalTime|date('H:i') }}
-                                à {{ presence.departureTime|date('H:i') }}
-                            </li>
-                        {% else %}
-                            <li>Aucune présence planifiée</li>
-                        {% endfor %}
-                    </ul>
-                </td>
-                <td>
-                    <a href="{{ path('app_semainier_show', {'id': semainier.id}) }}">Voir</a>
-                    <a href="{{ path('app_semainier_edit', {'id': semainier.id}) }}">Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">Aucun semainier trouvé</td>
-            </tr>
-        {% endfor %}
+            {% for child in children %}
+                <tr>
+                    <td>{{ child.firstName }} {{ child.lastName }}</td>
+                    {% for day in weekDays %}
+                        <td>
+                            {# Cherche la PlannedPresence correspondante #}
+                            {% set planned = null %}
+                            {% for semainier in semainiers %}
+                            {% for pp in semainier.plannedPresences %}
+                                {% if pp.child.id == child.id and pp.weekDay == day %}
+                                    {% set planned = pp %}
+                                {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                            {% if planned %}
+                                {{ planned.arrivalTime ? planned.arrivalTime|date('H:i') : '-' }}/{{ planned.departureTime ? planned.departureTime|date('H:i') : '-' }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="{{ weekDays|length + 1 }}">Aucun enfant trouvé</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_semainier_new') }}">Créer un nouveau semainier</a>
 {% endblock %}

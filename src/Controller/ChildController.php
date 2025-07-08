@@ -45,7 +45,9 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         $child->addPlannedPresence($presence);
     }
 
-    $form = $this->createForm(ChildForm::class, $child);
+    $form = $this->createForm(ChildForm::class, $child, [
+    'is_admin' => $this->isGranted('ROLE_ADMIN'),
+    ]);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {

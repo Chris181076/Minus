@@ -14,10 +14,10 @@
   <tbody id="entries-wrapper"
     data-prototype="
       <tr>
-        <td>{{ form_widget(form.entries.vars.prototype.heure)|e('html_attr') }}</td>
-        <td>{{ form_widget(form.entries.vars.prototype.action)|e('html_attr') }}</td>
-        <td>{{ form_widget(form.entries.vars.prototype.description)|e('html_attr') }}</td>
-        <td>{{ form_widget(form.entries.vars.prototype.note)|e('html_attr') }}</td>
+        <td> {{ form_widget(form.entries.vars.prototype.heure)|e('html_attr') }} </td>
+        <td> {{ form_widget(form.entries.vars.prototype.action)|e('html_attr') }} </td>
+        <td> {{ form_widget(form.entries.vars.prototype.description)|e('html_attr') }} </td>
+        <td> {{ form_widget(form.entries.vars.prototype.note)|e('html_attr') }} </td>
       </tr>
     ">
     {% for entry in form.entries %}
