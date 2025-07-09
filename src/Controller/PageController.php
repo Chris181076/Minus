@@ -9,12 +9,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PageController extends AbstractController
 {
     #[Route('/', name: 'app_page')]
-    public function index(): Response
+    public function home(): Response
     {
-        $template = $this->isGranted('ROLE_ADMIN')
-            ? 'page/admin_index.html.twig'
-            : 'page/index.html.twig';
-
-        return $this->render($template);
+    return $this->render('page/index.html.twig', [
+        'no_sidebar' => true, // pas de sidebar sur l’accueil
+    ]);
     }
+
+    
 }

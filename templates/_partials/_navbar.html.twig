@@ -10,7 +10,7 @@
         {% endif %}
 
         {% if is_granted('ROLE_EDUC') %}
-            <li><a href="{{ path('educ_dashboard') }}">Espace Éducateur</a></li>
+            <li><a href="{{ path('educateur_dashboard') }}">Espace Éducateur</a></li>
         {% endif %}
 
         {% if is_granted('ROLE_PARENT') %}
