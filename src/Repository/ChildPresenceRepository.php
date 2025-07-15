@@ -43,7 +43,7 @@ class ChildPresenceRepository extends ServiceEntityRepository
         }
     }
 
-public function findByChildAndDateRange(Child $child, \DateTimeInterface $start, \DateTimeInterface $end): array
+    public function findByChildAndDateRange(Child $child, \DateTimeInterface $start, \DateTimeInterface $end): array
     {
     return $this->createQueryBuilder('cp')
         ->andWhere('cp.child = :child')
@@ -55,13 +55,15 @@ public function findByChildAndDateRange(Child $child, \DateTimeInterface $start,
         ->getResult();
     }
     public function findAllMondays(): array
-{
+    {
     return $this->createQueryBuilder('s')
     ->where('DAYOFWEEK(s.week_start_date) = 2') // 2 = lundi en MySQL
     ->orderBy('s.week_start_date', 'DESC')
     ->getQuery()
     ->getResult();
-}
+    }
+
+
     }
     //    /**
     //     * @return ChildPresence[] Returns an array of ChildPresence objects

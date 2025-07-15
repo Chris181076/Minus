@@ -11,6 +11,17 @@ use App\Repository\PlannedPresenceRepository;
 use App\Repository\JournalRepository;
 use App\Entity\Journal;
 use App\Repository\ChildPresenceRepository;
+use App\Twig\GlobalVariables;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use App\Form\UserForm;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Mailer\MailerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Mime\Email;
+
 
 
 final class AdminController extends AbstractController
@@ -34,6 +45,7 @@ public function childDashboard(ChildRepository $childRepository): Response
  #[Route('/admin/dashboard/journal', name: 'app_admin_dashboard_journal')]
 public function journalDashboard(ChildRepository $childRepository, ChildPresenceRepository $presenceRepo): Response
 {
+    
     $children = $childRepository->findAll();
     $today = (new \DateTimeImmutable())->setTime(0, 0);
     $presences = [];
@@ -72,5 +84,89 @@ public function childJournalDashboard(Child $child, JournalRepository $journalRe
     ]);
     }
 
+    #[Route('/admin/user/register', name: 'app_admin_register')]
+    public function register(Request $request, EntityManagerInterface $em): Response
+    {
+    $user = new User();
+    $form = $this->createForm(UserForm::class, $user);
+    $form->handleRequest($request);
+   
+    if ($form->isSubmitted() && $form->isValid()) {
+        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setActivationToken(Uuid::v4()->toRfc4122());
+        $em->persist($user);
+        $em->flush();
 
-}
+        return $this->redirectToRoute('app_login');
+    }
+
+    return $this->render('user\new.html.twig', [
+        'form' => $form->createView()
+    ]);
+    }
+
+    
+    #[Route('/admin/user/create', name: 'parent_create_form')]
+    public function showParentCreateForm(
+    Request $request,
+    EntityManagerInterface $em,
+    MailerInterface $mailer,
+    LoggerInterface $logger
+    ): Response {
+    $user = new User();
+    $form = $this->createForm(UserForm::class, $user);
+    $form->handleRequest($request);
+   
+
+    if ($form->isSubmitted() && $form->isValid()) {
+    $selectedChildren = $form->get('children')->getData();
+    $user->setRoles(['ROLE_PARENT']);
+    $user->setCreatedAt(new \DateTimeImmutable());
+    $user->setIsActive(false);
+    $user->setPassword('');
+
+    foreach ($selectedChildren as $child) {
+        $child->setUser($user);
+        $em->persist($child);
+    }
+
+    $activationToken = Uuid::v4()->toRfc4122();
+    $user->setActivationToken($activationToken);
+
+    $em->persist($user);
+    $em->flush();
+
+  try {
+            $activationUrl = $this->generateUrl(
+                'app_user_activate',
+                ['token' => $activationToken],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            $emailMessage = (new Email())
+                ->from('no-reply@minus.fr')
+                ->to($user->getEmail())
+                ->subject('Activation de votre compte')
+                ->html("<h2>Bienvenue !</h2>
+                        <p>Bonjour {$user->getFirstName()} {$user->getLastName()},</p>
+                        <p>Votre compte a été créé avec succès. Cliquez ci-dessous pour l'activer :</p>
+                        <p><a href=\"$activationUrl\">Activer mon compte</a></p>
+                        <p>Si le bouton ne fonctionne pas, copiez/collez ce lien : $activationUrl</p>");
+
+            $mailer->send($emailMessage);
+            $logger->info("Email d'activation envoyé à {$user->getEmail()}");
+        } catch (\Exception $e) {
+            $logger->error("Erreur lors de l'envoi du mail : " . $e->getMessage());
+            $this->addFlash('error', 'Erreur lors de l’envoi de l’email d’activation.');
+            // Optionnel : rediriger ou continuer...
+        }
+
+        $this->addFlash('success', 'Utilisateur créé et email envoyé');
+        return $this->redirectToRoute('parent_create_form');
+    }
+
+    return $this->render('user/parent_create_form.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}}
+

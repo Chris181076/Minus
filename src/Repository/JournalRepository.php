@@ -40,8 +40,9 @@ public function findTodayJournalByChildAndUser(Child $child, User $user): ?Journ
 {
     return $this->createQueryBuilder('j')
         ->join('j.child', 'c')
+        ->join('c.users', 'u')
         ->andWhere('j.child = :child')
-        ->andWhere('c.user = :user')
+        ->andWhere('u = :user')
         ->andWhere('j.date = :today')  // si tu as un champ 'date' dans Journal
         ->setParameter('child', $child)
         ->setParameter('user', $user)

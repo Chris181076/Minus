@@ -7,7 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\PlannedPresence;
 use App\Entity\User;
-
+use App\Entity\Group;
 
 /**
  * @extends ServiceEntityRepository<Child>
@@ -42,10 +42,10 @@ public function findByChildOrderedByWeekday(Child $child): array
         ->getResult();
 }
 
-    public function findByUser(User $user): array
+public function findByUser(User $user): array
 {
     return $this->createQueryBuilder('child')
-        ->andWhere('child.user = :user')
+        ->andWhere(':user MEMBER OF child.users')
         ->setParameter('user', $user)
         ->getQuery()
         ->getResult();

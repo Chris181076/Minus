@@ -55,8 +55,10 @@ class Child
     #[ORM\OneToMany(mappedBy: 'child', targetEntity: PlannedPresence::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $plannedPresences;
 
-    #[ORM\ManyToOne(inversedBy: 'Children')]
-    private ?User $user = null;
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'children')]
+    private Collection $users;
+
+
 
     public function __construct()
     {
@@ -65,6 +67,7 @@ class Child
         $this->journals = new ArrayCollection();
         $this->childPresences = new ArrayCollection();
         $this->plannedPresences = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -258,15 +261,24 @@ class Child
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUsers(): Collection
     {
-        return $this->user;
+    return $this->users;
+}
+
+    public function addUser(User $user): static
+    {
+    if (!$this->users->contains($user)) {
+        $this->users->add($user);
     }
 
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
+    return $this;
+    }
 
-        return $this;
+    public function removeUser(User $user): static
+    {
+    $this->users->removeElement($user);
+
+    return $this;
     }
 }

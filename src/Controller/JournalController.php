@@ -61,7 +61,11 @@ public function new(
         $entityManager->persist($journal);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_admin_dashboard_journal');
+    if ($this->isGranted('ROLE_ADMIN')) {
+    return $this->redirectToRoute('app_admin_dashboard_journal');
+    } elseif ($this->isGranted('ROLE_EDUC')) {
+    return $this->redirectToRoute('app_educateur_dashboard_child');
+    }
     }
 
     return $this->render('journal/new.html.twig', [

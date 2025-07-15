@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -24,7 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?string $password = null;
 
     #[ORM\Column(length: 20)]
@@ -39,6 +40,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $activationToken = null;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isActive = false;
     /**
      * @var Collection<int, Message>
      */
@@ -54,8 +60,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Child>
      */
-    #[ORM\OneToMany(targetEntity: Child::class, mappedBy: 'user')]
-    private Collection $Children;
+    #[ORM\ManyToMany(targetEntity: Child::class, mappedBy: 'users')]
+    private Collection $children;
+    
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $relationship = null;
@@ -66,6 +73,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->receivedMessages = new ArrayCollection();
         $this->Children = new ArrayCollection();
     }
+  // Ajoutez ces méthodes dans App\Entity\User
+
+public function getActivationToken(): ?string
+{
+    return $this->activationToken;
+}
+
+public function setActivationToken(?string $activationToken): self
+{
+    $this->activationToken = $activationToken;
+    return $this;
+}
+
+public function isActive(): bool
+{
+    return $this->isActive;
+}
+
+public function setIsActive(bool $isActive): self
+{
+    $this->isActive = $isActive;
+    return $this;
+}
 
     public function getId(): ?int
     {

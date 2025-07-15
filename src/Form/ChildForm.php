@@ -29,9 +29,7 @@ class ChildForm extends AbstractType
             ->add('birthDate', null, [
                 'widget' => 'single_text',
             ])
-            ->add('user', UserForm::class, [
-            'label' => 'Responsable légal',
-            ])
+          
             ->add('medicalNotes');
             if($options['is_admin']){
             $builder->add('created_at', null, [

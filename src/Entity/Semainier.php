@@ -14,37 +14,36 @@ use App\Controller\ChildPresenceRepository;
 #[ORM\HasLifecycleCallbacks] // ← CORRECTION : placée ici, sur la classe
 class Semainier
 {
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+
+    
     private ?int $id = null;
 
     #[ORM\Column(type: 'date_immutable', unique: true)]
     private ?\DateTimeImmutable $week_start_date = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: false)]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\PrePersist] // ← CORRECTION : ajouté pour déclencher ce callback
     public function onPrePersist(): void
     {
-        $this->created_at = new \DateTimeImmutable();
-    }
-
-    /**
-     * @var Collection<int, ChildPresence>
-     */
-    #[ORM\OneToMany(targetEntity: ChildPresence::class, mappedBy: 'semainier')]
-    private Collection $childPresences;
-
-    public function __construct()
-    {
-        $this->childPresences = new ArrayCollection();
-        $this->plannedPresences = new ArrayCollection();
+        if ($this->created_at === null) {
+            $this->created_at = new \DateTimeImmutable();
+        }
     }
 
     #[ORM\OneToMany(mappedBy: 'semainier', targetEntity: PlannedPresence::class)]
     private Collection $plannedPresences;
+
+    public function __construct()
+    {
+        $this->plannedPresences = new ArrayCollection();
+       
+    }
 
     public function getId(): ?int
     {
@@ -70,35 +69,6 @@ class Semainier
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ChildPresence>
-     */
-    public function getChildPresences(): Collection
-    {
-        return $this->childPresences;
-    }
-
-    public function addChildPresence(ChildPresence $childPresence): static
-    {
-        if (!$this->childPresences->contains($childPresence)) {
-            $this->childPresences->add($childPresence);
-            $childPresence->setSemainier($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChildPresence(ChildPresence $childPresence): static
-    {
-        if ($this->childPresences->removeElement($childPresence)) {
-            if ($childPresence->getSemainier() === $this) {
-                $childPresence->setSemainier(null);
-            }
-        }
-
         return $this;
     }
 

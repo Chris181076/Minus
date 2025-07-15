@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block body %}
+    <h1>Enfants du groupe {{ group.name }}</h1>
+
+    {% if children is not empty %}
+        <ul class="list-group">
+            {% for child in children %}
+                <li class="list-group-item">
+                    {{ child.firstName }} {{ child.lastName }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun enfant trouvé dans ce groupe.</p>
+    {% endif %}
+{% endblock %}

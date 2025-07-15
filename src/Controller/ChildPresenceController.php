@@ -39,7 +39,7 @@ final class ChildPresenceController extends AbstractController
     $day = $days[0]->format('Y-m-d');
 
     $template = $this->isGranted('ROLE_ADMIN')
-        ? 'child_presence/index_admin.html.twig'
+        ? 'child_presence/index.html.twig'
         : 'child_presence/index.html.twig';
 
     return $this->render($template, [
@@ -256,7 +256,7 @@ public function markArrival(
             $presenceMap[$presence->getChild()->getId()] = $presence;
         }
 
-        return $this->render('child_presence/index_admin.html.twig', [
+        return $this->render('child_presence/index.html.twig', [
             'day' => $day,
             'days' => $days,
             'children' => $children,

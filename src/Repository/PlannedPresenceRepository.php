@@ -36,16 +36,17 @@ public function findByChildOrderedByWeekday(Child $child): array
         ->getQuery()
         ->getResult();
 }
-public function assignPlannedPresencesToSemainier(Semainier $semainier, array $plannedPresences, EntityManagerInterface $em): void
-{
+public function assignPlannedPresencesToSemainier(
+    Semainier $semainier,
+    array $plannedPresences,
+    EntityManagerInterface $em
+): void {
     foreach ($plannedPresences as $presence) {
-        $presence->setSemainier($semainier);
-        $em->persist($presence); // Nécessaire si les entités sont nouvelles ou modifiées
+        $presence->setSemainier($semainier);   // Lien bidirectionnel
+        $semainier->addPlannedPresence($presence);// Important si tu veux garder la relation côté PHP
+        $em->persist($presence);  // Nécessaire si ce sont de nouvelles entités
     }
-
-    $em->flush(); // Sauvegarde dans la base
 }
-
     //    /**
     //     * @return PlannedPresence[] Returns an array of PlannedPresence objects
     //     */

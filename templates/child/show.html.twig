@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Child{% endblock %}
 
@@ -85,19 +85,21 @@
 
     <h2>Responsables légaux</h2>
 
-    {% if child.user %}
-        
+    {% if child.users|length > 0 %}
+        {% for user in child.users %}
+            <h3>Responsable {{ loop.index }} :</h3>
             <ul>
-                <li>Nom : {{ child.user.lastName|capitalize }}</li>
-                <li>Prénom : {{ child.user.firstName|capitalize }}</li>
-                <li>Email : {{ child.user.email }}</li>
-                <li>Téléphone : {{ child.user.phoneNumber }}</li>
-                <li>Lien avec l’enfant : {{ child.user.relationship ?: 'Non renseigné' }}</li>
+                <li>Nom : {{ user.lastName|capitalize }}</li>
+                <li>Prénom : {{ user.firstName|capitalize }}</li>
+                <li>Téléphone : {{ user.phone }}</li>
+                <li>Email : {{ user.email|default('non renseigné') }}</li>
+                <li>Lien avec l’enfant : {{ user.relationship|default('Non renseigné') }}</li>
             </ul>
-      
+        {% endfor %}
     {% else %}
         <p>Aucun responsable légal renseigné.</p>
     {% endif %}
+
     {% if is_granted('ROLE_ADMIN')  %}
     <a href="{{ path('app_admin_dashboard_child') }}">back to list</a>
     {{ include('child/_delete_form.html.twig') }}

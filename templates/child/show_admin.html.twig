@@ -1,4 +1,4 @@
-{% extends 'base_admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Child{% endblock %}
 
@@ -66,9 +66,9 @@
             <ul>
                 <li>Nom : {{ user.lastName|capitalize }}</li>
                 <li>Prénom : {{ user.firstName|capitalize }}</li>
-                <li>Téléphone : {{ user.phone ?: 'Non renseigné' }}</li>
-                <li>Email : {{ user.email ?: 'Non renseigné' }}</li>
-                <li>Lien avec l’enfant : {{ user.relationship ?: 'Non renseigné' }}</li>
+                <li>Téléphone : {{ user.phone }}</li>
+                <li>Email : {{ user.email|default('non renseigné') }}</li>
+                <li>Lien avec l’enfant : {{ user.relationship|default('Non renseigné') }}</li>
             </ul>
         {% endfor %}
     {% else %}

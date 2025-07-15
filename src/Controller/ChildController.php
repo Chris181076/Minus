@@ -17,7 +17,9 @@ use App\Entity\PlannedPresence;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\ChildPresenceRepository;
 use App\Repository\PlannedPresenceRepository;
-
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Repository\SemainierRepository;
+use App\Service\WeekHelper;
 
 
 #[Route('/child')]
@@ -32,16 +34,33 @@ final class ChildController extends AbstractController
     }
 
     #[Route('/new', name: 'app_child_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager): Response
-{
+    public function new(
+    Request $request, 
+    EntityManagerInterface $entityManager,
+    SemainierRepository $semainierRepository, 
+    // WeekHelper $weekHelper 
+    ): Response {
     $child = new Child();
-    $child->setUser($this->getUser());
-
     $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+    // Récupérer le semainier de la semaine en cours
+    $monday = (new \DateTimeImmutable('monday this week'))->setTime(0, 0);
+    $semainier = $semainierRepository->findOneBy(['week_start_date' => $monday]);
+    
+    if (!$semainier) {
+        // Créer le semainier s'il n'existe pas
+        $semainier = new Semainier();
+        $semainier->setWeekStartDate($monday);
+        $entityManager->persist($semainier);
+    }
+
     foreach ($days as $day) {
         $presence = new PlannedPresence();
-        $presence->setWeekDay($day); 
+        $presence->setWeekDay($day);
         $presence->setChild($child);
+        $presence->setSemainier($semainier); // 🔥 Lier au semainier
+        $presence->setCreatedAt(new \DateTime());
+        
         $child->addPlannedPresence($presence);
     }
 
@@ -126,8 +145,8 @@ public function edit(Request $request, Child $child, EntityManagerInterface $ent
     #[Route('/show/{id}', name: 'app_child_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository, PlannedPresenceRepository $plannedPresenceRepository): Response
     {
-    $user = $this->getUser(); // Pas besoin d’injecter Security
-    $children = $childRepository->findBy(['user' => $user]);
+    $user = $this->getUser();
+    $children = $childRepository->findByUser($user);
 
     $template = $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig';
 

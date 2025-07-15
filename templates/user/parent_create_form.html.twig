@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un parent{% endblock %}
+
+{% block body %}
+<h1>Créer un parent</h1>
+
+{{ form_start(form, {'attr': {'id': 'create-user-form'}}) }}
+    {{ form_row(form.firstName) }}
+    {{ form_row(form.lastName) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.phoneNumber) }}
+    {{ form_row(form.children) }}
+    {{ form_row(form.relationship) }}
+
+    <button id="button" type="submit">Créer</button>
+    <div id="response"></div>
+{{ form_end(form) }}
+
+{% for message in app.flashes('success') %}
+    <div style="color: green;">{{ message }}</div>
+{% endfor %}
+{% endblock %}

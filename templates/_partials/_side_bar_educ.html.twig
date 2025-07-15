@@ -4,9 +4,11 @@
 <a href="">Reçus</a>
 <a href="">Envoyés</a>
 <a href="">A envoyer</a>
-<a href="">Fiche des Minus</a>
-<a href="">Journaux des Minus</a>
-<a href="">Force Rouge</a>
-<a href="">Force Bleue</a>
-<a href="">Force Verte</a>
+<a href="{{ path('app_educateur_dashboard_child') }}">Fiche des Minus</a>
+<a href="{{ path('app_educateur_child_journal') }}">Journaux des Minus</a>
+{% for group in groups %}
+    <a href="{{ path('app_educateur_group', { name: group.name }) }}">
+        Groupe {{ group.name }}
+    </a>
+{% endfor %}
 </div>

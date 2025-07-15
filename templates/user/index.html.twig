@@ -1,48 +1,126 @@
 {% extends 'base.html.twig' %}
 
-
-{% block title %}User index{% endblock %}
+{% block title %}Gestion des utilisateurs{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gestion des utilisateurs</h1>
+        <a href="{{ path('app_user_new') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Créer un utilisateur
+        </a>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Password</th>
-                <th>PhoneNumber</th>
-                <th>FirstName</th>
-                <th>LastName</th>
-                <th>Created_at</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.phoneNumber }}</td>
-                <td>{{ user.firstName }}</td>
-                <td>{{ user.lastName }}</td>
-                <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
 
-    <a href="{{ path('app_user_new') }}">Create new</a>
+    {% for message in app.flashes('info') %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    <div class="card">
+        <div class="card-body">
+            {% if users|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.lastName }}</td>
+                                    <td>{{ user.firstName }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.phone ?? 'Non renseigné' }}</td>
+                                    <td>
+                                        {% if user.isActive %}
+                                            <span class="badge bg-success">Actif</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">En attente d'activation</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ path('app_user_show', {'id': user.id}) }}" 
+                                               class="btn btn-outline-info" title="Voir">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_user_edit', {'id': user.id}) }}" 
+                                               class="btn btn-outline-secondary" title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            
+                                            {% if not user.isActive %}
+                                                <form method="post" 
+                                                      action="{{ path('app_user_resend_activation', {'id': user.id}) }}" 
+                                                      style="display: inline;">
+                                                    <button type="submit" 
+                                                            class="btn btn-outline-warning" 
+                                                            title="Renvoyer l'email d'activation"
+                                                            onclick="return confirm('Renvoyer l\'email d\'activation ?')">
+                                                        <i class="fas fa-envelope"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            
+                                            <form method="post" 
+                                                  action="{{ path('app_user_delete', {'id': user.id}) }}" 
+                                                  style="display: inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                                <button type="submit" 
+                                                        class="btn btn-outline-danger" 
+                                                        title="Supprimer"
+                                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucun utilisateur trouvé.</p>
+                    <a href="{{ path('app_user_new') }}" class="btn btn-primary">
+                        Créer le premier utilisateur
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.badge {
+    font-size: 0.75em;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+</style>
 {% endblock %}

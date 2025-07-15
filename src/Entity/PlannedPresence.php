@@ -23,8 +23,16 @@ class PlannedPresence
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $departure_time = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable:false)]
     private ?\DateTimeInterface $created_at = null;
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+    if ($this->created_at === null) {
+        $this->created_at = new \DateTimeImmutable();
+    }
+    }
 
     #[ORM\ManyToOne(inversedBy: 'plannedPresences')]
     #[ORM\JoinColumn(nullable: false)]
@@ -75,7 +83,7 @@ class PlannedPresence
         return $this;
     }
 
-    public function getDepartureTime(): ?\DateTime
+    public function getDepartureTime(): ?\DateTimeInterface
     {
         return $this->departure_time;
     }

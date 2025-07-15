@@ -21,7 +21,7 @@
                     {% for day in weekDays %}
                         <td>
                             {# Cherche la PlannedPresence correspondante #}
-                            {% set planned = null %}
+                           
                             {% for semainier in semainiers %}
                             {% for pp in semainier.plannedPresences %}
                                 {% if pp.child.id == child.id and pp.weekDay == day %}
@@ -29,8 +29,8 @@
                                 {% endif %}
                             {% endfor %}
                             {% endfor %}
-                            {% if planned %}
-                                {{ planned.arrivalTime ? planned.arrivalTime|date('H:i') : '-' }}/{{ planned.departureTime ? planned.departureTime|date('H:i') : '-' }}
+                            {% if plannedPresence %}
+                                {{ plannedPresence.arrivalTime ? plannedPresence.arrivalTime|date('H:i') : '-' }}/{{ plannedPresence.departureTime ? plannedPresence.departureTime|date('H:i') : '-' }}
                             {% else %}
                                 -
                             {% endif %}

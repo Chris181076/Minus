@@ -36,22 +36,26 @@ public function dashboard(Security $security, ChildRepository $childRepository):
         'child' => $child,
         'base_template' => 'base_parent.html.twig',
         'firstName' => $firstName,
+        'user' => $user,
     ]);
 }
 
   #[Route('/parent/planningMinus/{id}', name: 'planningMinus')]
-public function showChildPlanning(Child $child, EntityManagerInterface $em, ChildRepository $childRepo, PlannedPresenceRepository $plannedPresenceRepository, Semainier $semainier): Response
+public function showChildPlanning(Child $child, EntityManagerInterface $em, ChildRepository $childRepo, PlannedPresenceRepository $plannedPresenceRepository): Response
 {
+    
     $user = $child->getUser();
     $children = $childRepo->findByUser($user);
     if (!$child->getUser()) {
     $child->setUser(new User());
     }
     $form = $this->createForm(ChildForm::class, $child);
+
+   
     // 1. Vérifie si l'enfant a déjà des présences planifiées
     $plannedPresences = $plannedPresenceRepository->findByChildOrderedByWeekday($child);
 
-    $plannedPresenceRepository->assignPlannedPresencesToSemainier($semainier, $plannedPresences, $em);
+    // $plannedPresenceRepository->assignPlannedPresencesToSemainier($semainier, $plannedPresences, $em);
 
     // 2. Si aucune présence planifiée, crée-les pour les jours souhaités
     if (count($plannedPresences) === 0) {
