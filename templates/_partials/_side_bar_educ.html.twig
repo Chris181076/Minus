@@ -1,9 +1,8 @@
 <div class='sidebar'>
 <a href="{{ path('app_daily_planning') }}" class="nav-link">Suivi quotidien des Minus</a>
-<a href="">Petits Mots</a>
-<a href="">Reçus</a>
-<a href="">Envoyés</a>
-<a href="">A envoyer</a>
+<p class="petitsMots">Petits Mots</p>
+<a href="{{ path('messages_inbox')}}">Reçus</a>
+<a href="{{ path('messages_send')}}">A envoyer</a>
 <a href="{{ path('app_educateur_dashboard_child') }}">Fiche des Minus</a>
 <a href="{{ path('app_educateur_child_journal') }}">Journaux des Minus</a>
 {% for group in groups %}

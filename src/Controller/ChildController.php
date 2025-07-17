@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Child;
 use App\Entity\ChildPresence;
+use App\Entity\Semainier;
 use App\Form\ChildForm;
 use App\Repository\ChildRepository;
 use App\Repository\IconRepository;
@@ -74,7 +75,10 @@ final class ChildController extends AbstractController
         foreach ($child->getPlannedPresences() as $presence) {
             $presence->setCreatedAt(new \DateTime());
         }
+        $plannedPresences = $child->getPlannedPresences()->toArray();
+        $plannedPresenceRepo->assignPlannedPresencesToSemainier($semainier, $plannedPresences, $entityManager);
 
+        $entityManager->persist($child);
         $entityManager->persist($child);
         $entityManager->flush();
 
@@ -88,9 +92,12 @@ final class ChildController extends AbstractController
 }
 
     #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
-public function edit(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository): Response
+public function edit(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository, PlannedPresenceRepository $plannedPresenceRepo, SemainierRepository $semainierRepository): Response
 {
     $plannedPresences = $child->getPlannedPresences();
+    $monday = (new \DateTimeImmutable('monday this week'))->setTime(0, 0);
+    $semainier = $semainierRepository->findOneBy(['week_start_date' => $monday]);
+
 
     // Si pas de plannedPresences, créer des présences par défaut (lundi à vendredi)
     if ($plannedPresences->isEmpty()) {
@@ -114,6 +121,10 @@ public function edit(Request $request, Child $child, EntityManagerInterface $ent
     $template = $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig';
 
     if ($form->isSubmitted() && $form->isValid()) {
+        $plannedPresences = $child->getPlannedPresences()->toArray();
+        $plannedPresenceRepo->assignPlannedPresencesToSemainier($semainier, $plannedPresences, $entityManager);
+
+        $entityManager->persist($child);
         $entityManager->flush();
 
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -121,7 +132,7 @@ public function edit(Request $request, Child $child, EntityManagerInterface $ent
         }
         return $this->redirectToRoute('app_child_show', ['id' => $child->getId()], Response::HTTP_SEE_OTHER);
     }
-     $children = $childRepository->findBy(['user' => $this->getUser()]);
+     $children = $childRepository->findAll();
     return $this->render('child/edit.html.twig', [
         'child' => $child,
         'form' => $form->createView(),
@@ -141,6 +152,7 @@ public function edit(Request $request, Child $child, EntityManagerInterface $ent
 
         return $this->redirectToRoute('app_child_index', [], Response::HTTP_SEE_OTHER);
     }
+    
 
     #[Route('/show/{id}', name: 'app_child_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository, PlannedPresenceRepository $plannedPresenceRepository): Response

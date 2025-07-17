@@ -3,12 +3,10 @@
 <a href="{{ path('app_daily_planning') }}" class="nav-link">Présence des Minus  </a>
 <a href="{{ path('app_admin_dashboard_journal')}}">Journaux des Minus</a>
 <a href="{{ path('app_semainier_show')}}">Semaine des Minus</a>
-<a href="">Petits Mots</a>
-<a href="">Reçus</a>
-<a href="">Envoyés</a>
-<a href="">A envoyer</a>
-<a href="">Gestion des rôles</a>
+<p class="petitsMots">Petits Mots</p>
+<a href="{{ path('messages_inbox')}}">Reçus</a>
+<a href="{{ path('messages_send')}}">A envoyer</a>
 <a href="{{ path('parent_create_form')}}">Créer un Parent de Minus</a>
 <a href="{{ path('app_child_new')}}">Créer un Minus</a>
-<a href="">Créer un Educateur</a>
+<a href="{{ path('educ_create_form')}}">Créer un Educateur</a>
 </div>

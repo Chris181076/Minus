@@ -147,10 +147,6 @@ public function new(
     ): Response {
     $user = $this->getUser();
 
-    // Vérification sécurité
-    if ($child->getUser() !== $user) {
-        throw $this->createAccessDeniedException('Cet enfant ne vous appartient pas.');
-    }
 
     $journal = $journalRepository->findTodayJournalByChildAndUser($child, $user);
 
@@ -158,7 +154,7 @@ public function new(
     return $this->render('journal/show.html.twig', [
         'journal' => $journal,
         'child' => $child,
-        'base_template' => $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig',
+        
     ]);
     }
 

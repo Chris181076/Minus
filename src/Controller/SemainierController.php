@@ -81,7 +81,8 @@ public function show(
     ChildPresenceRepository $childPresenceRepository,
     EntityManagerInterface $entityManager,
     WeekHelper $weekHelper,
-    SemainierManager $semainierManager // Injection du service
+    SemainierManager $semainierManager, 
+    PlannedPresenceRepository $plannedPresenceRepo,
 ): Response {
     $monday = (new \DateTimeImmutable('monday this week'))->setTime(0, 0);
 
@@ -98,51 +99,26 @@ public function show(
     $endOfWeek = $weekHelper->getEndOfWeek($semainier->getWeekStartDate());
 
     $children = $childRepository->findAll();
-    $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    $newPlannedPresences = [];
+    $weekDays = $weekHelper->getWeekDays();
+   
 
-    // Supprimer les anciennes présences
-    foreach ($semainier->getPlannedPresences() as $pp) {
-        $entityManager->remove($pp);
-    }
-    $entityManager->flush();
-
-    // Créer les nouvelles PlannedPresences
     foreach ($children as $child) {
-        $presences = $childPresenceRepository->findByChildAndDateRange($child, $startOfWeek, $endOfWeek);
-        $presenceByDay = [];
+        $presences = $plannedPresenceRepo->findByChildAndWeek($child, $startOfWeek, $endOfWeek);
         
         foreach ($presences as $presence) {
-            $day = $presence->getDate()->format('l');
-            $presenceByDay[$day] = $presence;
+            $days[] = $presence->getWeekDay()->format('l');
         }
 
-        foreach ($weekDays as $day) {
-            $plannedPresence = new PlannedPresence();
-            $plannedPresence->setChild($child);
-            $plannedPresence->setWeekDay($day);
-            
-            if (isset($presenceByDay[$day])) {
-                $plannedPresence->setArrivalTime($presenceByDay[$day]->getArrivalTime());
-                $plannedPresence->setDepartureTime($presenceByDay[$day]->getDepartureTime());
-            } else {
-                $plannedPresence->setArrivalTime(new \DateTime('08:00'));
-                $plannedPresence->setDepartureTime(new \DateTime('18:00'));
-            }
-            
-            $plannedPresence->setCreatedAt(new \DateTime());
-            $newPlannedPresences[] = $plannedPresence;
+            foreach ($presences as $presence) {
+        // Accès aux données si besoin
+        $day = $presence->getWeekDay()->format('l');
+        $arrival = $presence->getArrivalTime();
+        $departure = $presence->getDepartureTime();
         }
     }
 
     // Utilisation du service pour assigner les présences
-    $semainierManager->assignPlannedPresencesToSemainier(
-        $semainier,
-        $newPlannedPresences,
-        $entityManager
-    );
 
-    $entityManager->flush();
 
     return $this->render('semainier/show.html.twig', [
         'semainier' => $semainier,

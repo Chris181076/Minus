@@ -44,35 +44,15 @@ public function dashboard(Security $security, ChildRepository $childRepository):
 public function showChildPlanning(Child $child, EntityManagerInterface $em, ChildRepository $childRepo, PlannedPresenceRepository $plannedPresenceRepository): Response
 {
     
-    $user = $child->getUser();
+    $user = $this->getUser();
     $children = $childRepo->findByUser($user);
-    if (!$child->getUser()) {
-    $child->setUser(new User());
-    }
+    
+    
     $form = $this->createForm(ChildForm::class, $child);
 
    
     // 1. Vérifie si l'enfant a déjà des présences planifiées
     $plannedPresences = $plannedPresenceRepository->findByChildOrderedByWeekday($child);
-
-    // $plannedPresenceRepository->assignPlannedPresencesToSemainier($semainier, $plannedPresences, $em);
-
-    // 2. Si aucune présence planifiée, crée-les pour les jours souhaités
-    if (count($plannedPresences) === 0) {
-        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-        foreach ($days as $day) {
-            $presence = new PlannedPresence();
-            $presence->setWeekDay($day);
-            $presence->setChild($child);
-            $em->persist($presence);
-            $child->addPlannedPresence($presence);
-        }
-        $em->flush();
-
-        // Recharge après insertion
-        $plannedPresences = $em->getRepository(PlannedPresence::class)
-            ->findBy(['child' => $child], ['week_day' => 'ASC']);
-    }
 
     // 3. Prépare un tableau de jours (utile si tu veux l'afficher)
     $weekDays = [];
@@ -80,14 +60,10 @@ public function showChildPlanning(Child $child, EntityManagerInterface $em, Chil
         $weekDays[] = $presence->getWeekDay();
     }
 
-    // 4. Choisir le template en fonction du rôle
-    $template = $this->isGranted('ROLE_PARENT') ? 'base_parent.html.twig' : 'base_admin.html.twig';
-
     return $this->render('parent/planningMinus.html.twig', [
-        'base_template' => $template,
         'child' => $child,
         'planned_presences' => $plannedPresences,
-        'user' => $user,
+        'users' => $user,
         'week_days' => $weekDays,
         'children' => $children,
     ]);

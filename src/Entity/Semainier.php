@@ -28,7 +28,7 @@ class Semainier
     #[ORM\Column(nullable: false)]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\PrePersist] // ← CORRECTION : ajouté pour déclencher ce callback
+    #[ORM\PrePersist] 
     public function onPrePersist(): void
     {
         if ($this->created_at === null) {

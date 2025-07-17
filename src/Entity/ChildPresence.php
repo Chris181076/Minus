@@ -29,9 +29,6 @@ class ChildPresence
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
-    #[ORM\ManyToOne(inversedBy: 'childPresences')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Semainier $semainier = null;
 
     #[ORM\ManyToOne(inversedBy: 'childPresences')]
     #[ORM\JoinColumn(nullable: false)]
@@ -79,13 +76,6 @@ class ChildPresence
         return $this;
     }
 
-    public function getSemainier(): ?Semainier { return $this->semainier; }
-
-    public function setSemainier(?Semainier $semainier): static
-    {
-        $this->semainier = $semainier;
-        return $this;
-    }
 
     public function getChild(): ?Child { return $this->child; }
 

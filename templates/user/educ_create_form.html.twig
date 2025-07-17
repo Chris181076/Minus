@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un éducateur{% endblock %}
+
+{% block body %}
+
+<h1>Créer un éducateur</h1>
+{{ form_start(form) }}
+
+{{ form_row(form.firstName) }}
+{{ form_row(form.lastName) }}
+{{ form_row(form.email) }}
+{{ form_row(form.phoneNumber) }}
+
+<button id="button" type="submit">Créer</button>
+<div id="response"></div>
+
+{{ form_end(form) }}
+
+{% for message in app.flashes('success') %}
+    <div style="color: green;">{{ message }}</div>
+{% endfor %}
+
+{% endblock %}

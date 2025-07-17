@@ -32,20 +32,7 @@ class UserForm extends AbstractType
             ->add('phoneNumber', TelType::class, [
                 'label' => 'Numéro de téléphone'
             ])
-            ->add('children', EntityType::class, [
-            'class' => Child::class,
-            'choice_label' => function (Child $child) {
-            return $child->getFirstName() . ' ' . $child->getLastName();
-            },   
-            'multiple' => true,          
-            'expanded' => false,         // true = checkbox, false = select multiple
-            'required' => false,
-            ])
-    
-            ->add('relationship', TextType::class, [
-                'label' => 'Lien avec l’enfant',
-                'required' => false
-            ])
+          
             ->add('roles', ChoiceType::class, [
             'choices' => [
             'Parent' => 'ROLE_PARENT',
@@ -55,7 +42,30 @@ class UserForm extends AbstractType
             'multiple' => true,       
             'expanded' => true,      // false = menu déroulant, true = cases à cocher
             'label' => 'Rôles',
-    ]);
-        ;
+            ]);
+            if ($options['form_role'] === 'parent') {
+            $builder
+            ->add('relationship', TextType::class, [
+                'required' => false,
+                'label' => 'Lien avec l’enfant',
+                ])
+            ->add('children', EntityType::class, [
+            'class' => Child::class,
+            'choice_label' => function (Child $child) {
+            return $child->getFirstName() . ' ' . $child->getLastName();
+            },   
+            'multiple' => true,          
+            'expanded' => false,         // true = checkbox, false = select multiple
+            'required' => false,
+            ]);
+            }
+
+    }
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+            'form_role' => null, 
+        ]);
     }
 }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250715132100 extends AbstractMigration
+final class Version20250717103628 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,18 +20,13 @@ final class Version20250715132100 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-    
-        $this->addSql(<<<'SQL'
-            ALTER TABLE semainier CHANGE created_at created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)'
-        SQL);
+$this->addSql("ALTER TABLE message ADD sent_at DATETIME NOT NULL DEFAULT NOW()");
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-  
-        $this->addSql(<<<'SQL'
-            ALTER TABLE child_presence CHANGE child_id child_id INT DEFAULT NULL
-        SQL);
+     
+    
     }
 }

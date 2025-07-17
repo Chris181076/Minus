@@ -161,20 +161,11 @@ public function markArrival(
 
         // Recherche ou création du semainier pour la semaine en cours
     
-        $monday = $now->modify('monday this week')->setTime(0, 0);
-        $semainier = $semainierRepo->findOneBy(['week_start_date' => $monday]);
-        if (!$semainier) {
-            $semainier = new \App\Entity\Semainier();
-            $semainier->setWeekStartDate($monday);
-            $em->persist($semainier);
-        }
-
         $presence = new \App\Entity\ChildPresence();
         $presence
             ->setChild($child)
             ->setDay($today)
             ->setArrivalTime($now)
-            ->setSemainier($semainier)
             ->setPresent(true);
 
         $em->persist($presence);

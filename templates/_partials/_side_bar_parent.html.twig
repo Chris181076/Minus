@@ -2,8 +2,7 @@
 <a href='{{ path('app_child_show', {id:child.id})  }}'>Fiche de {{child.firstName}}</a> 
 <a href='{{ path('planningMinus', {id:child.id})  }}'>Planning de mon Minus</a>
 <a href='{{ path('app_journal_today', { id: child.id }) }}'>Journal de mon Minus</a>
-<a href=''>Petits mots</a>
-<a href=''>Reçus</a>
-<a href=''>A envoyer</a>
-<a href=''>Envoyés</a>
+<p class="petitsMots">Petits Mots</p>
+<a href='{{ path('messages_send')}}'>Reçus</a>
+<a href='{{ path('messages_inbox')}}'>A envoyer</a>
 </div>

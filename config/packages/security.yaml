@@ -43,6 +43,7 @@ security:
             - { path: ^/parent, roles: ROLE_PARENT }
             - { path: ^/educ, roles: ROLE_EDUC }
             - { path: ^/profile, roles: ROLE_USER }
+            - { path: ^/messages, roles: ROLE_USER }
 
 when@test:
     security:

@@ -39,7 +39,7 @@ class PlannedPresence
     private ?Child $child = null;
 
     #[ORM\ManyToOne(targetEntity: Semainier::class, inversedBy: 'plannedPresences')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Semainier $semainier = null;
 
 

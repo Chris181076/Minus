@@ -20,7 +20,7 @@ class Message
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $sent_at = null;
 
     #[ORM\Column]
@@ -29,21 +29,21 @@ class Message
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'sentMessages')]
-    #[ORM\JoinTable(name: 'message_user_sender')]
-    private Collection $sender;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'sentMessages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $sender = null;
 
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'receivedMessages')]
-    #[ORM\JoinTable(name: 'message_user_recipient')]
-    private Collection $recipient;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedMessages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $recipient = null;
 
     public function __construct()
     {
-        $this->sender = new ArrayCollection();
-        $this->recipient = new ArrayCollection();
+        $this->is_read = false;
+        $this->sent_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -63,12 +63,12 @@ class Message
         return $this;
     }
 
-    public function getSentAt(): ?\DateTimeImmutable
+    public function getSent_at(): ?\DateTimeImmutable
     {
         return $this->sent_at;
     }
 
-    public function setSentAt(\DateTimeImmutable $sent_at): static
+    public function setSent_at(\DateTimeImmutable $sent_at): static
     {
         $this->sent_at = $sent_at;
 
@@ -87,51 +87,26 @@ class Message
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getSender(): Collection
+    public function getSender(): ?User
     {
         return $this->sender;
     }
 
-    public function addSender(User $sender): static
+    public function setSender(?User $sender): static
     {
-        if (!$this->sender->contains($sender)) {
-            $this->sender->add($sender);
-        }
-
+        $this->sender = $sender;
         return $this;
     }
 
-    public function removeSender(User $sender): static
-    {
-        $this->sender->removeElement($sender);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getRecipient(): Collection
+    public function getRecipient(): ?User
     {
         return $this->recipient;
     }
 
-    public function addRecipient(User $recipient): static
+    public function setRecipient(?User $recipient): static
     {
-        if (!$this->recipient->contains($recipient)) {
-            $this->recipient->add($recipient);
-        }
-
+        $this->recipient = $recipient;
         return $this;
     }
 
-    public function removeRecipient(User $recipient): static
-    {
-        $this->recipient->removeElement($recipient);
-
-        return $this;
-    }
 }

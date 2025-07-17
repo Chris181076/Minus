@@ -47,6 +47,18 @@ public function assignPlannedPresencesToSemainier(
         $em->persist($presence);  // Nécessaire si ce sont de nouvelles entités
     }
 }
+
+public function findByChildAndWeek(Child $child, \DateTimeInterface $start, \DateTimeInterface $end): array
+{
+    return $this->createQueryBuilder('pp')
+        ->where('pp.child = :child')
+        ->andWhere('pp.week_day BETWEEN :start AND :end')
+        ->setParameter('child', $child)
+        ->setParameter('start', $start)
+        ->setParameter('end', $end)
+        ->getQuery()
+        ->getResult();
+}
     //    /**
     //     * @return PlannedPresence[] Returns an array of PlannedPresence objects
     //     */

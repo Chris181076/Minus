@@ -114,7 +114,9 @@ public function childJournalDashboard(Child $child, JournalRepository $journalRe
     LoggerInterface $logger
     ): Response {
     $user = new User();
-    $form = $this->createForm(UserForm::class, $user);
+    $form = $this->createForm(UserForm::class, $user, [
+        'form_role' => 'parent'
+        ]);
     $form->handleRequest($request);
    
 
@@ -163,10 +165,69 @@ public function childJournalDashboard(Child $child, JournalRepository $journalRe
 
         $this->addFlash('success', 'Utilisateur créé et email envoyé');
         return $this->redirectToRoute('parent_create_form');
-    }
+         }
 
-    return $this->render('user/parent_create_form.html.twig', [
+         return $this->render('user/parent_create_form.html.twig', [
         'form' => $form->createView(),
-    ]);
-}}
+        ]);
+    }
+    #[Route('/admin/educ/create', name: 'educ_create_form', methods: ['GET', 'POST'])]
+    public function showEducCreateForm(
+    Request $request,
+    EntityManagerInterface $em,
+    MailerInterface $mailer,
+    LoggerInterface $logger
+    ): Response {
+    $user = new User();
+    $form = $this->createForm(UserForm::class, $user, [
+        'form_role' => 'educ'
+        ]);
+    $form->handleRequest($request);
+   
 
+    if ($form->isSubmitted() && $form->isValid()) {
+    $user->setRoles(['ROLE_EDUC']);
+    $user->setCreatedAt(new \DateTimeImmutable());
+    $user->setIsActive(false);
+    $user->setPassword('');
+
+    $activationToken = Uuid::v4()->toRfc4122();
+    $user->setActivationToken($activationToken);
+
+    $em->persist($user);
+    $em->flush();
+
+  try {
+            $activationUrl = $this->generateUrl(
+                'app_user_activate',
+                ['token' => $activationToken],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            $emailMessage = (new Email())
+                ->from('no-reply@minus.fr')
+                ->to($user->getEmail())
+                ->subject('Activation de votre compte')
+                ->html("<h2>Bienvenue !</h2>
+                        <p>Bonjour {$user->getFirstName()} {$user->getLastName()},</p>
+                        <p>Votre compte a été créé avec succès. Cliquez ci-dessous pour l'activer :</p>
+                        <p><a href=\"$activationUrl\">Activer mon compte</a></p>
+                        <p>Si le bouton ne fonctionne pas, copiez/collez ce lien : $activationUrl</p>");
+
+            $mailer->send($emailMessage);
+            $logger->info("Email d'activation envoyé à {$user->getEmail()}");
+        } catch (\Exception $e) {
+            $logger->error("Erreur lors de l'envoi du mail : " . $e->getMessage());
+            $this->addFlash('error', 'Erreur lors de l’envoi de l’email d’activation.');
+            // Optionnel : rediriger ou continuer...
+        }
+
+        $this->addFlash('success', 'Utilisateur créé et email envoyé');
+        
+         }
+
+        return $this->render('user\educ_create_form.html.twig', [
+            'form' => $form->createView(),
+        ]);
+}
+}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Messages envoyés{% endblock %}
+ 
+{% block body %}
+
+<h1>Envoyer un message</h1>
+{{ form_start(form) }}
+{{ form_row(form.recipient) }}
+{{ form_row(form.content) }}
+<button class="btn">Envoyer</button>
+{{ form_end(form) }}
+
+{% endblock %}
