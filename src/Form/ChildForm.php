@@ -17,6 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use App\Form\UserForm;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
 class ChildForm extends AbstractType
@@ -24,8 +25,12 @@ class ChildForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstName')
-            ->add('lastName')
+            ->add('firstName', TextType::class, [
+                'label' => 'Prénom',
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => 'Nom de famille'
+            ])
             ->add('birthDate', null, [
                 'widget' => 'single_text',
             ])
@@ -50,9 +55,11 @@ class ChildForm extends AbstractType
             ])
            ->add('icon', EntityType::class, [
                 'class' => Icon::class,
+                'label' => "Choix de l'icône",
                 'choice_label' => 'name',
                 'expanded' => true,
                 'multiple' => false,
+                'attr' => ['class' => 'icon-widget'],
                 'choice_attr' => function($icon) {
             return ['data-image' => $icon->getPath()];
             },

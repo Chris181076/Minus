@@ -2,11 +2,19 @@
 {% block title %}Edit Child{% endblock %}
 
 {% block body %}
-    <h1>Edit Child</h1>
-
-    {{ include('child/_form.html.twig', {'button_label': 'Update'}) }}
-    {% if is_granted('ROLE_ADMIN') %}
-    <a href="{{ path('app_child_index') }}">back to list</a>
-    {{ include('child/_delete_form.html.twig') }}
+    <div id="titre">
+    {% if child.icon is defined and child.icon %}
+                <img src="{{ asset(child.icon.path) }}" alt="Icône de {{ child.firstName }}">
     {% endif %}
+    <h1><span class="bold">Modifier les données de {{ child.firstName}} {{child.lastName}}</span></h1>
+    </div> 
+    {{include('child/_form.html.twig')}}
+    <div class="buttons"> 
+    <button class="btn">{{ button_label|default('Enregistrer') }}</button> 
+    {% if is_granted('ROLE_ADMIN') %} 
+    <button class="buttonSimple"><a href="{{ path('app_admin_dashboard_child') }}">Retour</a></button> 
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ child.id) }}"> 
+    <button class="buttonSimple"><p class="delete">Supprimer</p></button> 
+    </div> 
+    {% endif %} 
 {% endblock %}

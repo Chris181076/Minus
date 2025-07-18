@@ -2,35 +2,47 @@
 
 {{ form_start(form, { attr: { id: 'mon_formulaire' } }) }}
     {# Liste tous les champs sauf 'icons' #}
-    {{ form_row(form.firstName) }}
-    {{ form_row(form.lastName) }}
-    {{ form_row(form.birthDate) }}
-    {{ form_row(form.medicalNotes) }}
+    <div class="informationForm">
+    <h3>Informations</h3>
+    <div class="form_row">{{ form_row(form.firstName) }}</div>
+    <div class="form_row">{{ form_row(form.lastName) }}</div>
+    <div class="form_row">{{ form_row(form.birthDate) }}</div>
+    <div class="form_row">{{ form_row(form.medicalNotes) }}</div>
     {% if is_granted('ROLE_ADMIN') %}
-    {{ form_row(form.created_at) }}
+    <div class="form_row">{{ form_row(form.created_at) }}</div>
     {% endif %}
-    {{ form_row(form.allergies) }}
-    {{ form_row(form.specialDiets) }}
+    <div class="form_row">{{ form_row(form.allergies) }}</div>
+    <div class="form_row">{{ form_row(form.specialDiets) }}</div>
     {% if is_granted('ROLE_ADMIN') %}
-    {{ form_row(form.childGroup) }}
+    <div class="form_row">{{ form_row(form.childGroup) }}</div>
     {% endif %}
+    </div>
 {% if form.plannedPresences is defined %}
-<h3>Présences prévues</h3>
-<div data-prototype="{{ form_widget(form.plannedPresences.vars.prototype)|e('html_attr') }}">
+
+<div id="pres"data-prototype="{{ form_widget(form.plannedPresences.vars.prototype)|e('html_attr') }}">
+
+<h3>Planning</h3>
     {% for pres in form.plannedPresences %}
         <div class="planned-presence">
-            {{ form_row(pres.week_day) }}
-            {{ form_row(pres.arrival_time) }}
-            {{ form_row(pres.departure_time) }}
+        <table>
+        <tr>
+            <th scope="row">
+            <td>{{ form_row(pres.week_day) }}</td>
+            <td>{{ form_row(pres.arrival_time) }}</td>
+            <td>{{ form_row(pres.departure_time) }}</td>
+            </th>
+        </tr>
+        </table>
         </div>
     {% endfor %}
 </div>
 {% endif %}
 
 {# Section personnalisée pour les icônes #}
-<div class="form-group">
+<div class="form-group-child">
     {{ form_label(form.icon) }}
     {{ form_widget(form.icon) }}
+</div>
+{# <button class="btn">{{ button_label|default('Enregistrer') }}</button> #}
 
-<button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

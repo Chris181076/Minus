@@ -3,78 +3,106 @@
 {% block title %}Child{% endblock %}
 
 {% block body %}
-    <h1>Child</h1>
 
-    
-    <h1>Fiche de {{ child.firstName|capitalize }} {{ child.lastName|capitalize }}</h1>
-
-    <h2>Informations générales</h2>
-    <table class="table">
-        <tbody>
-            
-            <tr><th>Prénom</th><td>{{ child.firstName|capitalize }}</td></tr>
-            <tr><th>Nom</th><td>{{ child.lastName|capitalize }}</td></tr>
-            <tr><th>Date de naissance</th><td>{{ child.birthDate ? child.birthDate|date('d/m/Y') : 'Non renseignée' }}</td></tr>
-            <tr><th>Date de création</th><td>{{ child.createdAt ? child.createdAt|date('d/m/Y H:i') : 'Non renseignée' }}</td></tr>
-        </tbody>
-    </table>
-
-    <h2>Informations médicales</h2>
-    <p>{{ child.medicalNotes ?: 'Aucune information médicale.' }}</p>
-
-    <h3>Allergies</h3>
-    {% if child.allergies|length > 0 %}
-        <ul>
-            {% for allergy in child.allergies %}
-                <li>{{ allergy.name }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucune allergie renseignée.</p>
+    <div id="titre">
+    {% if child.icon is defined and child.icon %}
+                <img src="{{ asset(child.icon.path) }}" alt="Icône de {{ child.firstName }}">
     {% endif %}
+    <h1><span class="bold">Fiche de {{ child.firstName|capitalize }} {{ child.lastName|capitalize }}</span></h1>
+    </div>
 
-    <h3>Traitements en cours</h3>
-    {# A compléter selon ta structure, ex : child.treatments #}
-    {% if child.treatments is defined and child.treatments|length > 0 %}
-        <ul>
-            {% for treatment in child.treatments %}
-                <li>{{ treatment.name }} ({{ treatment.details }})</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucun traitement en cours.</p> 
-    {% endif %}
+    <div class="information">
+        <div class="titreInformation">
+            <img src="{{ asset('iconsForm/babyForm.png') }}" alt="icone">
+            <h2>Informations générales</h2>
+        </div>
+        <table class="table">
+            <tbody>
+                <tr><th>Prénom</th><td>{{ child.firstName|capitalize }}</td></tr>
+                <tr><th>Nom</th><td>{{ child.lastName|capitalize }}</td></tr>
+                <tr><th>Date de naissance</th><td>{{ child.birthDate ? child.birthDate|date('d/m/Y') : 'Non renseignée' }}</td></tr>
+                <tr><th>Date de création</th><td>{{ child.createdAt ? child.createdAt|date('d/m/Y H:i') : 'Non renseignée' }}</td></tr>
+            </tbody>
+        </table>
+    </div>
 
-    <h3>Autres informations</h3>
-    {# Exemple d’autres infos si tu en as #}
-    <p>Régime alimentaire spécial :</p>
-    {% if child.specialDiets|length > 0 %}
-        <ul>
-            {% for diet in child.specialDiets %}
-                <li>{{ diet.name }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucun régime spécial renseigné.</p>
-    {% endif %} 
+    <div class="informationMedic">
+        <div class="titreInformation">
+            <img src="{{ asset('iconsForm/health-and-wellness.png') }}" alt="icone">
+            <h2>Informations médicales</h2>
+        </div>
+        <table class="table">
+            <tbody>
+                <tr>
+                <th>Allergies</th>
+                <td>{% if child.allergies|length > 0 %}
+                    {% for allergy in child.allergies %}
+                    {{ allergy.name|capitalize }}
+                    {% endfor %}
+                    {% else %}
+                    <td>Aucune allergie renseignée.</td>
+                    {% endif %}
+                    </td>
+                </tr>
 
-    <h2>Planning de la semaine</h2>
+                <tr>
+                <th>Traitements en cours</th><td> 
+                <td>{% if child.treatments is defined and child.treatments|length > 0 %}
+                    {% for treatment in child.treatments %}
+                    {{ treatment.name|capitalize }} ({{ treatment.details|capitalize }})
+                    {% endfor %}
+                    {% else %}
+                    <td>Aucun traitement en cours.</td> 
+                    {% endif %}
+                    </td>
+                </tr>
 
+                <tr>
+                <th>Régime alimentaire</th>
+                <td>{% if child.specialDiets|length > 0 %}
+                        {% for diet in child.specialDiets %}
+                        {{ diet.name|capitalize }}
+                        {% endfor %}
+                    {% else %}
+                         <td>Aucun régime spécial renseigné.</td>
+                    {% endif %} 
+                    </td>
+                </tr>
+
+                <tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="notes">
+        <div class="titreInformation">
+            <img src="{{ asset('iconsForm/notes.png') }}" alt="icone">
+            <h2>Notes</h2>
+        </div>
+         <p>{{ child.medicalNotes|capitalize ?: 'Aucune information supplémentaire.'}}</p>
+    </div>
+
+     
+
+    <div class="planning">
+        <div class="titreInformation">
+            <img src="{{ asset('iconsForm/baby-book.png') }}" alt="icone">
+            <h2>Planning de la semaine</h2>
+        </div>
     {% if planned_presences is defined and planned_presences|length > 0 %}
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Jour</th>
-                <th>Heure d'arrivée</th>
-                <th>Heure de départ</th>
+                <th>Jours</th>
+                <th>Horaires</th>
+                
             </tr>
         </thead>
         <tbody>
             {% for presence in planned_presences %}
                 <tr>
                     <td>{{ presence.weekDay }}</td>
-                    <td>{{ presence.arrivalTime ? presence.arrivalTime|date('H:i') : '—' }}</td>
-                    <td>{{ presence.departureTime ? presence.departureTime|date('H:i') : '—' }}</td>
+                    <td>{{ presence.arrivalTime ? presence.arrivalTime|date('H:i') : '—' }} /
+                    {{ presence.departureTime ? presence.departureTime|date('H:i') : '—' }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -82,29 +110,39 @@
     {% else %}
         <p>Aucune présence enregistrée pour cette semaine.</p>
     {% endif %}
+    </div>
 
-    <h2>Responsables légaux</h2>
-
-    {% if child.users|length > 0 %}
+    <div class="responsable">
+        <div class="titreInformation">
+            <img src="{{ asset('iconsForm/health-and-wellness.png') }}" alt="icone">
+            <h2>Responsables légaux</h2>
+        </div>
+       {% if child.users|length > 0 %}
         {% for user in child.users %}
             <h3>Responsable {{ loop.index }} :</h3>
             <ul>
-                <li>Nom : {{ user.lastName|capitalize }}</li>
-                <li>Prénom : {{ user.firstName|capitalize }}</li>
-                <li>Téléphone : {{ user.phoneNumber }}</li>
-                <li>Email : {{ user.email|default('non renseigné') }}</li>
+                <li><span class="bold">Lien avec l’enfant </span>: {{ user.relationship|default('Non renseigné') }}</li>
+                <li><span class="boldCap">Nom </span>: {{ user.lastName|capitalize }}</li>
+                <li><span class="boldCap">Prénom </span>: {{ user.firstName|capitalize }}</li>
+                <li><span class="boldCap">Téléphone</span> : {{ user.phoneNumber }}</li>
+                <li><span class="boldCap">Email :</span> {{ user.email|default('non renseigné') }}</li>
                 <li>Lien avec l’enfant : {{ user.relationship|default('Non renseigné') }}</li>
             </ul>
         {% endfor %}
     {% else %}
         <p>Aucun responsable légal renseigné.</p>
     {% endif %}
+    </div>
+
 
     {% if is_granted('ROLE_ADMIN')  %}
-    <a href="{{ path('app_admin_dashboard_child') }}">back to list</a>
+    <div class="buttons">
+    <button class="buttonSimple"><a href="{{ path('app_child_edit', {'id': child.id}) }}">Modifier</a></button>
     {{ include('child/_delete_form.html.twig') }}
+    <button class="buttonSimple"><a href="{{ path('app_admin_dashboard_child') }}">Retour</a></button>
+    </div>
     {% endif %}
-    <a href="{{ path('app_child_edit', {'id': child.id}) }}">edit</a>
+    
 
 
 

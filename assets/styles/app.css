@@ -8,12 +8,80 @@
 body{
     width: 100%;
 }
+/* S'applique à tout le DOM */
+
 .center{
     display: flex;
     justify-content: center;
     align-items: center;
 }
+button p {
+  margin: 0;
+}
+.buttons, .btn{
+    margin-top: 5rem;
+    display:inline-block;
+    width: 100%;
+}
 
+.boldCap{
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.bold{
+    font-weight: 600;
+}
+input[type="text"] {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #813EB2;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #000;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+    box-shadow: 10px 5px 5px #D8D8D8;
+}
+input[type="date"], textarea,input[type=datetime-local], select{
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #813EB2;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #000;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+    box-shadow: 10px 5px 5px #D8D8D8;
+}
+select{
+    width: 20rem;
+    padding: 1rem;
+}
+select>option{
+    margin: 0.5rem 0;
+}
+input[type="date"]:focus {
+  border-color: #813EB2;
+  outline: none;
+}
+label{
+    margin-right: 2rem;
+    display: flex;
+    align-items: center;
+}
+input[type="time"]{
+    width: 10rem;
+    height: 3rem;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #813EB2;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #000;
+    background-color: #fff;
+    box-shadow: 10px 5px 5px #D8D8D8;
+}
+/* navbar */
 nav {
     display: flex;
     flex-wrap: wrap;
@@ -308,40 +376,15 @@ nav > ul > li {
 }
 /* Child_form */
 
-#mon_formulaire>div{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
+
+.form_row{
+    display : flex;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
-    width: 50%;
-    margin: 0 auto;
-    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
 }
-#mon_formulaire>div>label{
-    font-size: 1.5rem;
-    color: #813EB2;
-}
-#mon_formulaire>div>select{
-    text-align: center;
-}
-#mon_formulaire>div>select>option{
-    padding-top: 20px;
-}
-#mon_formulaire>div>#child_form_medicalNotes{
-    width: 22.5rem;
-    height: 10rem;
-    padding: 20px;
-}
-#child_form_firstName, #child_form_lastName, #child_form_birthDate, #child_form_created_at, #child_form_childGroup{
-    width: 20rem;
-     height: 3.8rem;
-     font-size: 1.2rem;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     padding: 1rem;
-}
+
 /* Masquer les radios par défaut */
 .icon-radio {
     display: none;
@@ -401,3 +444,175 @@ nav > ul > li {
   color: inherit;
   text-decoration: none;
 }
+
+/* fiche des Minus/minus */
+#titre{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#titre>h1{
+font-size: 1.3rem;
+margin: 1rem;
+}
+#titre>img{
+    width: 10rem;
+    height: 10rem;
+}
+.information, .informationMedic, .planning, .notes, .responsable{
+    width: 45rem;
+    height: auto;
+    border: 1px solid #813EB2;
+    border-radius: 20px;
+    margin: 2rem auto;
+    padding: 1rem 0; 
+}
+
+.titreInformation{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+    color: #813EB2;
+    font-size: 1.25rem;
+}
+
+.titreInformation>img{
+    width: 3.75rem;
+    height:3.75rem;
+    border-radius: 20px;
+    border: 1px #000;
+    margin-right: 2rem;
+}
+.titreInformation>h2{
+    font-size: 1.5rem;
+}
+.information>.table{
+    width: 25rem;
+    margin: 0 auto;
+}
+.informationMedic>.table{
+    margin: 0 2rem;
+    width: 39rem;
+}
+.planning{
+    height: auto;
+}
+.planning>.table{
+    text-align: center;
+}
+.table>td{
+    padding: 0 1.5rem;
+}
+.responsable{
+    text-align: center;
+}
+.responsable>h3{
+    font-size: 1.5rem;
+    color: #813EB2;
+}
+
+
+/* buttons */
+
+.buttonSimple{
+    width: 13rem;
+    height: 4rem;
+    border: 1.5px solid #A97FC8;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease;
+    background-color: #fff;
+}
+.btn{
+    width: 13rem;
+    height: 4rem;
+    border: 1.5px solid #A97FC8;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease;
+    font-size: 1.5rem;
+    color: #813EB2;
+    transition: color 0.5s ease;
+}
+.buttonSimple>a,
+.buttonSimple>.delete{
+    font-size: 1.5rem;
+    color: #813EB2;
+    transition: color 0.5s ease;
+}
+.buttonSimple:hover{
+    background-color: #813EB2;
+}
+.btn:hover{
+    color: #fff;
+    background-color: #813EB2;
+}
+.buttonSimple:hover>a,
+.buttonSimple:hover>.delete {
+    color: #fff;
+}
+
+/* form / child */
+
+#informationForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form_row>div{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-column-gap: 1.5rem;
+    grid-row-gap: 1rem;
+    width: 40rem;
+    }
+#pres{
+    width: 100%;
+    margin-top: 4rem;
+}
+#pres>h3, .informationForm>h3{
+    font-size: 1.2rem;
+    color: #813EB2;
+    text-align: center;
+    margin-bottom:2rem;
+}
+#pres>img{
+    width: 15rem;
+}
+.planned-presence{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.planned-presence label{
+    display:none;
+}
+.planned-presence td {
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+}
+
+.form-group-child label{
+    display: block;
+    font-size: 1.2rem;
+    color: #813EB2;
+    text-align: center;
+    margin:2rem 0;
+}
+.form-group-child>.icon-selection{
+    width: 20rem;
+    margin:0 auto;
+} 
+
+
+

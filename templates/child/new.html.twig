@@ -5,9 +5,11 @@
 {% block title %}Nouveau Minus{% endblock %}
 
 {% block body %}
+    <div id="titre">
     <h1>Créer un Minus</h1>
+    </div>
 
     {{ include('child/_form.html.twig') }}
 
-    <a href="{{ path('app_child_index') }}">Retour</a>
+    <button class="buttonSimple"><a href="{{ path('app_child_index') }}">Retour</a></button>
 {% endblock %}
