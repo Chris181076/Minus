@@ -330,6 +330,9 @@ nav > ul > li {
     font-size: 1.5rem;
     text-align: center;
     margin-bottom: 1.5rem;
+    width: 17.5rem;
+    height: 3rem;
+    
 }
 .sidebar{
     width: 220px;
@@ -455,6 +458,7 @@ nav > ul > li {
 #titre>h1{
 font-size: 1.3rem;
 margin: 1rem;
+font-weight: 600;
 }
 #titre>img{
     width: 10rem;
@@ -541,6 +545,22 @@ margin: 1rem;
     color: #813EB2;
     transition: color 0.5s ease;
 }
+.presence, .depart, .supprimer, .actions-cell>a{
+    width: 5rem;
+    height: auto;
+    border-radius: 10px;
+    border: 1.5px solid #A97FC8;
+    transition: background-color 0.5s ease;
+    color: #813EB2;
+    transition: color 0.5s ease;
+    padding: 0.3rem;
+    text-align: center;
+}
+.presence:hover, .depart:hover, .supprimer:hover, .actions-cell>a:hover{
+    color: #fff;
+    background-color: #813EB2;
+    transition: color 0.5s ease;
+}
 .buttonSimple>a,
 .buttonSimple>.delete{
     font-size: 1.5rem;
@@ -615,4 +635,66 @@ margin: 1rem;
 } 
 
 
+/* childPresence Index */
+.actions-cell{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#bonjour>h1{
+    font-size: 1.5rem;
+    color: #813EB2;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+.headTable{
+    text-align: center;
+}
+.headTable>th{
+    width: 10rem;
+    height: 3rem;
+    padding: 1rem 0;
+    vertical-align: middle;
+    color: #813EB2;
+    background-color: #D9D9D9;
+}
+.status-cell,.presence-cell, .arrival-time, .departure-action, .departure-time{
+    text-align: center;
+}
+    .edit-hour {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: #666;
+        padding: 2px 4px;
+        margin-left: 5px;
+        border-radius: 3px;
+        transition: all 0.2s ease;
+    }
 
+    .edit-hour:hover {
+        background-color: #f0f0f0;
+        color: #333;
+    }
+
+    .time-value {
+        display: inline-block;
+        min-width: 40px;
+    }
+
+    .no-time {
+        color: #999;
+        font-style: italic;
+    }
+
+    .time-editor {
+        border: 1px solid #007bff;
+        border-radius: 3px;
+        padding: 2px 4px;
+        font-size: 14px;
+    }
+
+    .arrival-time, .departure-time {
+        white-space: nowrap;
+    }

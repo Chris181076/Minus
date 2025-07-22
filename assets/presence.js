@@ -54,7 +54,7 @@ function resetRowToInitialState(row) {
     const departureAction = row.querySelector('.departure-action');
     if (departureAction) {
         departureAction.innerHTML = `
-            <button class="btn btn-sm btn-success mark-arrival-btn" data-id="${childId}">
+            <button class="presence mark-arrival-btn" data-id="${childId}">
                 Arrivée
             </button>
         `;
@@ -62,7 +62,10 @@ function resetRowToInitialState(row) {
 
     const actionsCell = row.querySelector('.actions-cell');
     if (actionsCell) {
-        actionsCell.innerHTML = '';
+        const template = document.querySelector(`#delete-form-${childId}`);
+        if (template) {
+        actionsCell.innerHTML = template.innerHTML;
+}
     }
 }
 
@@ -74,7 +77,31 @@ function loadSavedPresences() {
         setTimeout(() => {
             const row = document.querySelector(`tr[data-child-id="${childId}"]`);
             if (row) {
-                if (presenceData.arrivalTime) updateUIWithPresence(row, presenceData);
+                if (presenceData.arrivalTime) {
+                    updateUIWithPresence(row, presenceData);
+                     const arrivalCell = row.querySelector('.arrival-time');
+                    const button = document.createElement('button');
+                    button.className = 'edit-hour';
+                    button.dataset.type = 'arrival';
+                    button.dataset.id = presenceData.presenceId;
+                    button.textContent = '🕑';
+
+                }
+                // const actionsCell = row.querySelector('.actions-cell'); // 🛠️ class correcte ici
+                // let deleteLink = actionsCell.querySelector('a.supprimer');
+
+                // if (!deleteLink) {
+                //     // Créer le lien s’il n’existe pas
+                //     deleteLink = document.createElement('a');
+                //     deleteLink.className = 'supprimer';
+                //     actionsCell.appendChild(deleteLink);
+                // }
+
+                // // Mettre à jour ses attributs
+                // deleteLink.href = `/child/presence/${presenceData.presenceId}/delete`; 
+                // deleteLink.textContent = 'Suppr';
+                // deleteLink.dataset.id = presenceData.presenceId;
+            
                 if (presenceData.departureTime) updateUIWithDeparture(row, presenceData);
             }
         }, index * 5);
@@ -105,30 +132,26 @@ function updateUIWithPresence(row, data) {
     const arrivalTime = new Date(data.arrivalTime);
     const arrivalTimeCell = row.querySelector('.arrival-time');
     if (arrivalTimeCell) {
-        arrivalTimeCell.textContent = `${arrivalTime.getHours().toString().padStart(2, '0')}:${arrivalTime.getMinutes().toString().padStart(2, '0')}`;
-    }
+        arrivalTimeCell.textContent = `${arrivalTime.getUTCHours().toString().padStart(2, '0')
+﻿       }:${arrivalTime.getMinutes().toString().padStart(2, '0')}`;
+        }
 
     const departureBtn = document.createElement('button');
-    departureBtn.className = 'btn btn-sm btn-warning mark-departure-btn';
+    departureBtn.className = 'depart mark-departure-btn';
     departureBtn.textContent = 'Départ';
     departureBtn.dataset.id = data.presenceId;
 
+
+{
+
+}
     const departureAction = row.querySelector('.departure-action');
     if (departureAction) {
         departureAction.innerHTML = '';
         departureAction.appendChild(departureBtn);
     }
 
-    const actionsCell = row.querySelector('.actions-cell');
-    if (actionsCell) {
-        actionsCell.innerHTML = `
-            <a href="/child/presence/${data.presenceId}">voir</a>
-            <a href="/child/presence/${data.presenceId}/edit">modifier</a>
-            <button class="btn btn-sm btn-danger delete-presence-btn" data-id="${data.presenceId}" style="margin-left: 5px;">
-                Supprimer
-            </button>
-        `;
-    }
+    
 }
 
 function updateUIWithDeparture(row, data) {
@@ -184,32 +207,41 @@ document.addEventListener('turbo:load', () => {
     });
 
     document.body.addEventListener('click', (e) => {
-        // ARRIVÉE
-        if (e.target.classList.contains('mark-arrival-btn')) {
-            const childId = e.target.dataset.id;
+    // ARRIVÉE
+    if (e.target.classList.contains('mark-arrival-btn')) {
+        const childId = e.target.dataset.id;
+        const now = new Date();
+        const localDateTime = now.toLocaleString('sv-SE');
 
-            fetch(`/child/presence/mark-arrival/${childId}`, { method: 'POST' })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const row = e.target.closest('tr');
-                    updateUIWithPresence(row, data);
+        fetch(`/child/presence/mark-arrival/${childId}`, { 
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ arrivalTime: localDateTime }) // <-- à l'extérieur du bloc headers
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const row = e.target.closest('tr');
+                updateUIWithPresence(row, data);
 
-                    const today = new Date().toISOString().split('T')[0];
-                    const saved = JSON.parse(localStorage.getItem(`presences_${today}`) || '{}');
-                    saved[childId] = data;
-                    localStorage.setItem(`presences_${today}`, JSON.stringify(saved));
+                const today = now.toLocaleString('sv-SE').split(' ')[0];
+                const saved = JSON.parse(localStorage.getItem(`presences_${today}`) || '{}');
+                saved[childId] = data;
+                localStorage.setItem(`presences_${today}`, JSON.stringify(saved));
 
-                    channel?.postMessage('update');
-                } else {
-                    alert('Erreur: ' + data.message);
-                }
-            })
-            .catch(err => {
-                console.error('Erreur:', err);
-                alert('Erreur de connexion');
-            });
-        }
+                channel?.postMessage('update');
+            } else {
+                alert('Erreur: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error('Erreur:', err);
+            alert('Erreur de connexion');
+        });
+    }
 
         // DÉPART
         if (e.target.classList.contains('mark-departure-btn')) {
@@ -242,42 +274,125 @@ document.addEventListener('turbo:load', () => {
         }
 
         // SUPPRESSION
-        if (e.target.classList.contains('delete-presence-btn')) {
-            const presenceId = e.target.dataset.id;
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
-                let csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
-                                document.querySelector('input[name="_token"]')?.value || '';
+    //     if (e.target.classList.contains('delete-presence-btn')) {
+    //         const presenceId = e.target.dataset.id;
+    //         if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
+    //             let csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
+    //                             document.querySelector('input[name="_token"]')?.value || '';
+    // console.log('Token trouvé:', csrfToken); 
+    // console.log('Presence ID:', presenceId); 
+    //             const formData = new FormData();
+    //             formData.append('_token', csrfToken);
+    //             formData.append('_method', 'DELETE');
 
-                const formData = new FormData();
-                formData.append('_token', csrfToken);
-                formData.append('_method', 'DELETE');
+    //             fetch(`/child/presence/${presenceId}`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'X-Requested-With': 'XMLHttpRequest'
+    //                 },
+    //                 body: formData
+    //             })
+    //             .then(response => {
+    //                 if (response.ok) {
+    //                     syncWithDatabase();
+    //                 } else {
+    //                     alert(`Erreur HTTP: ${response.status}`);
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 alert('Erreur de suppression: ' + error.message);
+    //             });
+    //         }
+    //     }
+    });
+    
+});
 
-                fetch(`/child/presence/${presenceId}`, {
+
+
+document.body.addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-hour')) {
+            const btn = e.target;
+            const cell = btn.closest('td');
+            const presenceId = btn.dataset.id;
+            const type = btn.dataset.type;
+            const timeSpan = cell.querySelector('.time-value');
+            const currentTime = timeSpan && !timeSpan.classList.contains('no-time') 
+                ? timeSpan.textContent 
+                : '08:00';
+
+            // Crée l'input
+            const input = document.createElement('input');
+            input.type = 'time';
+            input.value = currentTime;
+            input.classList.add('time-editor');
+           
+            // Gère la sauvegarde
+            const saveTime = () => {
+                const newTime = input.value;
+                if (!newTime) return;
+                console.log('ID utilisé :', presenceId);
+                fetch(`/child/presence/update-time/${presenceId}`, {
                     method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: formData
+                    body: JSON.stringify({
+                        type: type,
+                        time: newTime
                 })
-                .then(response => {
-                    if (response.ok) {
-                        syncWithDatabase();
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cell.innerHTML = `
+                            <span class="time-value">${newTime}</span>
+                            <button class="edit-hour" data-type="${type}" data-id="${presenceId}" title="Modifier">✎</button>
+                        `;
                     } else {
-                        alert(`Erreur HTTP: ${response.status}`);
+                        alert('Erreur : ' + (data.message || 'Erreur inconnue'));
+                        // Restore original content
+                        // restoreOriginal();
                     }
                 })
-                .catch(error => {
-                    alert('Erreur de suppression: ' + error.message);
+                .catch(() => {
+                    alert('Erreur réseau');
+                    // restoreOriginal();
                 });
-            }
-        }
-    });
-});
+            };
 
-// Bouton de rafraîchissement
-document.getElementById('refreshPresences')?.addEventListener('click', () => {
-    syncWithDatabase();
-});
+            // const restoreOriginal = () => {
+            //     const displayTime = currentTime === '08:00' && timeSpan?.classList.contains('no-time') ? '--:--' : currentTime;
+            //     const buttonSymbol = timeSpan?.classList.contains('no-time') ? '+' : '✎';
+            //     cell.innerHTML = `
+            //         <span class="time-value ${timeSpan?.classList.contains('no-time') ? 'no-time' : ''}">${displayTime}</span>
+            //         <button class="edit-hour" data-type="${type}" data-id="${presenceId}">${buttonSymbol}</button>
+            //     `;
+                
+            // };
+
+            // Events
+            input.addEventListener('blur', saveTime);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    saveTime();
+            //     } else if (e.key === 'Escape') {
+            //         restoreOriginal();
+                 }
+             });
+
+            // Replace content and focus
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+        }
+    }
+    );
+// // Bouton de rafraîchissement
+// document.getElementById('refreshPresences')?.addEventListener('click', () => {
+//     syncWithDatabase();
+// });
 
 
 // Synchronisation périodique (optionnel - désactivé par défaut)
@@ -289,3 +404,33 @@ setInterval(() => {
     }
 }, 30000); // Synchronise toutes les 30 secondes
 */
+// const deleteButton = document.querySelector('.delete-button');
+// deleteButton.addEventListener('click', function(e) {
+// if (e.target.classList.contains('delete-btn')) {
+//         const presenceId = e.target.dataset.id;
+//         const token = e.target.dataset.token;
+
+//         if (confirm('Supprimer cette présence ?')) {
+//             fetch(`/${presenceId}/delete`, {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/x-www-form-urlencoded'
+//                 },
+//                 body: `_token=${encodeURIComponent(token)}`
+//             })
+//             .then(res => res.json())
+//             .then(data => {
+//                 if (data.success) {
+//                     e.target.closest('tr').remove();
+
+//                 } else {
+//                     alert('Erreur : ' + data.message);
+//                 }
+//             })
+//             .catch(err => {
+//                 console.error(err);
+//                 alert('Erreur réseau');
+//             });
+//         }
+//     }
+// });
