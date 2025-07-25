@@ -70,15 +70,20 @@
                         {% endif %}
                     </td>                              
                     <td class="actions-cell">
-                {% if presence %}
-                <div id="delete-form-{{ presence.child.id }}" style="display:none;">
-                {% include 'child_presence/_delete_form.html.twig' with {'presence': presence} %}
-                </div>
-                {% endif %}
+                        {% if presence %}
+                            <form method="post" action="{{ path('app_child_presence_delete', {'id': presence.id}) }}" 
+                                onsubmit="return confirm('Supprimer cette présence ?');">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ presence.id) }}">
+                                <button type="submit" class="depart delete-btn" data-id="{{ presence.id }}">
+                                Supprimer
+                                </button>
+                            </form>
+                        {% endif %}
                     </td>
                   </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('admin_dashboard') }}">Retour</a>
+    <a class="btn" href="{{ path('admin_dashboard') }}">Retour</a>
     {%  endblock %}

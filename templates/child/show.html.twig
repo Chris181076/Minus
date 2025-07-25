@@ -134,9 +134,9 @@
     {% endif %}
     </div>
 
-
+  
     {% if is_granted('ROLE_ADMIN')  %}
-    <div class="buttons">
+    <div class="buttonsInLine">
     <button class="buttonSimple"><a href="{{ path('app_child_edit', {'id': child.id}) }}">Modifier</a></button>
     {{ include('child/_delete_form.html.twig') }}
     <button class="buttonSimple"><a href="{{ path('app_admin_dashboard_child') }}">Retour</a></button>

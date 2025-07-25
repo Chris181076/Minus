@@ -22,6 +22,7 @@ class JournalForm extends AbstractType
             ->add('date', null, [
                 'widget' => 'single_text',
                 'attr' => ['readonly' => true],
+                'label' => false,
             ])
             ->add('entries', CollectionType::class, [
             'entry_type' => JournalEntryForm::class,

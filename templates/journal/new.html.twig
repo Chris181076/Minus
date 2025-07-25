@@ -3,7 +3,12 @@
 {% block title %}New Journal{% endblock %}
 
 {% block body %}
-    <h1>Journal de {{child.firstName}}</h1>
+    <div id="titre">
+    {% if child.icon is defined and child.icon %}
+                <img src="{{ asset(child.icon.path) }}" alt="Icône de {{ child.firstName }}">
+    {% endif %}
+    <h1><span class="bold">Journal de {{ child.firstName|capitalize }} {{ child.lastName|capitalize }}</span></h1>
+    </div>
 
     {{ include('journal/_form.html.twig') }}
 

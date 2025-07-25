@@ -1,11 +1,11 @@
 {{ form_start(form) }}
 
-{{ form_row(form.date) }}
+<div class="center">{{ form_row(form.date) }}</div>
 
-<table>
+<table id="tableJournalEntry">
   <thead>
     <tr>
-      <th>Heure</th>
+      <th>Heure</th> 
       <th>Action</th>
       <th>Description</th>
       <th>Note</th>
@@ -32,19 +32,22 @@
     {% endfor %}
   </tbody>
 </table>
-
+<div id="journalButtons">
+<button type="button" id="add-entry-btn">Ajouter une entrée</button>
+<button type="submit" class="submitEntryJournal">Enregistrer</button>
+</div>
 {# Table affichage lecture seule des entrées du journal #}
 {% set today = "now"|date("Y-m-d") %}
 {% if journal.date|date("Y-m-d") == today %}
-  <table>
-    <thead>
+  <table id="tableJournalView">
+    {# <thead>
       <tr>
-        <th>Heure</th>
-        <th>Action</th>
-        <th>Description</th>
-        <th>Note</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
-    </thead>
+    </thead> #}
     <tbody>
       {% for entry in journal.entries %}
         <tr>
@@ -54,7 +57,7 @@
           <td>{{ entry.note }}</td>
         </tr>
       {% else %}
-        <tr><td colspan="4">Aucune entrée pour aujourd'hui.</td></tr>
+        <tr><td colspan="4" style="border: none">Aucune entrée pour aujourd'hui.</td></tr>
       {% endfor %}
     </tbody>
   </table>
@@ -62,8 +65,7 @@
   <p>Pas de journal pour aujourd'hui.</p>
 {% endif %}
 
-<button type="submit">Enregistrer</button>
-<button type="button" id="add-entry-btn">Ajouter une entrée</button>
+
 
 {{ form_end(form) }}
 
