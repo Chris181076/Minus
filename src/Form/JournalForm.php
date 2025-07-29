@@ -13,25 +13,28 @@ use App\Entity\ChildPresence;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\Form\JournalEntryForm;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class JournalForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date', null, [
+            ->add('date', DateType::class, [
                 'widget' => 'single_text',
                 'attr' => ['readonly' => true],
                 'label' => false,
+                'input' => 'datetime_immutable',
             ])
-            ->add('entries', CollectionType::class, [
-            'entry_type' => JournalEntryForm::class,
+            
+                 ->add('entries', CollectionType::class, [
+            'entry_type' => JournalEntryForm::class, // Doit pointer vers le bon form
             'entry_options' => ['label' => false],
             'allow_add' => true,
             'allow_delete' => true,
             'by_reference' => false,
-    ]);
-            
+            'prototype' => true,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

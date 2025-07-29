@@ -16,6 +16,8 @@ use App\Entity\Child;
 use App\Service\JournalParser;
 use App\Entity\JournalEntry;
 use App\Repository\ChildRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[Route('/journal')]
 final class JournalController extends AbstractController
@@ -28,51 +30,52 @@ public function new(
     JournalRepository $journalRepo,
     int $presenceId
 ): Response {
-    $presence = $presenceRepo->find($presenceId);
 
-    if (!$presence) {
-        throw $this->createNotFoundException('Présence non trouvée pour ID ' . $presenceId);
-    }
-
+$presence = $presenceRepo->find($presenceId);
     $date = $presence->getArrivalTime()->setTime(0, 0);
     $child = $presence->getChild();
 
-    // Rechercher un journal existant
-    $journal = $journalRepo->findOneBy([
-        'child' => $child,
-        'date' => $date,
-    ]);
+$journal = $journalRepo->findOneBy([
+    'child' => $child,
+    'date' => $date,
+]);
 
-    // Sinon, on en crée un
-    if (!$journal) {
-        $journal = new Journal();
-        $journal->setDate($date);
-        $journal->setChild($child);
+if (!$journal) {
+    $journal = new Journal();
+    $journal->setChild($child);
+    $journal->setDate(new \DateTimeImmutable());
+}
+
+
+$newJournal = new Journal();
+$newJournal->addEntry(new JournalEntry()); 
+$form = $this->createForm(JournalForm::class, $newJournal);
+$form->handleRequest($request);
+
+if ($form->isSubmitted() && $form->isValid()) {
+    foreach ($newJournal->getEntries() as $entry) {
+        $entry->setJournal($journal); 
+        $journal->addEntry($entry);
+        $dateFromForm = $form->get('date')->getData();
+
+        if ($dateFromForm === null) {
+        $dateFromForm = new \DateTimeImmutable();
+    }
     }
 
-    $form = $this->createForm(JournalForm::class, $journal);
-    $form->handleRequest($request);
+    $entityManager->persist($journal);
+    $entityManager->flush();
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        foreach ($journal->getEntries() as $entry) {
-        $entry->setJournal($journal);
-        }
-
-        $entityManager->persist($journal);
-        $entityManager->flush();
-
-    if ($this->isGranted('ROLE_ADMIN')) {
     return $this->redirectToRoute('app_admin_dashboard_journal');
-    } elseif ($this->isGranted('ROLE_EDUC')) {
-    return $this->redirectToRoute('app_educateur_dashboard_child');
-    }
-    }
+}
 
-    return $this->render('journal/new.html.twig', [
-        'form' => $form->createView(),
-        'child' => $child,
-        'journal'=> $journal,
-    ]);
+return $this->render('journal/new.html.twig', [
+    'form' => $form->createView(),
+    'journal' => $journal, 
+    'child' => $child,
+   
+]);
+
 }
 
     #[Route('/index', name: 'app_journal_index', methods: ['GET'])]

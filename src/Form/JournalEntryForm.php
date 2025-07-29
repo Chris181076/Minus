@@ -18,6 +18,8 @@ class JournalEntryForm extends AbstractType
             ->add('heure', TimeType::class, [
                 'widget' => 'single_text',
                 'label' => 'Heure',
+                'input' => 'datetime_immutable',
+                
             ])
             ->add('action', ChoiceType::class, [
                 'label' => 'Action',
@@ -28,9 +30,11 @@ class JournalEntryForm extends AbstractType
                     'Popo' => 'popo',
                     'Sieste' => 'sieste',
                     'Activité' => 'activité',
-                    'Autre' => 'autre',
+                    'couche propre' => 'couche ok',
                 ],
                 'placeholder' => 'Choisir...',
+                'expanded' => false,
+                'multiple' => false,
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,
@@ -40,8 +44,8 @@ class JournalEntryForm extends AbstractType
                 'required' => false,
                 'label' => 'Note',
             ]);
-    }
-
+               
+            }
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

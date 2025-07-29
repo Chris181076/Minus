@@ -19,12 +19,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\SemainierRepository;
 use App\Repository\JournalRepository;
 use App\Entity\Journal;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 #[Route('/child/presence')]
 final class ChildPresenceController extends AbstractController
 {
     #[Route(name: 'app_child_presence_index', methods: ['GET', 'POST'])]
-    public function index(ChildPresenceRepository $childPresenceRepository, ChildRepository $childRepository): Response
+    public function index(ChildPresenceRepository $childPresenceRepository, ChildRepository $childRepository, CsrfTokenManagerInterface $csrfTokenManager): Response
 {
    $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
     $monday = $now->modify('monday this week');
@@ -47,7 +48,24 @@ final class ChildPresenceController extends AbstractController
             $childId = $presence->getChild()->getId();
             $presenceMap[$childId] = $presence;
         }
- 
+        
+
+$date = (new \DateTimeImmutable())->setTime(0, 0);
+
+$presences = $childPresenceRepository->findByDay($date);
+
+$csrfTokens = [];
+
+foreach ($presences as $presence) {
+    if (null === $presence->getId()) {
+        continue; 
+    }
+    
+    $id = $presence->getId();
+    $csrfTokens[$id] = $csrfTokenManager->getToken('delete' . $id)->getValue();
+}
+   
+
 
     $template = $this->isGranted('ROLE_ADMIN')
         ? 'child_presence/index.html.twig'
@@ -60,7 +78,9 @@ final class ChildPresenceController extends AbstractController
         'children' => $children,
         'no_sidebar' => true,
         'presenceMap' => $presenceMap,  
-        'presences'  => $presences,   
+        'presences'  => $presences,  
+        'presence' => $presence,
+        'csrfTokens' => $csrfTokens, 
     ]);
 }
 
@@ -111,81 +131,46 @@ final class ChildPresenceController extends AbstractController
         ]);
     }
 
-//     #[Route('/{id}/delete', name: 'app_child_presence_delete', methods: ['POST', 'DELETE'])]
-//     public function delete(Request $request, ChildPresence $childPresence, EntityManagerInterface $entityManager, int $id): Response
-//     {
-//         $childPresence = $childPresenceRepository->findBy(['day' => $date]);
-//         $presence = $childPresence->getId();
-//            if (!$presence) {
-//         return $this->json([
-//             'success' => false,
-//             'message' => 'Présence introuvable'
-//         ], 404);
-//     }
-//     $token = $request->request->get('_token');
-//     if (!$this->isCsrfTokenValid('delete'.$presence, $token)) {
-//         if ($request->isXmlHttpRequest()) {
-//             return $this->json([
-//                 'success' => false, 
-//                 'message' => 'Token CSRF invalide'
-//             ], 403);
-//         }
-//         throw $this->createAccessDeniedException('Token CSRF invalide');
-//     }
- 
-//     try {
-//         $entityManager->remove($presence);
-//         $entityManager->flush();
 
-//         // Si c'est une requête AJAX, retourner JSON
-//         if ($request->isXmlHttpRequest()) {
-//             return $this->json(['success' => true]);
-//         }
-
-//         return $this->redirectToRoute('app_child_presence_index', [], Response::HTTP_SEE_OTHER);
-        
-//     } catch (\Exception $e) {
-//         if ($request->isXmlHttpRequest()) {
-//             return $this->json([
-//                 'success' => false, 
-//                 'message' => 'Erreur lors de la suppression: ' . $e->getMessage()
-//             ], 500);
-//         }
-//         throw $e;
-//     }
-// }
-#[Route('/{id}/delete', name: 'app_child_presence_delete', methods: ['POST', 'DELETE'])]
-public function delete(Request $request, EntityManagerInterface $entityManager, ChildPresenceRepository $childPresenceRepository, int $id): Response
-{
+#[Route('/{id}/delete', name: 'app_child_presence_delete', methods: ['POST'])]
+public function delete(
+    
+    Request $request,
+    EntityManagerInterface $entityManager,
+    ChildPresenceRepository $childPresenceRepository,
+    CsrfTokenManagerInterface $csrfTokenManager,
+    int $id
+): Response {
     $presence = $childPresenceRepository->find($id);
 
     if (!$presence) {
         return $this->json([
             'success' => false,
             'message' => 'Présence introuvable'
-        ], 404);
+        ], Response::HTTP_NOT_FOUND);
     }
+    
+    $submittedToken = $request->request->get('_token');
+    $tokenId = 'delete' . $id;
 
-    $token = $request->request->get('_token');
-    if (!$this->isCsrfTokenValid('delete' . $presence->getId(), $token)) {
+    if ($this->isCsrfTokenValid('delete'.$presence->getId(), $request->request->get('_token'))) {
         return $this->json([
             'success' => false,
             'message' => 'Token CSRF invalide'
-        ], 403);
+        ], Response::HTTP_FORBIDDEN);
     }
 
-    try {
-        $entityManager->remove($presence);
-        $entityManager->flush();
+    $entityManager->remove($presence);
+    $entityManager->flush();
 
-        return $this->json(['success' => true]);
-    } catch (\Exception $e) {
-        return $this->json([
-            'success' => false,
-            'message' => 'Erreur lors de la suppression : ' . $e->getMessage()
-        ], 500);
-    }
+    return $this->json([
+        'success' => true,
+        'message' => 'Présence supprimée avec succès'
+    ], Response::HTTP_OK);
+  
 }
+
+
 
 
 

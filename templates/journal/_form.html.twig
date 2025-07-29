@@ -1,74 +1,77 @@
-{{ form_start(form) }}
 
-<div class="center">{{ form_row(form.date) }}</div>
 
-<table id="tableJournalEntry">
-  <thead>
-    <tr>
-      <th>Heure</th> 
-      <th>Action</th>
-      <th>Description</th>
-      <th>Note</th>
-    </tr>
-  </thead>
-  <tbody id="entries-wrapper"
-    data-prototype="
-      <tr>
-        <td> {{ form_widget(form.entries.vars.prototype.heure)|e('html_attr') }} </td>
-        <td> {{ form_widget(form.entries.vars.prototype.action)|e('html_attr') }} </td>
-        <td> {{ form_widget(form.entries.vars.prototype.description)|e('html_attr') }} </td>
-        <td> {{ form_widget(form.entries.vars.prototype.note)|e('html_attr') }} </td>
-      </tr>
-    ">
-    {% for entry in form.entries %}
-      {% if entry.vars.data is not null and (entry.vars.data.heure or entry.vars.data.action or entry.vars.data.description or entry.vars.data.note) %}
-      <tr class="journal-entry-row">
-        <td>{{ form_widget(entry.heure) }}</td>
-        <td>{{ form_widget(entry.action) }}</td>
-        <td>{{ form_widget(entry.description) }}</td>
-        <td>{{ form_widget(entry.note) }}</td>
-      </tr>
-      {% endif %}
-    {% endfor %}
-  </tbody>
+<div class="center">
+  {{ form_widget(form.date) }}
+</div>
+{% block body %}
+
+
+{# --- TABLE DES ENTRÉES EXISTANTES --- #}
+
+<table class="old-entries" style="max-width:50rem; width:100%; border-collapse:collapse;">
+    <thead>
+        <tr>
+            <th>Heure</th>
+            <th>Action</th>
+            <th>Description</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in journal.entries %}
+            <tr>
+                <td>{{ entry.heure ? entry.heure|date('H:i') : '' }}</td>
+                <td>{{ entry.action }}</td>
+                <td>{{ entry.description }}</td>
+                <td>{{ entry.note }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucune entrée pour ce journal.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
-<div id="journalButtons">
-<button type="button" id="add-entry-btn">Ajouter une entrée</button>
+
+
+
+{# --- FORMULAIRE POUR AJOUTER DE NOUVELLES ENTRÉES --- #}
+
+{{ form_start(form) }}
+<table id="tableJournalEntry">
+    <thead>
+        <tr>
+            <th>Heure</th>
+            <th>Action</th>
+            <th>Description</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody id="entries-wrapper"
+        data-prototype="
+            <tr class='journal-entry-row'>
+                <td>{{ form_widget(form.entries.vars.prototype.heure)|e('html_attr') }}</td>
+                <td>{{ form_widget(form.entries.vars.prototype.action)|e('html_attr') }}</td>
+                <td>{{ form_widget(form.entries.vars.prototype.description)|e('html_attr') }}</td>
+                <td>{{ form_widget(form.entries.vars.prototype.note)|e('html_attr') }}</td>
+            </tr>
+        ">
+        {% for entryForm in form.entries %}
+            <tr class="journal-entry-row">
+                <td>{{ form_widget(entryForm.heure) }}</td>
+                <td>{{ form_widget(entryForm.action) }}</td>
+                <td>{{ form_widget(entryForm.description) }}</td>
+                <td>{{ form_widget(entryForm.note) }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div id="buttons">
+<button type="button" id="add-entry-btn">+ Ajouter une ligne</button>
 <button type="submit" class="submitEntryJournal">Enregistrer</button>
 </div>
-{# Table affichage lecture seule des entrées du journal #}
-{% set today = "now"|date("Y-m-d") %}
-{% if journal.date|date("Y-m-d") == today %}
-  <table id="tableJournalView">
-    {# <thead>
-      <tr>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead> #}
-    <tbody>
-      {% for entry in journal.entries %}
-        <tr>
-          <td>{{ entry.heure ? entry.heure|date('H:i') : '' }}</td>
-          <td>{{ entry.action }}</td>
-          <td>{{ entry.description }}</td>
-          <td>{{ entry.note }}</td>
-        </tr>
-      {% else %}
-        <tr><td colspan="4" style="border: none">Aucune entrée pour aujourd'hui.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% else %}
-  <p>Pas de journal pour aujourd'hui.</p>
-{% endif %}
-
-
 
 {{ form_end(form) }}
 
-
-
-
+{% endblock %}

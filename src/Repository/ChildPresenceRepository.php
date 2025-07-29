@@ -63,7 +63,18 @@ class ChildPresenceRepository extends ServiceEntityRepository
     ->getResult();
     }
 
+    public function findByDay(\DateTimeInterface $day): array
+{
+    $start = (clone $day)->setTime(0, 0, 0);
+    $end = (clone $day)->setTime(23, 59, 59);
 
+    return $this->createQueryBuilder('p')
+        ->where('p.day BETWEEN :start AND :end')
+        ->setParameter('start', $start)
+        ->setParameter('end', $end)
+        ->getQuery()
+        ->getResult();
+}
     }
     //    /**
     //     * @return ChildPresence[] Returns an array of ChildPresence objects

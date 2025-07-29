@@ -62,7 +62,7 @@ select {
   box-shadow: 10px 5px 5px #d8d8d8;
 }
 select {
-  width: 20rem;
+  width: 15rem;
   padding: 1rem;
 }
 select > option {
@@ -78,7 +78,7 @@ label {
   align-items: center;
 }
 input[type="time"] {
-  width: 10rem;
+  width: 5.5rem;
   height: 3rem;
   text-align: center;
   padding: 10px;
@@ -650,11 +650,7 @@ p {
 }
 
 /* childPresence Index */
-.actions-cell {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+
 #bonjour > h1 {
   font-size: 1.5rem;
   color: #813eb2;
@@ -720,12 +716,27 @@ p {
 
 /* Journal Child */
 
-#tableJournalEntry,
-#tableJournalView {
+
+#tableJournalEntry {
   border-collapse: collapse;
-  width: 50rem;
+  width: 40rem;
   margin: 0 auto;
   margin-top: 4rem;
+}
+.old-entries{
+  max-width: 50rem;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  margin-top: 4rem;
+
+}
+.old-entries th,
+td {
+  padding: 0.5rem 2rem;
+  border: 1px solid #813eb2;
+  text-align: center;
+  width: 5rem;
 }
 #tableJournalEntry th,
 td {
@@ -733,13 +744,12 @@ td {
   border: 1px solid #813eb2;
   text-align: center;
 }
-#tableJournalView th,
-td {
-  padding: 0.5rem 2rem;
-  border: 1px solid #813eb2;
-  text-align: center;
+#buttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
-#add-entry-btn,
+#buttons>#add-entry-btn,
 .submitEntryJournal {
   width: 10rem;
   height: auto;
@@ -752,6 +762,12 @@ td {
   text-align: center;
   margin-top: 2rem;
 }
+#add-entry-btn:hover,
+.submitEntryJournal:hover {
+  color: #fff;
+  background-color: #813eb2;
+  transition: color 0.5s ease;
+}
 #add-entry-btn {
   margin-right: 2rem;
 }
@@ -760,3 +776,4 @@ td {
   flex-direction: row;
   justify-content: center;
 }
+

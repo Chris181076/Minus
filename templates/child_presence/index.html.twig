@@ -17,8 +17,8 @@
                 <th>ACTION DEPART</th>
                 <th>ACTIONS</th>
             </tr>
-        </thead>
-        <tbody data-turbo="false">
+        </thead> 
+        <tbody data-turbo="false" id="presenceTable">
             {% for child in children %}
                 {% set presence = presenceMap[child.id] ?? null %}
 
@@ -71,19 +71,23 @@
                     </td>                              
                     <td class="actions-cell">
                         {% if presence %}
-                            <form method="post" action="{{ path('app_child_presence_delete', {'id': presence.id}) }}" 
-                                onsubmit="return confirm('Supprimer cette présence ?');">
-                                <input type="hidden" name="_method" value="DELETE">
+                            <form method="post" action="{{ path('app_child_presence_delete', {'id': presence.id}) }}" style="display:inline;">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ presence.id) }}">
-                                <button type="submit" class="depart delete-btn" data-id="{{ presence.id }}">
-                                Supprimer
+                                <button
+                                    class="depart delete-btn"
+                                    onclick="return confirm('Es-tu sûr de vouloir supprimer cette présence ?');"
+                                >
+                                    Supprimer
                                 </button>
                             </form>
                         {% endif %}
+
                     </td>
                   </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    {{ dump(csrfTokens) }}
     <a class="btn" href="{{ path('admin_dashboard') }}">Retour</a>
     {%  endblock %}

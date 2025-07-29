@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\JournalEntryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: JournalEntryRepository::class)]
 class JournalEntry
@@ -14,7 +16,7 @@ class JournalEntry
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $heure = null;
 
     #[ORM\Column(length: 150)]
@@ -29,6 +31,40 @@ class JournalEntry
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Journal $journal = null;
+
+    #[ORM\OneToMany(mappedBy: 'journal', targetEntity: JournalEntry::class, cascade: ['persist', 'remove'])]
+    private Collection $entries;
+
+        public function __construct()
+        {
+            $this->entries = new ArrayCollection();
+        }
+
+        public function getEntries(): Collection
+        {
+            return $this->entries;
+        }
+            public function addEntry(JournalEntry $entry): static
+        {
+            if (!$this->entries->contains($entry)) {
+                $this->entries->add($entry);
+                $entry->setJournal($this);
+            }
+
+            return $this;
+        }
+
+        public function removeEntry(JournalEntry $entry): static
+        {
+            if ($this->entries->removeElement($entry)) {
+                // set the owning side to null (unless already changed)
+                if ($entry->getJournal() === $this) {
+                    $entry->setJournal(null);
+                }
+            }
+
+            return $this;
+        }
 
     public function getId(): ?int
     {

@@ -29,6 +29,7 @@ class Journal
     public function __construct()
     {
         $this->entries = new ArrayCollection();
+        $this->date = new \DateTimeImmutable();
     }
     public function getEntries(): Collection
     {
@@ -54,6 +55,8 @@ class Journal
         }
         return $this;
     }
+    
+
     public function getId(): ?int
     {
         return $this->id;
