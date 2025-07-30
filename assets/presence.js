@@ -106,11 +106,26 @@ function loadSavedPresences() {
 
       if (presenceData.departureTime) {
         updateUIWithDeparture(row, presenceData);
+
+        const departureCell = row.querySelector(".departure-time");
+      
+
+        // 👉 Vérifie si le bouton existe déjà
+        const existingButton = departureCell.querySelector(".edit-hour[data-type='departure']");
+        if (!existingButton) {
+          const button = document.createElement("button");
+          button.className = "edit-hour";
+          button.dataset.type = "departure";
+          button.dataset.id = presenceData.presenceId;
+          button.textContent = "🕑";
+          departureCell.appendChild(button);
+        }
       }
     }
   });
 }
 
+       
 function waitForRowsAndLoadPresencesOnce() {
   const tableBody = document.querySelector("tbody");
   if (!tableBody) return;
@@ -128,6 +143,7 @@ function waitForRowsAndLoadPresencesOnce() {
   });
 }
 
+
 function updateUIWithPresence(row, data) {
   row.querySelector(".status-cell").innerHTML = "🟢";
   row.querySelector(".presence-cell").innerHTML = "Oui";
@@ -135,34 +151,49 @@ function updateUIWithPresence(row, data) {
   const arrivalTime = new Date(data.arrivalTime);
   const arrivalTimeCell = row.querySelector(".arrival-time");
   if (arrivalTimeCell) {
-    arrivalTimeCell.textContent = `${arrivalTime
-      .getUTCHours()
-      .toString()
-      .padStart(2, "0")}:${arrivalTime
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
+    arrivalTimeCell.textContent = formatToUtcTime(data.arrivalTime, false);
   }
-
-
   const departureBtn = document.createElement("button");
   departureBtn.className = "depart mark-departure-btn";
   departureBtn.textContent = "Départ";
   departureBtn.dataset.id = data.presenceId;
 
     const actionsCell = row.querySelector(".actions-cell");
-  if (actionsCell) {
-    // Vider d'abord la cellule pour éviter les duplications
-    actionsCell.innerHTML = "";
-    
-    // Créer le bouton de suppression
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "depart delete-btn";
-    deleteBtn.textContent = "Supprimer";
-    deleteBtn.dataset.id = data.presenceId;
-    
-    actionsCell.appendChild(deleteBtn);
-  }
+   
+      if (actionsCell && window.csrfToken) {
+        actionsCell.innerHTML = "";
+
+        const form = document.createElement("form");
+        form.method = "post";
+        form.action = `/child/presence/${data.presenceId}/delete`;
+        form.style.display = "inline";
+
+        const tokenInput = document.createElement("input");
+        tokenInput.type = "hidden";
+        tokenInput.name = "_token";
+        tokenInput.value = window.csrfToken; 
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "depart delete-btn";
+        deleteBtn.textContent = "Supprimer";
+        deleteBtn.dataset.id = data.presenceId;
+        deleteBtn.dataset.csrf = window.csrfToken; 
+        
+       
+        deleteBtn.onclick = (e) => {
+            e.preventDefault();
+            return confirm("Es-tu sûr de vouloir supprimer cette présence ?");
+        };
+
+        form.appendChild(tokenInput);
+        form.appendChild(deleteBtn);
+        actionsCell.appendChild(form);
+        
+        console.log("Bouton de suppression créé avec token :", window.csrfToken);
+    } else {
+        console.error("Token CSRF non disponible ou cellule d'actions introuvable");
+    }
+
 
   const departureAction = row.querySelector(".departure-action");
   if (departureAction) {
@@ -172,16 +203,11 @@ function updateUIWithPresence(row, data) {
 }
 
 function updateUIWithDeparture(row, data) {
-  const departureTime = new Date(data.departureTime);
+  console.log("Raw departureTime from server:", data.departureTime);
+console.log("Locale date:", new Date(data.departureTime).toString());
   const departureTimeCell = row.querySelector(".departure-time");
   if (departureTimeCell) {
-    departureTimeCell.textContent = `${departureTime
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${departureTime
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
+    departureTimeCell.textContent = formatToUtcTime(data.departureTime, false);
   }
 
   const departureAction = row.querySelector(".departure-action");
@@ -189,6 +215,21 @@ function updateUIWithDeparture(row, data) {
     departureAction.innerHTML = "✔️";
   }
 }
+function formatToUtcTime(isoString, withSeconds = false) {
+  const date = new Date(isoString);
+  const options = {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'UTC'
+  };
+
+  if (withSeconds) {
+    options.second = '2-digit';
+  }
+
+  return date.toLocaleTimeString([], options);
+}
+
 
 function setupStorageSync() {
   window.addEventListener("storage", (event) => {
@@ -226,8 +267,7 @@ document.addEventListener("turbo:load", () => {
     }
   }
 
-  document
-    .querySelector('[data-page="presence"]')
+  document.querySelector('[data-page="presence"]')
     ?.addEventListener("click", () => {
       const currentState = localStorage.getItem(`presences_${today}`);
       if (currentState) {
@@ -236,13 +276,12 @@ document.addEventListener("turbo:load", () => {
     });
 
  document.body.addEventListener("click", async (e) => {
-  console.log("Click détecté sur le document");
 
   // ARRIVÉE
   if (e.target.classList.contains("mark-arrival-btn")) {
     const childId = e.target.dataset.id;
     const now = new Date();
-    const localDateTime = now.toLocaleString("sv-SE");
+    const localDateTime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000))
 
     fetch(`/child/presence/mark-arrival/${childId}`, {
       method: "POST",
@@ -267,7 +306,7 @@ document.addEventListener("turbo:load", () => {
             }
           }
 
-          const today = now.toLocaleString("sv-SE").split(" ")[0];
+          const today = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
           const saved = JSON.parse(localStorage.getItem(`presences_${today}`) || "{}");
           saved[childId] = data;
           localStorage.setItem(`presences_${today}`, JSON.stringify(saved));
@@ -282,9 +321,9 @@ document.addEventListener("turbo:load", () => {
         alert("Erreur de connexion");
       });
   }
-
+ 
   // DÉPART
-  if (e.target.classList.contains("mark-departure-btn")) {
+  else if (e.target.classList.contains("mark-departure-btn")) {
     const presenceId = e.target.dataset.id;
 
     fetch(`/child/presence/mark-departure/${presenceId}`, { method: "POST" })
@@ -294,15 +333,13 @@ document.addEventListener("turbo:load", () => {
           const row = e.target.closest("tr");
           updateUIWithDeparture(row, data);
 
-          const today = new Date().toISOString().split("T")[0];
+         
+          const today =  new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
           const saved = JSON.parse(localStorage.getItem(`presences_${today}`) || "{}");
-          const childId = row.dataset.childId;
-
-          if (saved[childId]) {
-            saved[childId].departureTime = data.departureTime;
-            localStorage.setItem(`presences_${today}`, JSON.stringify(saved));
-            channel?.postMessage("update");
-          }
+          localStorage.setItem(`presences_${today}`, JSON.stringify(saved));
+          loadSavedPresences();
+          channel?.postMessage("update");
+          
         } else {
           alert("Erreur: " + data.message);
         }
@@ -311,42 +348,94 @@ document.addEventListener("turbo:load", () => {
         console.error("Erreur:", err);
         alert("Erreur de connexion");
       });
-  }
-
+}
   // SUPPRESSION
-if (e.target.classList.contains("delete-btn")) {
-  
+
+  else if (!e.target.classList.contains("delete-btn")) return;
+
   e.preventDefault();
+  e.stopPropagation();
 
   const button = e.target.closest(".delete-btn");
   const presenceId = button.dataset.id;
-  const csrfToken = button.dataset.csrf;
-  const confirmed = confirm("Supprimer cette présence ?");
-  if (!confirmed) return;
+  const csrfToken = button.dataset.csrf || window.csrfToken;
+ 
+
+  console.log("Tentative de suppression - ID:", presenceId, "Token:", csrfToken);
+ 
+  if (!confirm("Supprimer cette présence ?")) return;
 
   try {
     const response = await fetch(`/child/presence/${presenceId}/delete`, {
-      method: "POST", 
+      method: "POST",
       headers: {
-        "X-Requested-With": "XMLHttpRequest",
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: `_token=${encodeURIComponent(csrfToken)}`
+      body: new URLSearchParams({ _token: csrfToken })
     });
 
     const data = await response.json();
+
     if (data.success) {
-      alert(data.message); 
-      resetRowToInitialState(button.closest("tr"));
+      const row = button.closest("tr");
+      resetRowToInitialState(row);
       button.remove();
+
+      const today = new Date().toISOString().split("T")[0];
+      const key = `presences_${today}_${presenceId}`;
+      localStorage.removeItem(key);
+
+      showBanner(data.message || "Suppression réussie 🎉");
+      clearActionsCell(row);
+      console.log("Suppression réussie pour l'ID:", presenceId);
+
     } else {
-      alert(data.message || "Erreur lors de la suppression");
+      alert(data.message || "Suppression échouée");
+      console.error("Erreur de suppression:", data.message);
     }
   } catch (err) {
     alert("Erreur de requête : " + err.message);
+    console.error("Erreur de requête:", err);
   }
+});
 
+
+// function getTodayKey() {
+//     const now = new Date();
+//     const year = now.getFullYear();
+//     const month = String(now.getMonth() + 1).padStart(2, '0');
+//     const day = String(now.getDate()).padStart(2, '0');
+//     return `${year}-${month}-${day}`;
+// }
+
+
+function clearActionsCell(row) {
+    const actionsCell = row.querySelector(".actions-cell");
+    if (actionsCell) {
+        actionsCell.innerHTML = "";
+        console.log("Cellule d'actions nettoyée");
+    }
 }
+
+
+function showBanner(message) {
+  const banner = document.createElement("div");
+  banner.textContent = message;
+  Object.assign(banner.style, {
+    position: "fixed",
+    top: "1em",
+    right: "1em",
+    background: "#4caf50",
+    color: "#fff",
+    padding: "10px",
+    borderRadius: "5px",
+    zIndex: "1000"
+  });
+
+  document.body.appendChild(banner);
+  setTimeout(() => banner.remove(), 3000);
+}
+
 
 });
 
@@ -412,4 +501,4 @@ document.body.addEventListener("click", function (e) {
     input.focus();
   }
 });
-});
+

@@ -132,9 +132,8 @@ foreach ($presences as $presence) {
     }
 
 
-#[Route('/{id}/delete', name: 'app_child_presence_delete', methods: ['POST'])]
+#[Route('/{id}/delete', name: 'app_child_presence_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
 public function delete(
-    
     Request $request,
     EntityManagerInterface $entityManager,
     ChildPresenceRepository $childPresenceRepository,
@@ -149,11 +148,9 @@ public function delete(
             'message' => 'Présence introuvable'
         ], Response::HTTP_NOT_FOUND);
     }
-    
-    $submittedToken = $request->request->get('_token');
-    $tokenId = 'delete' . $id;
 
-    if ($this->isCsrfTokenValid('delete'.$presence->getId(), $request->request->get('_token'))) {
+    // Vérification du token CSRF global
+    if (!$this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
         return $this->json([
             'success' => false,
             'message' => 'Token CSRF invalide'
@@ -165,9 +162,9 @@ public function delete(
 
     return $this->json([
         'success' => true,
-        'message' => 'Présence supprimée avec succès'
-    ], Response::HTTP_OK);
-  
+        'message' => 'Présence supprimée',
+        'presenceId' => $id
+    ]);
 }
 
 
@@ -182,7 +179,8 @@ public function markArrival(
     EntityManagerInterface $em,
     SemainierRepository $semainierRepo,
     JournalRepository $journalRepo,
-    ChildPresenceRepository $presenceRepo
+    ChildPresenceRepository $presenceRepo,
+    CsrfTokenManagerInterface $csrfTokenManager,
 ): JsonResponse {
     try {
         $timezone = new \DateTimeZone('Europe/Paris');
@@ -234,12 +232,16 @@ public function markArrival(
         $em->persist($presence);
         $em->flush();
 
+        
+
         return $this->json([
             'success' => true,
             'arrivalTime' => $presence->getArrivalTime()->format('c'),
             'presenceId' => $presence->getId(),
             'journalId' => $journal->getId(),
-        ]);
+            'csrf_tokens' => [],
+            ]);
+    
 
     } catch (\Exception $e) {
         return $this->json([
