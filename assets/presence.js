@@ -1,4 +1,5 @@
 // BroadcastChannel global
+
 const channel =
   typeof BroadcastChannel !== "undefined"
     ? new BroadcastChannel("presence_updates")
@@ -104,23 +105,23 @@ function loadSavedPresences() {
         }
       }
 
-      if (presenceData.departureTime) {
-        updateUIWithDeparture(row, presenceData);
+      // if (presenceData.departureTime) {
+      //   updateUIWithDeparture(row, presenceData);
 
-        const departureCell = row.querySelector(".departure-time");
+      //   const departureCell = row.querySelector(".departure-time");
       
 
-        // 👉 Vérifie si le bouton existe déjà
-        const existingButton = departureCell.querySelector(".edit-hour[data-type='departure']");
-        if (!existingButton) {
-          const button = document.createElement("button");
-          button.className = "edit-hour";
-          button.dataset.type = "departure";
-          button.dataset.id = presenceData.presenceId;
-          button.textContent = "🕑";
-          departureCell.appendChild(button);
-        }
-      }
+      //   // 👉 Vérifie si le bouton existe déjà
+      //   const existingButton = departureCell.querySelector(".edit-hour[data-type='departure']");
+      //   if (!existingButton) {
+      //     const button = document.createElement("button");
+      //     button.className = "edit-hour";
+      //     button.dataset.type = "departure";
+      //     button.dataset.id = presenceData.presenceId;
+      //     button.textContent = "🕑";
+      //     departureCell.appendChild(button);
+      //   }
+      // }
     }
   });
 }
@@ -142,7 +143,6 @@ function waitForRowsAndLoadPresencesOnce() {
     subtree: false,
   });
 }
-
 
 function updateUIWithPresence(row, data) {
   row.querySelector(".status-cell").innerHTML = "🟢";
@@ -203,12 +203,11 @@ function updateUIWithPresence(row, data) {
 }
 
 function updateUIWithDeparture(row, data) {
-  console.log("Raw departureTime from server:", data.departureTime);
-console.log("Locale date:", new Date(data.departureTime).toString());
-  const departureTimeCell = row.querySelector(".departure-time");
-  if (departureTimeCell) {
-    departureTimeCell.textContent = formatToUtcTime(data.departureTime, false);
-  }
+ 
+  // const departureTimeCell = row.querySelector(".departure-time");
+  // // if (departureTimeCell) {
+  // //   departureTimeCell.textContent = formatToUtcTime(data.departureTime, false);
+  // // }
 
   const departureAction = row.querySelector(".departure-action");
   if (departureAction) {
@@ -247,9 +246,10 @@ function setupStorageSync() {
 
 document.addEventListener("turbo:load", () => {
   const today = new Date().toISOString().split("T")[0];
-
+  
   waitForRowsAndLoadPresencesOnce();
   setupStorageSync();
+
 
     if (document.querySelector("tr[data-child-id]")) {
     loadSavedPresences();
@@ -278,10 +278,12 @@ document.addEventListener("turbo:load", () => {
  document.body.addEventListener("click", async (e) => {
 
   // ARRIVÉE
+      
   if (e.target.classList.contains("mark-arrival-btn")) {
     const childId = e.target.dataset.id;
-    const now = new Date();
-    const localDateTime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000))
+    const time = new Date();
+    time.setHours(time.getHours() + 2);
+    const arrivalTime = time.toISOString();
 
     fetch(`/child/presence/mark-arrival/${childId}`, {
       method: "POST",
@@ -289,7 +291,7 @@ document.addEventListener("turbo:load", () => {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",
       },
-      body: JSON.stringify({ arrivalTime: localDateTime }),
+      body: JSON.stringify({ arrivalTime: arrivalTime}),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -306,7 +308,7 @@ document.addEventListener("turbo:load", () => {
             }
           }
 
-          const today = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
+          const today = new Date().toISOString().split("T")[0];
           const saved = JSON.parse(localStorage.getItem(`presences_${today}`) || "{}");
           saved[childId] = data;
           localStorage.setItem(`presences_${today}`, JSON.stringify(saved));
@@ -332,12 +334,32 @@ document.addEventListener("turbo:load", () => {
         if (data.success) {
           const row = e.target.closest("tr");
           updateUIWithDeparture(row, data);
-
          
-          const today =  new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
+          const today = new Date().toISOString().split("T")[0];
           const saved = JSON.parse(localStorage.getItem(`presences_${today}`) || "{}");
           localStorage.setItem(`presences_${today}`, JSON.stringify(saved));
-          loadSavedPresences();
+          const departureCell = row.querySelector(".departure-time");
+
+if (departureCell) {
+  const existingButton = departureCell.querySelector(".edit-hour[data-type='departure']");
+  if (!existingButton) {
+    const button = document.createElement("button");
+    button.className = "edit-hour";
+    button.dataset.type = "departure";
+    button.dataset.id = data.presenceId;
+    const departureDate = new Date(data.departureTime);
+    const hour = departureDate.getHours(); // extrait l'heure (0–23)
+
+    // Définir le texte du bouton
+    button.textContent = `🕑 ${formatToUtcTime(data.departureTime, false)}`;
+
+    // Ajouter la classe selon l'heure
+    button.classList.add(hour < 12 ? "morning" : "afternoon");
+
+    // Ajouter le bouton à la cellule
+    departureCell.appendChild(button);
+  }
+}
           channel?.postMessage("update");
           
         } else {
@@ -398,7 +420,13 @@ document.addEventListener("turbo:load", () => {
     console.error("Erreur de requête:", err);
   }
 });
-
+function safeLoadPresences() {
+  if (document.readyState === "complete") {
+    loadSavedPresences();
+  } else {
+    window.addEventListener("load", () => loadSavedPresences());
+  }
+}
 
 // function getTodayKey() {
 //     const now = new Date();
@@ -501,4 +529,6 @@ document.body.addEventListener("click", function (e) {
     input.focus();
   }
 });
+
+
 

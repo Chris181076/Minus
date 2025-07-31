@@ -184,18 +184,19 @@ public function markArrival(
 ): JsonResponse {
     try {
         $timezone = new \DateTimeZone('Europe/Paris');
-
         // Si une heure est envoyée depuis le JS, on l’utilise
         $data = json_decode($request->getContent(), true);
         $arrivalTimeStr = $data['arrivalTime'] ?? null;
-
-        if ($arrivalTimeStr) {
+     
+        if ($arrivalTimeStr ) {
             $now = new \DateTimeImmutable($arrivalTimeStr, $timezone);
         } else {
             $now = new \DateTimeImmutable('now', $timezone);
         }
 
-        $today = $now->setTime(0, 0);
+        $todayDateStr = $now->format('Y-m-d');
+        $today = new \DateTimeImmutable($todayDateStr, $timezone);
+
 
         // Chercher une présence existante pour éviter les doublons
         $existingPresence = $presenceRepo->findOneBy([
@@ -249,6 +250,7 @@ public function markArrival(
             'message' => $e->getMessage()
         ], 500);
     }
+   
 }
 
 

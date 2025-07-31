@@ -714,6 +714,34 @@ p {
   white-space: nowrap;
 }
 
+.edit-hour {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: white;
+  font-weight: bold;
+}
+
+/* Matin : teinte lavande douce */
+.edit-hour.morning {
+  background-color: #a974d6; /* lavande claire */
+}
+
+/* Après-midi : teinte prune plus chaude */
+.edit-hour.afternoon {
+  background-color: #813eb2; /* violet dominant */
+}
+
+/* Hover effet subtil */
+.edit-hour:hover {
+  opacity: 0.85;
+}
+
+
+
 /* Journal Child */
 
 

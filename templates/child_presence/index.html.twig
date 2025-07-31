@@ -44,6 +44,7 @@
                                 <span class="time-value">{{ presence.arrivalTime|date('H:i') }}</span>
                             {% else %}
                                 <span class="time-value no-time">--:--</span>
+                                
                             {% endif %}
                         {% endif %}
                         
@@ -52,7 +53,7 @@
                     <td class="departure-time">
                         {% if presence %}
                             {% if presence.departureTime %}
-                               {{ presence.departureTime|date('H:i') }}
+                               <span class="time-value">{{ presence.departureTime|date('H:i') }}</span>
                             {% else %}
                                 <span class="time-value no-time">--:--</span>
                             {%  endif %}
