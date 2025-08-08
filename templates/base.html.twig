@@ -38,10 +38,10 @@
                 {% include '_partials/_side_bar_parent.html.twig' %}
             {% endif %}
         {% endif %}
-
-        <main class="main-content p-4 flex-grow-1">
+            
+        <div class="main-content p-4 flex-grow-1">
             {% block body %}{% endblock %}
-        </main>
+       </div>
     </div>
 
     {% block javascripts %}{{ importmap('app')}}{% endblock %}

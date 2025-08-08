@@ -16,9 +16,9 @@ class JournalEntryForm extends AbstractType
     {
         $builder
             ->add('heure', TimeType::class, [
-                'widget' => 'single_text',
-                'label' => 'Heure',
-                'input' => 'datetime_immutable',
+                    'widget' => 'single_text',
+                    'input' => 'datetime',
+                    'label' => 'Heure',
                 
             ])
             ->add('action', ChoiceType::class, [

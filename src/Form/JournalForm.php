@@ -22,12 +22,12 @@ class JournalForm extends AbstractType
         $builder
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
-                'attr' => ['readonly' => true],
+                'disabled' => true,
                 'label' => false,
-                'input' => 'datetime_immutable',
+                
             ])
             
-                 ->add('entries', CollectionType::class, [
+            ->add('entries', CollectionType::class, [
             'entry_type' => JournalEntryForm::class, // Doit pointer vers le bon form
             'entry_options' => ['label' => false],
             'allow_add' => true,

@@ -370,7 +370,7 @@ p {
   flex-grow: 1;
 }
 #admin-layout {
-  width: 100%;
+  width: 70%;
 }
 
 .admin-body {
@@ -742,66 +742,163 @@ p {
 
 
 
+
 /* Journal Child */
 
+/* CSS spécifique pour la page journal avec sidebar */
 
-#tableJournalEntry {
-  border-collapse: collapse;
-  width: 40rem;
+/* Container principal pour le contenu du journal */
+.journal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  margin-top: 4rem;
+  gap: 2rem;
 }
-.old-entries{
+
+/* Centrage du widget de date */
+.date-widget-center {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+/* Container pour les tables */
+.tables-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  width: 100%;
+}
+
+/* Table des anciennes entrées */
+.old-entries {
   max-width: 50rem;
   width: 100%;
   border-collapse: collapse;
   margin: 0 auto;
-  margin-top: 4rem;
+}
 
-}
 .old-entries th,
-td {
+.old-entries td {
   padding: 0.5rem 2rem;
   border: 1px solid #813eb2;
   text-align: center;
-  width: 5rem;
+  color: #813eb2;
 }
+
+.old-entries th {
+  font-weight: bold;
+}
+
+/* Table du formulaire */
+#tableJournalEntry {
+  width: 100%;
+  max-width: 50rem;
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
 #tableJournalEntry th,
-td {
+#tableJournalEntry td {
   padding: 0.5rem 2rem;
   border: 1px solid #813eb2;
   text-align: center;
 }
-#buttons{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+
+#tableJournalEntry th {
+  color: #813eb2;
+  font-weight: bold;
 }
-#buttons>#add-entry-btn,
+
+#tableJournalEntry > #entries-wrapper > .journal-entry-row > td > input[type="time"] {
+  
+  width: 7rem;
+
+  border-radius: 4px;
+  padding: 0.25rem;
+}
+
+/* Inputs du formulaire */
+#journal_form_entries_0_action,
+#journal_form_entries_0_description,
+#journal_form_entries_0_note {
+  width: 8rem;
+  padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Container des boutons */
+#buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+#buttons > #add-entry-btn,
 .submitEntryJournal {
   width: 10rem;
   height: auto;
   border-radius: 10px;
   border: 1.5px solid #a97fc8;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
   color: #813eb2;
-  transition: color 0.5s ease;
-  padding: 0.3rem;
+  background-color: white;
+  padding: 0.5rem;
   text-align: center;
-  margin-top: 2rem;
+  cursor: pointer;
+  font-weight: 500;
 }
+
 #add-entry-btn:hover,
 .submitEntryJournal:hover {
   color: #fff;
   background-color: #813eb2;
-  transition: color 0.5s ease;
-}
-#add-entry-btn {
-  margin-right: 2rem;
-}
-#journalButtons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
 }
 
+/* Responsive pour la sidebar */
+@media (max-width: 992px) {
+  .journal-container {
+    padding: 0 1rem;
+  }
+  
+  .old-entries,
+  #tableJournalEntry {
+    font-size: 0.9rem;
+  }
+  
+  .old-entries th,
+  .old-entries td,
+  #tableJournalEntry th,
+  #tableJournalEntry td {
+    padding: 0.3rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  #buttons > #add-entry-btn,
+  .submitEntryJournal {
+    width: 15rem;
+  }
+  
+  .old-entries th,
+  .old-entries td,
+  #tableJournalEntry th,
+  #tableJournalEntry td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}

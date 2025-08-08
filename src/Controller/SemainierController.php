@@ -74,33 +74,25 @@ public function index(SemainierRepository $semainierRepository, WeekHelper $week
         ]);
     }
 
-#[Route('/show', name: 'app_semainier_show', methods: ['GET'])]
+#[Route('/show/{id}', name: 'app_semainier_show', methods: ['GET'])]
 public function show(
-    SemainierRepository $semainierRepository,
+    Semainier $semainier,
     ChildRepository $childRepository,
     ChildPresenceRepository $childPresenceRepository,
     EntityManagerInterface $entityManager,
     WeekHelper $weekHelper,
     SemainierManager $semainierManager, 
     PlannedPresenceRepository $plannedPresenceRepo,
+    SemainierRepository $semainierRepository,
 ): Response {
-    $monday = (new \DateTimeImmutable('monday this week'))->setTime(0, 0);
-
-    // Récupérer ou créer le semainier
-    $semainier = $semainierRepository->findOneBy(['week_start_date' => $monday]);
-    if (!$semainier) {
-        $semainier = new Semainier();
-        $semainier->setWeekStartDate($monday);
-        $entityManager->persist($semainier);
-        $entityManager->flush();
-    }
-
+    // Ici, $semainier est automatiquement injecté par Symfony grâce à l'id dans l'URL
     $startOfWeek = $weekHelper->getStartOfWeek($semainier->getWeekStartDate());
     $endOfWeek = $weekHelper->getEndOfWeek($semainier->getWeekStartDate());
 
     $children = $childRepository->findAll();
     $weekDays = $weekHelper->getWeekDays();
-   
+    $lastSemainier = $semainierRepository->lastSemainier();
+ 
 
     foreach ($children as $child) {
         $presences = $plannedPresenceRepo->findByChildAndWeek($child, $startOfWeek, $endOfWeek);
@@ -116,12 +108,13 @@ public function show(
         $departure = $presence->getDepartureTime();
         }
     }
-
+    
     // Utilisation du service pour assigner les présences
 
 
     return $this->render('semainier/show.html.twig', [
         'semainier' => $semainier,
+        'lastSemainier' => $lastSemainier,
         'children' => $children,
         'weekDays' => $weekDays,
         'startOfWeek' => $startOfWeek,

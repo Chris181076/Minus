@@ -39,7 +39,7 @@ final class ChildPresenceController extends AbstractController
     // Jour actif par défaut = lundi
     $day = $days[0]->format('Y-m-d');
     $date = new \DateTimeImmutable($day, new \DateTimeZone('Europe/Paris'));
-    $date = $date->setTime(0, 0); // Très important : on enlève les heures/minutes pour matcher correctement
+    $date = $date->setTime(0, 0); 
 
     $children = $childRepository->findAll();
     $presences = $childPresenceRepository->findBy(['day' => $date]);
@@ -79,8 +79,8 @@ foreach ($presences as $presence) {
         'no_sidebar' => true,
         'presenceMap' => $presenceMap,  
         'presences'  => $presences,  
-        'presence' => $presence,
         'csrfTokens' => $csrfTokens, 
+        'presences' => $presences,
     ]);
 }
 

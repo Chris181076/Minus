@@ -16,8 +16,8 @@ class JournalEntry
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $heure = null;
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTime $heure = null;
 
     #[ORM\Column(length: 150)]
     private ?string $action = null;
@@ -71,12 +71,12 @@ class JournalEntry
         return $this->id;
     }
 
-    public function getHeure(): ?\DateTimeImmutable
+    public function getHeure(): ?\DateTime
     {
         return $this->heure;
     }
 
-    public function setHeure(?\DateTimeImmutable $heure): static
+    public function setHeure(?\DateTime $heure): static
     {
         $this->heure = $heure;
 

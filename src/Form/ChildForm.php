@@ -39,6 +39,7 @@ class ChildForm extends AbstractType
             if($options['is_admin']){
             $builder->add('created_at', null, [
                 'widget' => 'single_text',
+                'required' => false,
             ]);
             }
         
@@ -47,11 +48,13 @@ class ChildForm extends AbstractType
                 'class' => Allergy::class,
                 'choice_label' => 'name',
                 'multiple' => true,
+                'required' => false,
             ])
             ->add('specialDiets', EntityType::class, [
                 'class' => SpecialDiet::class,
                 'choice_label' => 'name',
                 'multiple' => true,
+                'required' => false,
             ])
            ->add('icon', EntityType::class, [
                 'class' => Icon::class,

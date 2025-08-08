@@ -21,16 +21,19 @@ use Symfony\Component\Mailer\MailerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Mime\Email;
-
+use App\Repository\SemainierRepository;
+use App\Entity\Semainier;
 
 
 final class AdminController extends AbstractController
 {
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
-    public function dashboard(): Response
+    public function dashboard(SemainierRepository $semainierRepository): Response
     {
+        $lastSemainier = $semainierRepository->lastSemainier();
         return $this->render('admin/dashboard.html.twig', [
             'controller_name' => 'AdminController',
+            'lastSemainier' => $lastSemainier,
         ]);
     }
  #[Route('/admin/dashboard/child', name: 'app_admin_dashboard_child')]

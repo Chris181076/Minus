@@ -2,7 +2,11 @@
 <a href="{{ path('app_admin_dashboard_child') }}">Fiche des Minus</a>
 <a href="{{ path('app_daily_planning') }}" class="nav-link">Présence des Minus  </a>
 <a href="{{ path('app_admin_dashboard_journal')}}">Journaux des Minus</a>
-<a href="{{ path('app_semainier_show')}}">Semaine des Minus</a>
+{% if lastSemainier is defined and lastSemainier %}
+    <a href="{{ path('app_semainier_show', {id: lastSemainier.id}) }}">Semaine des Minus</a>
+{% else %}
+    <span class="text-muted">Aucun semainier disponible</span>
+{% endif %}
 <p class="petitsMots">Petits Mots</p>
 <a href="{{ path('messages_inbox')}}">Reçus</a>
 <a href="{{ path('messages_send')}}">A envoyer</a>

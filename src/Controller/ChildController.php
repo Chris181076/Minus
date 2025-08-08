@@ -38,7 +38,8 @@ final class ChildController extends AbstractController
     public function new(
     Request $request, 
     EntityManagerInterface $entityManager,
-    SemainierRepository $semainierRepository, 
+    SemainierRepository $semainierRepository,
+    PlannedPresenceRepository $plannedPresenceRepo, 
     // WeekHelper $weekHelper 
     ): Response {
     $child = new Child();

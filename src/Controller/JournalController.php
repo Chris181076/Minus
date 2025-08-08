@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\Collection;
 #[Route('/journal')]
 final class JournalController extends AbstractController
 {
- #[Route('/new/{presenceId}', name: 'app_journal_new', methods: ['GET', 'POST'])]
+#[Route('/new/{presenceId}', name: 'app_journal_new', methods: ['GET', 'POST'])]
 public function new(
     Request $request,
     EntityManagerInterface $entityManager,
@@ -30,52 +30,84 @@ public function new(
     JournalRepository $journalRepo,
     int $presenceId
 ): Response {
+    $presence = $presenceRepo->find($presenceId);
 
-$presence = $presenceRepo->find($presenceId);
-    $date = $presence->getArrivalTime()->setTime(0, 0);
+    if (!$presence) {
+        throw $this->createNotFoundException('Présence introuvable.');
+    }
+
     $child = $presence->getChild();
 
-$journal = $journalRepo->findOneBy([
-    'child' => $child,
-    'date' => $date,
-]);
-
-if (!$journal) {
-    $journal = new Journal();
-    $journal->setChild($child);
-    $journal->setDate(new \DateTimeImmutable());
-}
-
-
-$newJournal = new Journal();
-$newJournal->addEntry(new JournalEntry()); 
-$form = $this->createForm(JournalForm::class, $newJournal);
-$form->handleRequest($request);
-
-if ($form->isSubmitted() && $form->isValid()) {
-    foreach ($newJournal->getEntries() as $entry) {
-        $entry->setJournal($journal); 
-        $journal->addEntry($entry);
-        $dateFromForm = $form->get('date')->getData();
-
-        if ($dateFromForm === null) {
-        $dateFromForm = new \DateTimeImmutable();
+    // On prend uniquement la date (heure mise à 00:00)
+    $date = $presence->getArrivalTime()->setTime(0, 0);
+    if (!$date) {
+        throw new \LogicException('La présence n\'a pas d\'heure d\'arrivée.');
     }
+    $date = $date->setTime(0, 0);
+    
+    // On tente de récupérer un journal existant
+    $journal = $journalRepo->findOneBy([
+        'child' => $child,
+        'date' => $date,
+    ]);
+
+    // S'il n'existe pas, on le crée
+    if (!$journal) {
+        $journal = new Journal();
+        $journal->setChild($child);
+        $journal->setDate($date);
+        $entityManager->persist($journal);
+        $entityManager->flush();
     }
 
-    $entityManager->persist($journal);
-    $entityManager->flush();
+    // Créer un journal temporaire UNIQUEMENT pour le formulaire avec une seule entrée vide
+    $formJournal = new Journal();
+    $formJournal->setChild($child);
+    $formJournal->setDate($date);
+    $formJournal->addEntry(new JournalEntry()); // Une seule ligne vide
 
-    return $this->redirectToRoute('app_admin_dashboard_journal');
-}
+    $form = $this->createForm(JournalForm::class, $formJournal);
+    $form->handleRequest($request);
 
-return $this->render('journal/new.html.twig', [
-    'form' => $form->createView(),
-    'journal' => $journal, 
-    'child' => $child,
-   
-]);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $hasNewEntry = false;
+        
+        // Traiter l'entrée soumise (il ne devrait y en avoir qu'une)
+        foreach ($formJournal->getEntries() as $entryData) {
+            // Si l'entrée n'est pas vide
+            if (!empty($entryData->getHeure()) || 
+                !empty($entryData->getAction()) || 
+                !empty($entryData->getDescription()) || 
+                !empty($entryData->getNote())) {
+                
+                // Créer une nouvelle entrée et l'ajouter au vrai journal
+                $newEntry = new JournalEntry();
+                $newEntry->setHeure($entryData->getHeure());
+                $newEntry->setAction($entryData->getAction());
+                $newEntry->setDescription($entryData->getDescription());
+                $newEntry->setNote($entryData->getNote());
+                $newEntry->setJournal($journal);
+                
+                $journal->addEntry($newEntry);
+                $entityManager->persist($newEntry);
+                $hasNewEntry = true;
+            }
+        }
 
+        if ($hasNewEntry) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Entrée ajoutée avec succès !');
+            
+            // Rediriger pour éviter la resoumission et rafraîchir les données
+            return $this->redirectToRoute('app_journal_new', ['presenceId' => $presenceId]);
+        }
+    }
+
+    return $this->render('journal/new.html.twig', [
+        'form' => $form->createView(),
+        'journal' => $journal, // Le vrai journal avec toutes ses entrées pour l'affichage
+        'child' => $child,
+    ]);
 }
 
     #[Route('/index', name: 'app_journal_index', methods: ['GET'])]

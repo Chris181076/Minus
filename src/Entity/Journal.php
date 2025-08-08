@@ -67,7 +67,7 @@ class Journal
         return $this->date;
     }
 
-    public function setDate(\DateTimeImmutable $date): static
+    public function setDate(?\DateTimeImmutable $date): static
     {
         $this->date = $date;
 

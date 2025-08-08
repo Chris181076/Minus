@@ -5,7 +5,7 @@
 
 {% block body %}
 <h1>Journal des Minus</h1>
-<div class='center'>
+{# <div class='center'> #}
 <div id="grid_fiches_minus">
     {% for child in children %}
         <div class="child-item">
@@ -25,6 +25,6 @@ title="{% if not presences[child.id] %}L'enfant n'est pas encore arrivé{% endif
             </span>
         </div>
     {% endfor %}
-</div>
+{# </div> #}
 </div>
 {% endblock %}

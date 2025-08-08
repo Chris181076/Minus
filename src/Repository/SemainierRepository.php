@@ -25,6 +25,14 @@ public function findAllMondays(): array
         return $semainier->getWeekStartDate() && $semainier->getWeekStartDate()->format('N') == 1; // 1 = lundi
     });
 }
+public function lastSemainier()
+{
+    return $this->createQueryBuilder('s')
+        ->orderBy('s.week_start_date', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+}
 
     //    /**
     //     * @return Semainier[] Returns an array of Semainier objects
