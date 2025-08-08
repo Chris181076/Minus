@@ -18,7 +18,7 @@ class MessageForm extends AbstractType
         $builder
             ->add('recipient', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'email', // ou 'fullName' si tu l'as
+                'choice_label' => 'email',
                 'label' => 'Destinataire'
             ])
             ->add('content', TextareaType::class, [

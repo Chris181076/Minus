@@ -10,5 +10,21 @@
 {{ form_row(form.content) }}
 <button class="btn">Envoyer</button>
 {{ form_end(form) }}
+    <hr>
+
+<h2>Messages envoyés</h2>
+{% if sentMessages is not empty %}
+    <ul>
+        {% for msg in sentMessages %}
+            <li>
+                <strong>À :</strong> {{ msg.recipient.email }}<br>
+                <strong>Contenu :</strong> {{ msg.content }}<br>
+                <em>Envoyé le {{ msg.sent_at|date('d/m/Y H:i') }}</em>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucun message envoyé pour le moment.</p>
+{% endif %}
 
 {% endblock %}

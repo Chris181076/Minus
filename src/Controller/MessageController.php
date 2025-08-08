@@ -26,15 +26,18 @@ class MessageController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $message->setSender($this->getUser());
+            $message->setSent_at(new \DateTimeImmutable());
             $em->persist($message);
             $em->flush();
 
             $this->addFlash('success', 'Message envoyé !');
-            return $this->redirectToRoute('messages_inbox');
+           
         }
-
+        $sentMessages = $em->getRepository(Message::class)
+            ->findBy(['sender' => $this->getUser()], ['sent_at' => 'DESC']);
         return $this->render('message/send.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'sentMessages' => $sentMessages,
         ]);
     }
 
