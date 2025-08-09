@@ -31,7 +31,7 @@ class MessageController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Message envoyé !');
-           
+           return $this->redirectToRoute('messages_send');
         }
         $sentMessages = $em->getRepository(Message::class)
             ->findBy(['sender' => $this->getUser()], ['sent_at' => 'DESC']);

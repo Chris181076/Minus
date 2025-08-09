@@ -3,7 +3,11 @@
 {% block title %}Messages envoyés{% endblock %}
  
 {% block body %}
-
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
 <h1>Envoyer un message</h1>
 {{ form_start(form) }}
 {{ form_row(form.recipient) }}

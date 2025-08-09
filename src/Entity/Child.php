@@ -265,7 +265,7 @@ class Child
     {
     return $this->users;
 }
-
+   
     public function addUser(User $user): static
     {
     if (!$this->users->contains($user)) {

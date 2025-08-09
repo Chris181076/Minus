@@ -103,8 +103,9 @@ public function childJournalDashboard(Child $child, JournalRepository $journalRe
         return $this->redirectToRoute('app_login');
     }
 
-    return $this->render('user\new.html.twig', [
-        'form' => $form->createView()
+    return $this->render('user/new.html.twig', [
+        'form' => $form->createView(),
+        'user' => $user,
     ]);
     }
 
@@ -131,9 +132,9 @@ public function childJournalDashboard(Child $child, JournalRepository $journalRe
     $user->setPassword('');
 
     foreach ($selectedChildren as $child) {
-        $child->setUser($user);
-        $em->persist($child);
-    }
+    $child->addUser($user);
+    $em->persist($child);
+}
 
     $activationToken = Uuid::v4()->toRfc4122();
     $user->setActivationToken($activationToken);
@@ -163,15 +164,16 @@ public function childJournalDashboard(Child $child, JournalRepository $journalRe
         } catch (\Exception $e) {
             $logger->error("Erreur lors de l'envoi du mail : " . $e->getMessage());
             $this->addFlash('error', 'Erreur lors de l’envoi de l’email d’activation.');
-            // Optionnel : rediriger ou continuer...
+         
         }
 
         $this->addFlash('success', 'Utilisateur créé et email envoyé');
         return $this->redirectToRoute('parent_create_form');
          }
 
-         return $this->render('user/parent_create_form.html.twig', [
+        return $this->render('user/parent_create_form.html.twig', [
         'form' => $form->createView(),
+        'user' => $user,
         ]);
     }
     #[Route('/admin/educ/create', name: 'educ_create_form', methods: ['GET', 'POST'])]

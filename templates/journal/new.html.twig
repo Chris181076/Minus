@@ -11,8 +11,13 @@
     </div>
 
     {{ include('journal/_form.html.twig') }}
-
+    {% if is_granted('ROLE_ADMIN') %}
     <a class="btn" href="{{ path('app_admin_dashboard_journal') }}" style="margin-top: 4rem;">Retour</a>
+    {% endif %}
+    {% if is_granted('ROLE_EDUC') %}
+    <a class="btn" href="{{ path('app_educateur_child_journal') }}" style="margin-top: 4rem;">Retour</a>
+    {% endif %}
+
     {% block javascripts %}
     <script src="{{ asset('js/entriesButton.js') }}"></script>
     {% endblock %}

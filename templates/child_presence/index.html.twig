@@ -76,8 +76,12 @@
         </tbody>
     </table>
 
-    
+    {% if is_granted('ROLE_ADMIN') %}
     <a class="btn" href="{{ path('admin_dashboard') }}">Retour</a>
+    {% endif %}
+    {% if is_granted('ROLE_EDUC') %}
+    <a class="btn" href="{{ path('educateur_dashboard') }}">Retour</a>
+    {% endif %}
         {% block javascripts %}
             {{ parent() }}
             <script>
