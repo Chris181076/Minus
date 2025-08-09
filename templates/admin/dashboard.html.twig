@@ -4,8 +4,9 @@
 
 {% block body %}
     <div id="accueilAdmin">
-        <h1>Accueil Espace Admin</h1>
-        <h1>Bienvenue, {{ app.user.firstname }}</h1>
+        <h1><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur" />Accueil Espace Admin<img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur" /></h1>
+        <h1>{{ dateDuJour|capitalize }}</h1>
+        
     </div>
 {% endblock %}
 

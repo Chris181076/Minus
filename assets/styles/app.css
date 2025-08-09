@@ -121,10 +121,9 @@ nav > ul {
 }
 
 nav > ul > li {
-  width: 14rem;
-  height: 4.125rem;
-  font-size: 1.5rem;
-  color: #813eb2 !important;
+  width: 10rem;
+  height: 3rem;
+  font-size: 1.1rem;
   font-weight: bold;
   border: 1.5px solid #a97fc8;
   border-radius: 20px;
@@ -132,6 +131,17 @@ nav > ul > li {
   justify-content: center;
   align-items: center;
   margin: 1rem;
+  transition: all 0.3s;
+}
+nav > ul > li:hover{
+  background-color: #813eb2;
+}
+nav > ul > li> a{
+color: #813eb2 ;
+transition: all 0.3s;
+}
+nav > ul > li> a:hover{
+  color: #fff;
 }
 #navAdmin {
   display: flex;
@@ -139,7 +149,7 @@ nav > ul > li {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 1rem 2rem;
+  padding: 1rem;
   overflow-x: hidden;
 }
 
@@ -161,10 +171,7 @@ nav > ul > li {
   justify-content: flex-end;
   align-items: center;
   gap: 1rem;
-  flex-grow: 1;
-  min-width: 0;
-  padding: 0;
-  margin: 0;
+
 }
 
 #navAdmin > ul > li {
@@ -178,7 +185,7 @@ nav > ul > li {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 1rem;
+  /* margin: 1rem; */
 }
 #page_container {
   display: flex;
@@ -332,23 +339,41 @@ p {
 }
 
 /* AccueilAdmin */
-
+#accueilAdmin{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 #accueilAdmin > h1 {
   font-size: 1.5rem;
   text-align: center;
   margin-bottom: 1.5rem;
-  width: 17.5rem;
   height: 3rem;
+  color: #813eb2;
+}
+#accueilAdmin > h1:last-child{
+  width: 15rem;
+  height: auto;
+  padding: 0.5rem;
+  background-color: #813eb2;
+  color: #fff;
+  margin: 1.5rem;
+  font-size: 1rem;
+}
+#accueilAdmin > h1>img{
+  width: 5rem;
+  height: auto;
 }
 .sidebar {
   width: 220px;
   color: #813eb2;
   padding: 20px;
   border: 1.5px solid #813eb2;
+  box-shadow: 0 0 8px #813eb2; 
   margin-left: 2rem;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
   position: sticky;
   top: 0;
   height: fit-content;
@@ -356,10 +381,29 @@ p {
   z-index: 10;
   margin-top: 1rem;
 }
-.sidebar > a {
-  margin: 1.5rem 0;
+.sidebar > a, .sidebar>p>a {
+  display: block; 
+  padding: 1.5rem 0;
+  color:#813eb2;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+.sidebar>p>a:first-child{
+  margin-top: 1rem;
 }
 
+.sidebar > a:hover, .sidebar > p>a:hover{
+  color: #fff;
+  background-color:#813eb2 ;
+}
+.sidebar>p{
+  padding-top: 1.5rem;
+  color:#813eb2;
+  text-align: center;
+  margin: 1rem;
+  border: 2px groove #813eb2;
+}
 .admin-body {
   display: flex;
   flex-direction: row;
@@ -531,7 +575,7 @@ p {
 
 .buttonSimple {
   width: 13rem;
-  height: 4rem;
+  height: auto;
   border: 1.5px solid #a97fc8;
   border-radius: 20px;
   display: flex;
@@ -539,17 +583,18 @@ p {
   align-items: center;
   transition: background-color 0.5s ease;
   background-color: #fff;
+  text-transform: uppercase;
 }
 .btn {
   width: 13rem;
-  height: 4rem;
+  height: auto;
   border: 1.5px solid #a97fc8;
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: background-color 0.5s ease;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   color: #813eb2;
   transition: color 0.5s ease;
 }
@@ -577,7 +622,7 @@ p {
 }
 .buttonSimple > a,
 .buttonSimple > .delete {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   color: #813eb2;
   transition: color 0.5s ease;
 }
@@ -592,7 +637,18 @@ p {
 .buttonSimple:hover > .delete {
   color: #fff;
 }
-
+.buttonSimple>h1{
+  font-size: 1.1rem;
+  color: #813eb2;
+  transition: color 0.5s ease;
+  padding-top: 0.5rem;
+}
+.buttonSimple:hover{
+  background-color: #813eb2;
+}
+.buttonSimple:hover>h1{
+  color: #fff;
+}
 /* form / child */
 
 #informationForm {
@@ -901,4 +957,28 @@ p {
     padding: 0.25rem 0.5rem;
     font-size: 0.8rem;
   }
+}
+/* connection */
+
+#inputEmail, #inputPassword{
+  width: 20rem;
+  height: auto;
+  margin: 0 auto;
+  box-shadow: 0 0 8px #813eb2; 
+  border: 1px solid #813eb2; 
+  outline: none; 
+  text-align: center;
+}
+label[for="inputEmail"], label[for="inputPassword"], .login-form>.checkbox>label{
+  color: #813eb2;
+  display: block;
+  text-align: center;
+  width: 100%;
+  margin: 1rem 0;
+}
+.login-form>button{
+  margin: 0 auto;
+}
+.connect{
+  color: #813eb2;
 }

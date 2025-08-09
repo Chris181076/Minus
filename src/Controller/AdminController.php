@@ -23,6 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Mime\Email;
 use App\Repository\SemainierRepository;
 use App\Entity\Semainier;
+use IntlDateFormatter;
 
 
 final class AdminController extends AbstractController
@@ -31,9 +32,18 @@ final class AdminController extends AbstractController
     public function dashboard(SemainierRepository $semainierRepository): Response
     {
         $lastSemainier = $semainierRepository->lastSemainier();
+         $formatter = new IntlDateFormatter(
+            'fr_FR', // Locale française
+            IntlDateFormatter::FULL, // Format date (jour complet, mois complet...)
+            IntlDateFormatter::NONE  // Pas d'heure
+        );
+
+        $dateDuJour = $formatter->format(new \DateTime());
+
         return $this->render('admin/dashboard.html.twig', [
             'controller_name' => 'AdminController',
             'lastSemainier' => $lastSemainier,
+            'dateDuJour' => $dateDuJour,
         ]);
     }
  #[Route('/admin/dashboard/child', name: 'app_admin_dashboard_child')]
