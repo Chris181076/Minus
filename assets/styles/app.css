@@ -219,7 +219,7 @@ nav > ul > li {
 }
 .card {
   width: 16rem;
-  height: 28rem;
+  height: 30rem;
   border: 2px solid #ff61af;
   display: flex;
   flex-direction: column;
