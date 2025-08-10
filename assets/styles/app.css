@@ -23,6 +23,7 @@ button p {
   margin-top: 1rem;
   display: inline-block;
   width: 100%;
+  box-shadow: 10px 5px 5px #d8d8d8;
 }
 .buttonsInLine {
   display: flex;
@@ -352,7 +353,7 @@ p {
   height: 3rem;
   color: #813eb2;
 }
-#accueilAdmin > h1:last-child{
+#accueilAdmin > .dateDuJour{
   width: 15rem;
   height: auto;
   padding: 0.5rem;
@@ -364,6 +365,17 @@ p {
 #accueilAdmin > h1>img{
   width: 5rem;
   height: auto;
+}
+#clock {
+  font-size: 2em;
+  font-family: monospace;
+  text-align: center;
+  padding: 10px;
+  background: #222;
+  color: #0f0;
+  border-radius: 8px;
+  width: fit-content;
+  margin: 2rem auto;
 }
 .sidebar {
   width: 220px;
@@ -495,6 +507,18 @@ p {
 .childName > a {
   color: inherit;
   text-decoration: none;
+}
+.titre{
+  color: #fff;
+  font-size: 1.5rem;
+  display: block;
+  margin: 2rem auto;
+  width: 25rem;
+  height: auto;
+  padding: 0.5rem;
+  background-color: #813eb2;
+  text-align: center;
+  margin-bottom: 2.75rem;
 }
 
 /* fiche des Minus/minus */
@@ -707,12 +731,7 @@ p {
 
 /* childPresence Index */
 
-#bonjour > h1 {
-  font-size: 1.5rem;
-  color: #813eb2;
-  text-align: center;
-  margin-bottom: 4rem;
-}
+
 .headTable {
   text-align: center;
 }
@@ -981,4 +1000,33 @@ label[for="inputEmail"], label[for="inputPassword"], .login-form>.checkbox>label
 }
 .connect{
   color: #813eb2;
+}
+/* message envoi */
+#envoiMail{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#envoiMail>div>#message_form_content{
+  width: 20rem;
+  height: 6rem;
+}
+#envoiMail>div{
+  margin-top: 1.3rem;
+}
+#envoiMail>div>label{
+  color:#813eb2;
+  font-weight: 600;
+  display: block;
+  text-align: center;
+}
+.msgContent{
+  color: #813eb2;
+  text-align: center;
+  font-size: 1rem;
+}
+.titre>img{
+  width: 5rem;
+  height: auto;
 }

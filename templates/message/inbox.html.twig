@@ -4,9 +4,10 @@
  
 {% block body %}
 
-<h1>Boîte de réception</h1>
+<h1 class="titre"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur"/>Boîte de réception</h1>
+
 {% for message in messages %}
-    <div style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+    <div style="border: 2px groove #ccc; margin: 10px; padding: 10px;">
         <strong>De :</strong> {{ message.sender.email }}<br>
         <strong>Date :</strong> {{ message.sent_at|date('d/m/Y H:i') }}<br>
         <p>{{ message.content }}</p>

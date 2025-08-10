@@ -4,31 +4,36 @@
  
 {% block body %}
 {% for message in app.flashes('success') %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
+
 {% endfor %}
-<h1>Envoyer un message</h1>
+<h1 class="titre"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur" />Envoyer un message</h1>
 {{ form_start(form) }}
+<div id="envoiMail">
 {{ form_row(form.recipient) }}
 {{ form_row(form.content) }}
 <button class="btn">Envoyer</button>
+</div>
 {{ form_end(form) }}
-    <hr>
 
-<h2>Messages envoyés</h2>
+
+<h2 class="titre"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur" />Messages envoyés</h2>
 {% if sentMessages is not empty %}
+
     <ul>
         {% for msg in sentMessages %}
+        <div style="border: 2px groove #ccc; margin: 10px; padding: 10px;">
             <li>
-                <strong>À :</strong> {{ msg.recipient.email }}<br>
-                <strong>Contenu :</strong> {{ msg.content }}<br>
+                <strong style="color: #813eb2;">À :</strong> {{ msg.recipient.email }}<br>
+                <strong style="color: #813eb2;">Contenu :</strong> <br>
+                <h3 class="msgContent">{{ msg.content }}</h3>
                 <em>Envoyé le {{ msg.sent_at|date('d/m/Y H:i') }}</em>
             </li>
+        </div>
         {% endfor %}
     </ul>
 {% else %}
     <p>Aucun message envoyé pour le moment.</p>
+   
 {% endif %}
 
 {% endblock %}
