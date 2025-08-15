@@ -21,7 +21,7 @@ use App\Repository\PlannedPresenceRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Repository\SemainierRepository;
 use App\Service\WeekHelper;
-
+use App\Entity\Group;
 
 #[Route('/child')]
 final class ChildController extends AbstractController

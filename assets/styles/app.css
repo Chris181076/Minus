@@ -519,6 +519,7 @@ p {
   background-color: #813eb2;
   text-align: center;
   margin-bottom: 2.75rem;
+  margin-top: 2.75rem;
 }
 
 /* fiche des Minus/minus */
@@ -690,6 +691,7 @@ p {
   grid-row-gap: 1rem;
   width: 40rem;
 }
+
 #pres {
   width: 100%;
   margin-top: 4rem;
@@ -1015,6 +1017,9 @@ label[for="inputEmail"], label[for="inputPassword"], .login-form>.checkbox>label
 #envoiMail>div{
   margin-top: 1.3rem;
 }
+.first{
+  margin-bottom: 0.5rem;
+}
 #envoiMail>div>label{
   color:#813eb2;
   font-weight: 600;
@@ -1029,4 +1034,65 @@ label[for="inputEmail"], label[for="inputPassword"], .login-form>.checkbox>label
 .titre>img{
   width: 5rem;
   height: auto;
+}
+/* créer un parent/admin */
+#formParent {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#formParent>.btn{
+  display: block;
+  margin: 0 auto;
+}
+#formParent>.roles>div{
+  display: flex;
+  flex-direction: row;
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+#user_form_roles{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#user_form_email, #user_form_phoneNumber{
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #813eb2;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #000;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+  box-shadow: 10px 5px 5px #d8d8d8;
+}
+.btn-link{
+  color: inherit; 
+  transition: color 0.3s ease;
+}
+.btn-link:hover{
+  color: #fff;
+}
+/* dashboardChild Educ */
+#grid_Fiches_minus {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem;
+    margin-top: 2rem;
+}
+
+.child-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor:pointer;
+}
+
+.child-card img {
+    width: 10rem;
+    height: 10rem;
 }

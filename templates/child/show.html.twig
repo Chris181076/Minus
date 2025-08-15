@@ -144,6 +144,7 @@
     {% if is_granted('ROLE_EDUC')  %}
     <button class="buttonSimple"><a href="{{ path('app_educateur_dashboard_child') }}">Retour</a></button>
     {% endif %}
+    <a href="{{ path('app_educateur_group', { name: child.childGroup.name}) }}">Retour au groupe</a>
 
 
 {% endblock %}

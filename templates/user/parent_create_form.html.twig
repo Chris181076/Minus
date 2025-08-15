@@ -3,18 +3,20 @@
 {% block title %}Créer un parent{% endblock %}
 
 {% block body %}
-<h1>Créer un parent</h1>
+<h1 class="titre"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur"/>Créer un parent</h1>
 
 {{ form_start(form, {'attr': {'id': 'create-user-form'}}) }}
-    {{ form_row(form.firstName) }}
-    {{ form_row(form.lastName) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.phoneNumber) }}
-    {{ form_row(form.children) }}
-    {{ form_row(form.relationship) }}
-
-    <button id="button" type="submit">Créer</button>
+    <div id="formParent">
+    <div class="form_row">{{ form_row(form.firstName) }}</div>
+    <div class="form_row">{{ form_row(form.lastName) }}</div>
+    <div class="form_row">{{ form_row(form.email) }}</div>
+    <div class="form_row">{{ form_row(form.phoneNumber) }}</div>
+    <div class="form_row">{{ form_row(form.children) }}</div>
+    <div class="form_row">{{ form_row(form.relationship) }}</div>
+    <div class="roles">{{ form_row(form.roles)}}</div>
+    <button class="btn" type="submit">Créer</button>
     <div id="response"></div>
+    </div>
 {{ form_end(form) }}
 
 {% endblock %}

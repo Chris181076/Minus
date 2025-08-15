@@ -1,18 +1,24 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}{{ group.name }}{% endblock %}
 
 {% block body %}
-    <h1>Enfants du groupe {{ group.name }}</h1>
-
+    <h1 class="titre"><img src="{{ asset('Decor/fleurEduc.png') }}" alt="fleur" />Groupe {{ group.name }}</h1>
+    
     {% if children is not empty %}
-        <ul class="list-group">
+        <div id="grid_Fiches_minus">
             {% for child in children %}
-                <li class="list-group-item">
-                    {{ child.firstName }} {{ child.lastName }}
-                </li>
+                <div class="child-card">
+                    {% if child.icon is defined and child.icon %}
+                        <img src="{{ asset(child.icon.path) }}" alt="Icône de {{ child.firstName }}">
+                    {% endif %}
+                    <span class='childName' style="color: #{{ child.childGroup.colorCode }}">
+                    <a href="{{ path('app_child_show', {'id': child.id}) }}">
+                        {{ child.firstName|capitalize }} {{ child.lastName|capitalize }}
+                        </a>
+                    </span>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
         <p>Aucun enfant trouvé dans ce groupe.</p>
     {% endif %}
