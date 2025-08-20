@@ -10,14 +10,23 @@ use App\Repository\ChildPresenceRepository;
 use \DateTimeImmutable;
 use App\Entity\Group;
 use App\Repository\GroupRepository;
+use IntlDateFormatter;
 
 final class EducateurController extends AbstractController
 {
     #[Route('/educateur/dashboardChild', name: 'educateur_dashboard')]
     public function dashboard(): Response
     {
+         $formatter = new IntlDateFormatter(
+            'fr_FR', // Locale française
+            IntlDateFormatter::FULL, // Format date (jour complet, mois complet...)
+            IntlDateFormatter::NONE  // Pas d'heure
+        );
+
+        $dateDuJour = $formatter->format(new \DateTime());
         return $this->render('educateur/dashboard.html.twig', [
             'controller_name' => 'EducateurController',
+            'dateDuJour' => $dateDuJour,
         ]);
     }
      #[Route('/educateur/dashboard/child', name: 'app_educateur_dashboard_child')]

@@ -3,7 +3,7 @@
 {% block title %}Journal{% endblock %}
 
 {% block body %}
-    <h1>Journal de {{ child.firstName }} {{ child.lastName }}</h1>
+    <h1 class="titre"><img src="{{ asset('Decor/feuilleParent-removebg-preview.png') }}" alt="fleur" />Journal de {{ child.firstName }} {{ child.lastName }}</h1>
 
     {% if journal and journal.entries is defined and journal.entries|length > 0 %}
         <table>
@@ -38,6 +38,7 @@
     {% else %}
         <p>Aucun journal disponible pour aujourd’hui.</p>
     {% endif %}
-
-    <a href="{{ path('parent_dashboard') }}">Retour à l'accueil</a>
+    {% if is_granted('ROLE_PARENT')%}
+    <a href="{{ path('parent_dashboard') }}" class="btn" style="margin: 0 auto;">Retour à l'accueil</a>
+    {% endif %}
 {% endblock %}

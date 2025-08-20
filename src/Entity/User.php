@@ -48,13 +48,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'sender')]
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender')]
     private Collection $sentMessages;
 
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'recipient')]
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'recipient')]
     private Collection $receivedMessages;
 
     /**

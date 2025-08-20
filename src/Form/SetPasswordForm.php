@@ -20,18 +20,17 @@ class SetPasswordForm extends AbstractType
         $builder
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
+                'label' => 'Mot de passe',
                 'first_options' => [
                     'label' => 'Mot de passe',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => 'Entrez votre mot de passe'
                     ]
                 ],
                 'second_options' => [
                     'label' => 'Confirmez le mot de passe',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => 'Confirmez votre mot de passe'
                     ]
                 ],
                 'invalid_message' => 'Les mots de passe doivent être identiques.',
@@ -54,7 +53,7 @@ class SetPasswordForm extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Activer mon compte',
-                'attr' => ['class' => 'btn btn-primary btn-lg w-100']
+                'attr' => ['class' => 'btn']
             ]);
     }
 

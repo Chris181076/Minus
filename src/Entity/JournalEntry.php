@@ -28,7 +28,8 @@ class JournalEntry
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
-    #[ORM\ManyToOne]
+ 
+    #[ORM\ManyToOne(inversedBy: 'entries')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Journal $journal = null;
 

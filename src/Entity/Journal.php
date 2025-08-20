@@ -19,7 +19,7 @@ class Journal
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'journal')]
+    #[ORM\ManyToOne(inversedBy: 'journals')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Child $child = null;
 

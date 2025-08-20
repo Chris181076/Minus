@@ -29,4 +29,5 @@ class AppExtension extends AbstractExtension
         $projectDir = $this->params->get('kernel.project_dir');
         return file_exists($projectDir . $path);
     }
+
 }

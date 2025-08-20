@@ -3,29 +3,36 @@
 {% block title %}Planning de mon Minus{% endblock %}
 
 {% block body %}
-   <h2>Planning de {{ child.firstname }}</h2>
+   
+   <h1 class="titre"><img src="{{ asset('Decor/feuilleParent-removebg-preview.png') }}" alt="fleur" />Planning de {{ child.firstname }}</h1>
+   
+
 
 <table>
-    <thead>
-        <tr>
-            <th>Jour</th>
-            <th>Heure de début</th>
-            <th>Heure de fin</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for presence in planned_presences %}
-    <tr>
-        <td>{{ presence.weekDay }}</td>
-        <td>{{ presence.arrivalTime ? presence.arrivalTime|date('H:i') : '_'}}</td>
-        <td>{{ presence.departureTime ? presence.departureTime|date('H:i') : '_'}}</td>
-    </tr>
-{% else %}
-    <tr>
-        <td colspan="3">Aucun planning défini.</td>
-    </tr>
-{% endfor %}
-
-    </tbody>
+    {% if planned_presences is not empty %}
+        <thead>
+            <tr>
+                <th>Jour</th>
+                <th>Heure de début</th>
+                <th>Heure de fin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for presence in planned_presences %}
+                <tr>
+                    <td>{{ presence.weekDay }}</td>
+                    <td>{{ presence.arrivalTime ? presence.arrivalTime|date('H:i') : '_' }}</td>
+                    <td>{{ presence.departureTime ? presence.departureTime|date('H:i') : '_' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        <tbody>
+          <p class="aucun" colspan="3">Aucun planning défini.</td>
+        </tbody>
+    {% endif %}
 </table>
+     {% if is_granted('ROLE_PARENT')%}
+    <a href="{{ path('parent_dashboard') }}" class="btn" style="margin: 0 auto;">Retour à l'accueil</a>
+    {% endif %}
 {% endblock %}

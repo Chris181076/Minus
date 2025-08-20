@@ -3,9 +3,18 @@
 {% block title %}ChildPresence index{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN')%}
     <div id="bonjour">
         <h1 class="titre"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur" />Passes une bonne journée avec les Minus !</h1>
     </div>
+{% endif %}
+{% if is_granted('ROLE_EDUC')%}
+    <div id="bonjour">
+        <h1 class="titre"><img src="{{ asset('Decor/fleurEduc.png') }}" alt="fleur" />Passes une bonne journée avec les Minus !</h1>
+    </div>
+{% endif %}
+
+
     <table class="table">
         <thead>
             <tr class="headTable">  

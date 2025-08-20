@@ -3,11 +3,29 @@
 {% block title %}Messages reçus{% endblock %}
  
 {% block body %}
-
-<h1 class="titre"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur"/>Boîte de réception</h1>
-
+{% if is_granted('ROLE_ADMIN')%}
+<h1 class="titre">
+    <img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur"/>
+    Boîte de réception
+</h1>
+{% endif %}
+{% if is_granted('ROLE_EDUC') %}
+<h1 class="titre">
+    <img src="{{ asset('Decor/fleurEduc.png') }}" alt="fleur"/>
+    Boîte de réception
+</h1>
+{% endif %}
+{% if is_granted('ROLE_PARENT') %}
+<h1 class="titre">
+    <img src="{{ asset('Decor/feuilleParent-removebg-preview.png') }}" alt="fleur"/>
+    Boîte de réception
+</h1>
+{%  endif %}
 {% for message in messages %}
-    <div style="border: 2px groove #ccc; margin: 10px; padding: 10px;">
+    <div class="message-wrapper {{ message.isRead ? 'lu' : 'non-lu' }}" style="border: 2px groove #ccc; margin: 10px; padding: 10px;">
+        <a href="{{ path('messages_message_read', {id: message.id}) }}">
+        </a>
+        <br>
         <strong>De :</strong> {{ message.sender.email }}<br>
         <strong>Date :</strong> {{ message.sent_at|date('d/m/Y H:i') }}<br>
         <p>{{ message.content }}</p>

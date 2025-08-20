@@ -14,8 +14,20 @@ class MessageRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Message::class);
+    }   
+
+    public function countUnreadForUser(User $user): int
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->where('m.recipient = :user')
+            ->andWhere('m.is_read = false')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
+    
 //    /**
 //     * @return Message[] Returns an array of Message objects
 //     */

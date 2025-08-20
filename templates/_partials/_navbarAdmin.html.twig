@@ -2,7 +2,11 @@
 <picture id="logo"> 
     <img src="{{ asset('images/logo.png') }}" alt="logo">
 </picture>
-<ul>
+
+<button id="burger">☰</button>
+
+
+<ul id="menu">
 <li><a href="{{ path('app_page') }}">Accueil</a></li>
 <li><a href="{{ path('admin_dashboard') }}">Espace Admin</a></li>
         {% if app.user %}
@@ -12,3 +16,33 @@
         {% endif %}
 </ul>
 </div>
+
+<script>
+
+let isMenuOpen = false;
+
+function toggleBurgerMenu() {
+    const burger = document.getElementById("burger");
+    const menu = document.getElementById("menu");
+     
+    if (isMenuOpen) {
+        menu.classList.remove("show");
+        burger.textContent = "☰";
+        isMenuOpen = false;
+    } else {
+        menu.classList.add("show");
+        burger.textContent = "✕";
+        isMenuOpen = true;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const burger = document.getElementById("burger");
+    
+    burger.onclick = toggleBurgerMenu;
+    
+    burger.textContent = "☰";
+    isMenuOpen = false;
+    
+});
+</script>

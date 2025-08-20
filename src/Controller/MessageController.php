@@ -42,12 +42,47 @@ class MessageController extends AbstractController
     }
 
     #[Route('/inbox', name: 'inbox')]
-    public function inbox(MessageRepository $repo): Response
+    public function inbox(MessageRepository $repo, EntityManagerInterface $em): Response
     {
-        $messages = $repo->findBy(['recipient' => $this->getUser()], ['sent_at' => 'DESC']);
+    $messages = $repo->findBy(['recipient' => $this->getUser()], ['sent_at' => 'DESC']);
 
-        return $this->render('message/inbox.html.twig', [
-            'messages' => $messages
-        ]);
+    $hasChanges = false;
+    foreach ($messages as $message) {
+        if ($message->getRecipient() === $this->getUser() && !$message->isRead()) {
+            $message->setIsRead(true);
+            $hasChanges = true;
+        }
     }
+    
+    if ($hasChanges) {
+        $em->flush();
+    }
+
+    $unreadCount = $repo->count([
+        'recipient' => $this->getUser(),
+        'is_read' => false
+    ]);
+
+    return $this->render('message/inbox.html.twig', [
+        'messages' => $messages,
+        'unreadCount' => $unreadCount
+    ]);
+    }
+
+    #[Route('/{id}', name: 'message_read')]
+    public function readMessage(Message $message, EntityManagerInterface $em): Response
+    {
+    
+    if ($message->getRecipient() !== $this->getUser()) {
+        throw $this->createAccessDeniedException();
+    }
+    
+    if (!$message->isRead()) {
+        $message->setIsRead(true);
+        $em->flush();
+    }
+
+    return $this->redirectToRoute('messages_inbox');
+    }
+
 }

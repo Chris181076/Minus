@@ -1,8 +1,35 @@
-<div class='sidebar'>
+<button class="sidebar-toggle" id="sidebarToggle">
+  ☰ Menu
+</button>
+
+
+<div class='sidebar' id="sidebar">
+{% if child is defined %}
 <a href='{{ path('app_child_show', {id:child.id})  }}'>Fiche de {{child.firstName}}</a> 
 <a href='{{ path('planningMinus', {id:child.id})  }}'>Planning de mon Minus</a>
 <a href='{{ path('app_journal_today', { id: child.id }) }}'>Journal de mon Minus</a>
-<p class="petitsMots">Petits Mots</p>
-<a href='{{ path('messages_send')}}'>Reçus</a>
+{% endif %}
+<p class="petitsMots">Petits Mots
+<a href='{{ path('messages_send')}}'>Reçus
+{% set unreadCount = unread_messages_count() %}
+{% if unreadCount > 0 %}
+    <span class="badge badge-warning">nouveau {{ unreadCount }}</span>
+{% endif %}
+</a>
 <a href='{{ path('messages_inbox')}}'>A envoyer</a>
+</p>
 </div>
+
+
+<script>
+  document.addEventListener("turbo:load", function() {
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("sidebarToggle");
+
+    if (toggleBtn && sidebar) {
+      toggleBtn.addEventListener("click", function() {
+        sidebar.classList.toggle("show");
+      });
+    }
+  });
+</script>

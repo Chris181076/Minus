@@ -23,8 +23,8 @@ class Message
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $sent_at = null;
 
-    #[ORM\Column]
-    private ?bool $is_read = null;
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private ?bool $is_read = false;
 
     /**
      * @var Collection<int, User>

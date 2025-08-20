@@ -8,7 +8,12 @@
     <span class="text-muted">Aucun semainier disponible</span>
 {% endif %}
 <p class="petitsMots">Petits Mots
-<a href="{{ path('messages_inbox')}}">Reçus</a>
+<a href="{{ path('messages_inbox')}}">Reçus
+{% set unreadCount = unread_messages_count() %}
+{% if unreadCount > 0 %}
+    <span class="badge badge-warning">nouveau {{ unreadCount }}</span>
+{% endif %}
+</a>
 <a href="{{ path('messages_send')}}">A envoyer / Envoyés</a>
 </p>
 <a href="{{ path('parent_create_form')}}">Créer un Parent de Minus</a>

@@ -1,7 +1,12 @@
 <div class='sidebar'>
 <a href="{{ path('app_daily_planning') }}" class="nav-link">Suivi quotidien des Minus</a>
 <p class="petitsMots">Petits Mots
-<a href="{{ path('messages_inbox')}}">Reçus</a>
+<a href="{{ path('messages_inbox')}}">Reçus
+{% set unreadCount = unread_messages_count() %}
+{% if unreadCount > 0 %}
+    <span class="badge badge-warning">nouveau {{ unreadCount }}</span>
+{% endif %}
+</a>
 <a href="{{ path('messages_send')}}">A envoyer</a>
 </p>
 <a href="{{ path('app_educateur_dashboard_child') }}">Fiches des Minus</a>

@@ -3,10 +3,9 @@
 {% block title %}Messages envoyés{% endblock %}
  
 {% block body %}
-{% for message in app.flashes('success') %}
 
-{% endfor %}
 <h1 class="titre first"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur" />Envoyer un message</h1>
+
 {{ form_start(form) }}
 <div id="envoiMail">
 {{ form_row(form.recipient) }}

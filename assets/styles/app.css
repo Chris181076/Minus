@@ -9,11 +9,18 @@ body {
   width: 100%;
 }
 /* S'applique à tout le DOM */
-
+a {
+  text-decoration: none;
+  color: inherit;
+}
 .center {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.centerButton {
+  display: block;
+  margin: 0 auto;
 }
 button p {
   margin: 0;
@@ -98,7 +105,7 @@ nav {
   align-items: center;
   width: 100%;
   padding: 1rem 2rem;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 nav > #logo > img {
@@ -134,26 +141,26 @@ nav > ul > li {
   margin: 1rem;
   transition: all 0.3s;
 }
-nav > ul > li:hover{
+nav > ul > li:hover {
   background-color: #813eb2;
 }
-nav > ul > li> a{
-color: #813eb2 ;
-transition: all 0.3s;
+nav > ul > li > a {
+  color: #813eb2;
+  transition: all 0.3s;
 }
-nav > ul > li> a:hover{
+nav > ul > li > a:hover {
   color: #fff;
 }
 #navAdmin {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 1rem;
-  overflow-x: hidden;
+  overflow: visible;
 }
-
 #navAdmin > picture {
   flex: 0 0 auto;
   max-width: 17.125rem;
@@ -172,51 +179,70 @@ nav > ul > li> a:hover{
   justify-content: flex-end;
   align-items: center;
   gap: 1rem;
-
 }
-
 #navAdmin > ul > li {
-  width: 14rem;
-  height: 4.125rem;
-  font-size: 1.5rem;
-  color: #813eb2 !important;
+  width: 13rem;
+  height: auto;
+}
+#navAdmin > ul > li > a {
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  color: #813eb2;
+  background-color: #fff;
   font-weight: bold;
   border: 1.5px solid #a97fc8;
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin: 1rem; */
+  transition: all 0.3s ease;
 }
+#navAdmin > ul > li > a:hover {
+  color: #fff;
+  background-color: #813eb2;
+}
+
 #page_container {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   width: 100%;
   min-height: 100vh;
+  overflow: visible;
 }
 
-/* ========== Responsive========== 
-    @media (max-width: 1000px) {
-    nav,
-    #navAdmin {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+.navbar li {
+  padding-top: 2rem;
+}
 
-    nav > ul,
-    #navAdmin > ul {
-        justify-content: center;
-        width: 100%;
-    }
+.navbar li a {
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  color: #575d88;
+  border: 3px solid transparent;
+  border-radius: 100px;
+}
 
-    nav > ul > li,
-    #navAdmin > ul > li {
-        width: 100%;
-        max-width: 20rem;
-        justify-content: center;
-    }
-} */
+/* Menu Burger */
+#burger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  z-index: 1002;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+#menu {
+  display: none;
+  list-style: none;
+}
+
+
+
 
 /* Accueil */
 
@@ -274,10 +300,10 @@ p {
 }
 #cardTemoignages {
   display: flex;
-  flex-direction: row;
   justify-content: space-around;
   margin-bottom: 5rem;
 }
+
 #temoignages > #cardTemoignages > .cardT {
   width: 16rem;
   height: 30.5rem;
@@ -352,8 +378,10 @@ p {
   margin-bottom: 1.5rem;
   height: 3rem;
   color: #813eb2;
+  text-transform: capitalize;
+  margin-top: 1.5rem;
 }
-#accueilAdmin > .dateDuJour{
+#accueilAdmin > .dateDuJour {
   width: 15rem;
   height: auto;
   padding: 0.5rem;
@@ -362,9 +390,10 @@ p {
   margin: 1.5rem;
   font-size: 1rem;
 }
-#accueilAdmin > h1>img{
+#accueilAdmin > h1 > img {
   width: 5rem;
   height: auto;
+  margin: 0 1rem;
 }
 #clock {
   font-size: 2em;
@@ -382,7 +411,7 @@ p {
   color: #813eb2;
   padding: 20px;
   border: 1.5px solid #813eb2;
-  box-shadow: 0 0 8px #813eb2; 
+  box-shadow: 0 0 8px #813eb2;
   margin-left: 2rem;
   display: flex;
   flex-direction: column;
@@ -392,26 +421,52 @@ p {
   background-color: white;
   z-index: 10;
   margin-top: 1rem;
+  transition: transform 0.3s ease;
 }
-.sidebar > a, .sidebar>p>a {
-  display: block; 
+
+/* Bouton toggle masqué par défaut */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1001;
+  background: white;
+  border: 1px solid #813eb2;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+ .sidebar.show {
+      transform: translateX(0);
+    }
+
+.text-muted {
+  color: #813eb2;
+  text-align: center;
   padding: 1.5rem 0;
-  color:#813eb2;
+}
+.sidebar > a,
+.sidebar > p > a {
+  display: block;
+  padding: 1.5rem 0;
+  color: #813eb2;
   transition: all 0.3s ease;
-  width: 100%;
   text-align: center;
 }
-.sidebar>p>a:first-child{
+.sidebar > p > a:first-child {
   margin-top: 1rem;
 }
 
-.sidebar > a:hover, .sidebar > p>a:hover{
+.sidebar > a:hover,
+.sidebar > p > a:hover {
   color: #fff;
-  background-color:#813eb2 ;
+  background-color: #813eb2;
 }
-.sidebar>p{
+.sidebar > p {
   padding-top: 1.5rem;
-  color:#813eb2;
+  color: #813eb2;
   text-align: center;
   margin: 1rem;
   border: 2px groove #813eb2;
@@ -424,21 +479,13 @@ p {
 }
 .main-content {
   flex-grow: 1;
+
 }
 #admin-layout {
   width: 70%;
 }
 
-.admin-body {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  width: 100%;
-}
-.main-content {
-  flex-grow: 1;
-  padding: 2rem;
-}
+
 /* Child_form */
 
 .form_row {
@@ -508,18 +555,22 @@ p {
   color: inherit;
   text-decoration: none;
 }
-.titre{
+.titre {
   color: #fff;
   font-size: 1.5rem;
   display: block;
   margin: 2rem auto;
-  width: 25rem;
+  width: 39rem;
   height: auto;
-  padding: 0.5rem;
+  padding: 0.2rem 1rem;
   background-color: #813eb2;
   text-align: center;
   margin-bottom: 2.75rem;
   margin-top: 2.75rem;
+  text-transform: capitalize;
+}
+.titre > img {
+  margin-right: 1rem;
 }
 
 /* fiche des Minus/minus */
@@ -595,7 +646,16 @@ p {
   font-size: 1.5rem;
   color: #813eb2;
 }
-
+.bodyAucun {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.aucun {
+  color: #813eb2;
+  text-align: center;
+}
 /* buttons */
 
 .buttonSimple {
@@ -662,16 +722,16 @@ p {
 .buttonSimple:hover > .delete {
   color: #fff;
 }
-.buttonSimple>h1{
+.buttonSimple > h1 {
   font-size: 1.1rem;
   color: #813eb2;
   transition: color 0.5s ease;
   padding-top: 0.5rem;
 }
-.buttonSimple:hover{
+.buttonSimple:hover {
   background-color: #813eb2;
 }
-.buttonSimple:hover>h1{
+.buttonSimple:hover > h1 {
   color: #fff;
 }
 /* form / child */
@@ -732,7 +792,6 @@ p {
 }
 
 /* childPresence Index */
-
 
 .headTable {
   text-align: center;
@@ -817,13 +876,6 @@ p {
   opacity: 0.85;
 }
 
-
-
-
-/* Journal Child */
-
-/* CSS spécifique pour la page journal avec sidebar */
-
 /* Container principal pour le contenu du journal */
 .journal-container {
   display: flex;
@@ -891,8 +943,11 @@ p {
   font-weight: bold;
 }
 
-#tableJournalEntry > #entries-wrapper > .journal-entry-row > td > input[type="time"] {
-  
+#tableJournalEntry
+  > #entries-wrapper
+  > .journal-entry-row
+  > td
+  > input[type="time"] {
   width: 7rem;
 
   border-radius: 4px;
@@ -940,112 +995,81 @@ p {
   background-color: #813eb2;
 }
 
-/* Responsive pour la sidebar */
-@media (max-width: 992px) {
-  .journal-container {
-    padding: 0 1rem;
-  }
-  
-  .old-entries,
-  #tableJournalEntry {
-    font-size: 0.9rem;
-  }
-  
-  .old-entries th,
-  .old-entries td,
-  #tableJournalEntry th,
-  #tableJournalEntry td {
-    padding: 0.3rem 1rem;
-  }
-}
 
-@media (max-width: 768px) {
-  #buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  #buttons > #add-entry-btn,
-  .submitEntryJournal {
-    width: 15rem;
-  }
-  
-  .old-entries th,
-  .old-entries td,
-  #tableJournalEntry th,
-  #tableJournalEntry td {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-  }
-}
+
 /* connection */
 
-#inputEmail, #inputPassword{
+#inputEmail,
+#inputPassword {
   width: 20rem;
   height: auto;
   margin: 0 auto;
-  box-shadow: 0 0 8px #813eb2; 
-  border: 1px solid #813eb2; 
-  outline: none; 
+  box-shadow: 0 0 8px #813eb2;
+  border: 1px solid #813eb2;
+  outline: none;
   text-align: center;
 }
-label[for="inputEmail"], label[for="inputPassword"], .login-form>.checkbox>label{
+.login-form{
+  margin: 0 auto;
+}
+label[for="inputEmail"],
+label[for="inputPassword"],
+.login-form > .checkbox > label {
   color: #813eb2;
   display: block;
   text-align: center;
   width: 100%;
   margin: 1rem 0;
 }
-.login-form>button{
+.login-form > button {
   margin: 0 auto;
 }
-.connect{
+.connect {
   color: #813eb2;
 }
 /* message envoi */
-#envoiMail{
+#envoiMail {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-#envoiMail>div>#message_form_content{
+#envoiMail > div > #message_form_content {
   width: 20rem;
   height: 6rem;
 }
-#envoiMail>div{
+#envoiMail > div {
   margin-top: 1.3rem;
 }
-.first{
+.first {
   margin-bottom: 0.5rem;
 }
-#envoiMail>div>label{
-  color:#813eb2;
+#envoiMail > div > label {
+  color: #813eb2;
   font-weight: 600;
   display: block;
   text-align: center;
 }
-.msgContent{
+.msgContent {
   color: #813eb2;
   text-align: center;
   font-size: 1rem;
 }
-.titre>img{
+.titre > img {
   width: 5rem;
   height: auto;
 }
 /* créer un parent/admin */
 #formParent {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-#formParent>.btn{
+#formParent > .btn {
   display: block;
   margin: 0 auto;
 }
-#formParent>.roles>div{
+#formParent > .roles > div {
   display: flex;
   flex-direction: row;
   font-size: 1.2rem;
@@ -1053,12 +1077,13 @@ label[for="inputEmail"], label[for="inputPassword"], .login-form>.checkbox>label
   justify-content: center;
   margin-bottom: 2rem;
 }
-#user_form_roles{
+#user_form_roles {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-#user_form_email, #user_form_phoneNumber{
+#user_form_email,
+#user_form_phoneNumber {
   text-align: center;
   padding: 10px;
   border: 1px solid #813eb2;
@@ -1069,30 +1094,231 @@ label[for="inputEmail"], label[for="inputPassword"], .login-form>.checkbox>label
   transition: border-color 0.3s ease;
   box-shadow: 10px 5px 5px #d8d8d8;
 }
-.btn-link{
-  color: inherit; 
+.btn-link {
+  color: inherit;
   transition: color 0.3s ease;
 }
-.btn-link:hover{
+.btn-link:hover {
   color: #fff;
 }
 /* dashboardChild Educ */
 #grid_Fiches_minus {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4rem;
-    margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4rem;
+  margin-top: 2rem;
 }
 
 .child-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor:pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .child-card img {
-    width: 10rem;
-    height: 10rem;
+  width: 10rem;
+  height: 10rem;
+}
+/* reset Password */
+
+.cardShadow {
+  width: 30rem;
+  height: auto;
+  border: 2px solid #ff61af;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 10px 5px 5px #d8d8d8;
+}
+.cardHeader {
+  border-radius: 20px;
+  background-color: #813eb2;
+  color: #fff;
+  padding: 0.7rem;
+  box-shadow: 10px 5px 5px #d8d8d8;
+}
+.cardHeader > h3 {
+  font-size: 1.4rem;
+}
+.cardBody {
+  margin-top: 2rem;
+}
+.text-center > h5 {
+  text-transform: capitalize;
+  font-weight: 600;
+  color: #813eb2;
+}
+.mb-3 > label {
+  font-weight: 600;
+}
+.form-control {
+  border-radius: 5px;
+}
+#set_password_form_submit {
+  margin: 0 auto;
+}
+/* inbox */
+.lu {
+  background-color: #ffe4e1; /* rose pâle */
+}
+
+.non-lu {
+  background-color: #fff8dc; /* beige clair */
+  font-weight: bold;
+}
+.badge-warning {
+  background-color: #ff69b4;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+/* ----------- 1065px ----------- */
+@media (max-width: 1065px) {
+  /* Burger menu */
+  #burger {
+    display: block;
+  }
+
+  #menu {
+    display: flex;
+    flex-direction: column;
+    width: 15rem;
+    min-height: 10rem;
+    position: fixed;
+    top: 7rem;
+    right: 1rem;
+    padding: 1rem;
+    transform: scale(0);
+    transform-origin: top right;
+    border-radius: 20px 0 20px 20px;
+    background: linear-gradient(to top, #cbb5b5 0%, #9f8585 100%);
+    z-index: 1001;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  #menu.show {
+    transform: scale(1);
+  }
+
+  #menu li {
+    margin: 0.5rem 0;
+  }
+
+  #menu li a {
+    color: #333;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    display: block;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+
+  #menu li a:hover {
+    background: #813eb2;
+    color: #fff;
+    transform: translateX(-5px);
+  }
+}
+
+/* ----------- 992px ----------- */
+@media (max-width: 992px) {
+  .journal-container {
+    padding: 0 1rem;
+  }
+
+  .old-entries,
+  #tableJournalEntry {
+    font-size: 0.9rem;
+  }
+
+  .old-entries th,
+  .old-entries td,
+  #tableJournalEntry th,
+  #tableJournalEntry td {
+    padding: 0.3rem 1rem;
+  }
+}
+
+/* ----------- 800px ----------- */
+@media (max-width: 800px) {
+  /* Sidebar hidden */
+    .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    transform: translateX(-100%) !important; /* cachée par défaut */
+  }
+
+  .sidebar.show {
+    transform: translateX(0); /* visible quand on clique */
+  }
+
+  .sidebar-toggle {
+    display: block;
+  }
+}
+
+/* ----------- 768px ----------- */
+@media (max-width: 768px) {
+  #buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  #buttons > #add-entry-btn,
+  .submitEntryJournal {
+    width: 15rem;
+  }
+
+  .old-entries th,
+  .old-entries td,
+  #tableJournalEntry th,
+  #tableJournalEntry td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ----------- 600px ----------- */
+@media (max-width: 600px) {
+  #projetPedagogique > p {
+    font-size: 1.3rem;
+  }
+
+  #cardTemoignages,
+  #cardAccueil {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #cardTemoignages > .cardT,
+  #cardAccueil > .card {
+    margin-bottom: 1.5rem;
+  }
+
+  .admin-body {
+    flex-direction: column;
+  }
+}
+
+/* ----------- 400px ----------- */
+@media (max-width: 400px) {
+  #projetPedagogique > p {
+    font-size: 1.2rem;
+  }
 }
