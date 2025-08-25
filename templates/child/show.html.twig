@@ -3,14 +3,13 @@
 {% block title %}Child{% endblock %}
 
 {% block body %}
-
     <div id="titre">
     {% if child.icon is defined and child.icon %}
                 <img src="{{ asset(child.icon.path) }}" alt="Icône de {{ child.firstName }}">
     {% endif %}
     <h1><span class="bold">Fiche de {{ child.firstName|capitalize }} {{ child.lastName|capitalize }}</span></h1>
     </div>
-
+    
     <div class="information">
         <div class="titreInformation">
             <img src="{{ asset('iconsForm/babyForm.png') }}" alt="icone">
@@ -46,15 +45,9 @@
                 </tr>
 
                 <tr>
-                <th>Traitements en cours</th><td> 
-                <td>{% if child.treatments is defined and child.treatments|length > 0 %}
-                    {% for treatment in child.treatments %}
-                    {{ treatment.name|capitalize }} ({{ treatment.details|capitalize }})
-                    {% endfor %}
-                    {% else %}
-                    <td>Aucun traitement en cours.</td> 
-                    {% endif %}
-                    </td>
+                <th>Traitements en cours</th>
+               <td>{% if child.treatments is defined and child.treatments|length > 0 %}{% for treatment in child.treatments %}{{ treatment.name|capitalize }} ({{ treatment.details|capitalize }}) {% endfor %}{% else %}Aucun traitement en cours.{% endif %}</td>
+
                 </tr>
 
                 <tr>
@@ -132,7 +125,7 @@
         <p>Aucun responsable légal renseigné.</p>
     {% endif %}
     </div>
-
+    
   
     {% if is_granted('ROLE_ADMIN')  %}
     <div class="buttonsInLine">

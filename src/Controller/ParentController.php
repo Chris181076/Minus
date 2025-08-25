@@ -20,6 +20,7 @@ use App\Form\ChildPlanningForm;
 use App\Entity\Semainier;
 use App\Repository\PlannedPresenceRepository;
 use App\Form\ChildForm;
+use IntlDateFormatter;
 
 final class ParentController extends AbstractController
 {
@@ -31,12 +32,19 @@ public function dashboard(Security $security, ChildRepository $childRepository):
     $child = $children[0] ?? null;
     $firstName = $user->getFirstName();
 
+         $formatter = new IntlDateFormatter(
+            'fr_FR', // Locale française
+            IntlDateFormatter::FULL, // Format date (jour complet, mois complet...)
+            IntlDateFormatter::NONE  // Pas d'heure
+        );
+         $dateDuJour = $formatter->format(new \DateTime());
     return $this->render('parent/index.html.twig', [
         'children' => $children,
         'child' => $child,
         'base_template' => 'base_parent.html.twig',
         'firstName' => $firstName,
         'user' => $user,
+        'dateDuJour' => $dateDuJour,
     ]);
 }
 

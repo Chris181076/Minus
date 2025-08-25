@@ -21,6 +21,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+
 import './styles/app.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

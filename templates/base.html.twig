@@ -19,7 +19,7 @@
 
     {# Navbar par rôle #}
     {% if is_granted('ROLE_ADMIN') %}
-        {% include '_partials/_navbar.html.twig' %}
+        {% include '_partials/_navbarAdmin.html.twig' %}
     {% elseif is_granted('ROLE_EDUC') %}
         {% include '_partials/_navbar_educ.html.twig' %}
     {% elseif is_granted('ROLE_PARENT') %}
@@ -45,8 +45,10 @@
        </div>
     </div>
 
-    {% block javascripts %}{{ importmap('app')}}{% endblock %}
-    
+    {% block javascripts %}
+    {{ importmap('app')}}
+    {% endblock %}
+
 </body>
 </html> 
     

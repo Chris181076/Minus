@@ -97,6 +97,9 @@ input[type="time"] {
   background-color: #fff;
   box-shadow: 10px 5px 5px #d8d8d8;
 }
+.margin{
+  margin: 0 auto;
+}
 /* navbar */
 nav {
   display: flex;
@@ -438,10 +441,6 @@ p {
   cursor: pointer;
 }
 
- .sidebar.show {
-      transform: translateX(0);
-    }
-
 .text-muted {
   color: #813eb2;
   text-align: center;
@@ -639,6 +638,9 @@ p {
 .table > td {
   padding: 0 1.5rem;
 }
+.table>tbody>tr{
+  width: 25rem;
+}
 .responsable {
   text-align: center;
 }
@@ -761,7 +763,7 @@ p {
   font-size: 1.2rem;
   color: #813eb2;
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 2rem auto;
 }
 #pres > img {
   width: 15rem;
@@ -927,6 +929,7 @@ p {
 #tableJournalEntry {
   width: 100%;
   max-width: 50rem;
+  min-width: 25rem;
   margin: 0 auto;
   border-collapse: collapse;
 }
@@ -1026,6 +1029,7 @@ label[for="inputPassword"],
 }
 .connect {
   color: #813eb2;
+  text-align: center;
 }
 /* message envoi */
 #envoiMail {
@@ -1042,7 +1046,7 @@ label[for="inputPassword"],
   margin-top: 1.3rem;
 }
 .first {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 #envoiMail > div > label {
   color: #813eb2;
@@ -1058,6 +1062,9 @@ label[for="inputPassword"],
 .titre > img {
   width: 5rem;
   height: auto;
+}
+.message-form{
+  margin-bottom: 2rem;
 }
 /* créer un parent/admin */
 #formParent {
@@ -1250,29 +1257,31 @@ label[for="inputPassword"],
 }
 
 /* ----------- 800px ----------- */
-@media (max-width: 800px) {
-  /* Sidebar hidden */
+@media (max-width: 990px) {
+  /* Sidebar hidden */ 
+  .sidebar-visible{
+    transform: translateX(0) !important; 
+  }
     .sidebar {
     position: fixed;
-    top: 0;
+    top: 9rem;
     left: 0;
     height: 100vh;
     margin: 0;
     border-radius: 0;
-    transform: translateX(-100%) !important; /* cachée par défaut */
+    transform: translateX(-100%); 
+    z-index: 1000;
+    overflow-y: auto;
   }
-
-  .sidebar.show {
-    transform: translateX(0); /* visible quand on clique */
-  }
-
   .sidebar-toggle {
-    display: block;
+    display: block !important;
+    z-index: 9999;
+    margin-top: 7rem;
   }
-}
+   .main-content {
+    margin-left: 0 !important;
+  }
 
-/* ----------- 768px ----------- */
-@media (max-width: 768px) {
   #buttons {
     flex-direction: column;
     align-items: center;
@@ -1290,6 +1299,26 @@ label[for="inputPassword"],
   #tableJournalEntry td {
     padding: 0.25rem 0.5rem;
     font-size: 0.8rem;
+  }
+  .information, .informationMedic, .notes, .planning, .responsable{
+    width: 25rem;
+    border: none;
+    margin: 1.5rem 0;
+    margin: 0 auto;
+  }
+  .informationMedic>.table{
+    width: 20rem !important;
+  }
+ .titreInformation{
+  background-color: #ff69b4;
+  color: #fff;
+  padding: 0.5rem 0;
+ }
+  nav>ul{
+    justify-content: center;
+  }
+  #accueilAdmin>h1>img{
+    margin: 0;
   }
 }
 
@@ -1314,11 +1343,28 @@ label[for="inputPassword"],
   .admin-body {
     flex-direction: column;
   }
+  .titre{
+    width: 25rem;
+    margin: 0;
+  }
+    #accueilAdmin>h1>img{
+    margin: 0;
+  }
+  .form_row>div{
+    width: 25rem;
+  }
+  .buttonsInLine{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
 }
 
 /* ----------- 400px ----------- */
 @media (max-width: 400px) {
   #projetPedagogique > p {
     font-size: 1.2rem;
+  
   }
 }

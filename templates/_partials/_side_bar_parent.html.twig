@@ -1,9 +1,8 @@
 <button class="sidebar-toggle" id="sidebarToggle">
-  ☰ Menu
+  ☰ MenuMinus
 </button>
 
-
-<div class='sidebar' id="sidebar">
+<div class="sidebar" id="sidebar">
 {% if child is defined %}
 <a href='{{ path('app_child_show', {id:child.id})  }}'>Fiche de {{child.firstName}}</a> 
 <a href='{{ path('planningMinus', {id:child.id})  }}'>Planning de mon Minus</a>
@@ -21,15 +20,17 @@
 </div>
 
 
-<script>
-  document.addEventListener("turbo:load", function() {
-    const sidebar = document.getElementById("sidebar");
-    const toggleBtn = document.getElementById("sidebarToggle");
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const sidebar = document.getElementById("sidebar");
+      const toggleBtn = document.getElementById("sidebarToggle");
 
-    if (toggleBtn && sidebar) {
       toggleBtn.addEventListener("click", function() {
-        sidebar.classList.toggle("show");
+        sidebar.classList.toggle("sidebar-visible");
       });
-    }
-  });
-</script>
+    });
+  </script>
+
+
+
+
