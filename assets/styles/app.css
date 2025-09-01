@@ -338,6 +338,7 @@ p {
   flex-direction: column;
   align-items: center;
 }
+
 #contact > h1 {
   color: #813eb2;
   text-align: center;
@@ -538,6 +539,11 @@ p {
   grid-template-rows: auto;
   margin-top: 2rem;
   gap: 4rem;
+}
+@media screen and (max-width: 1300px){
+  #grid_fiches_minus{
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 .child-item > img {
   width: 10rem;
@@ -1185,12 +1191,41 @@ label[for="inputPassword"],
   border-radius: 4px;
   font-size: 0.8em;
 }
+/* Semainier */
 
+.table>thead>tr>th{
+color: #813eb2;
+text-transform: uppercase;
+text-align: center;
+background-color: #FFD4E9;
+}
+.titreSemainier{
+  font-size: 1.5rem;
+  color: #813eb2;
+  text-align: center;
+  display: block;
+  margin: 2rem 0;
+}
+.table>tbody>tr>td{
+  text-align: center;
+}
+.sem{
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 550;
+  border: 1px solid #813eb2;
+  padding: 0.5rem;
+  width: 20rem;
+  color: #813eb2;
+  margin: 0 auto;
+  background-color: #FFD4E9;
+}
 /* ----------- 1065px ----------- */
 @media (max-width: 1065px) {
   /* Burger menu */
   #burger {
     display: block;
+    margin-right: 2rem;
   }
 
   #menu {
@@ -1262,6 +1297,11 @@ label[for="inputPassword"],
   .sidebar-visible{
     transform: translateX(0) !important; 
   }
+    .titre{
+   width: 20rem;
+   margin:0 auto;
+   padding: 0.5rem;
+  }
     .sidebar {
     position: fixed;
     top: 9rem;
@@ -1320,6 +1360,10 @@ label[for="inputPassword"],
   #accueilAdmin>h1>img{
     margin: 0;
   }
+  #coordonnees{
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 /* ----------- 600px ----------- */
@@ -1342,10 +1386,6 @@ label[for="inputPassword"],
 
   .admin-body {
     flex-direction: column;
-  }
-  .titre{
-    width: 25rem;
-    margin: 0;
   }
     #accueilAdmin>h1>img{
     margin: 0;

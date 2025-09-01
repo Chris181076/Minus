@@ -92,7 +92,7 @@ public function show(
     $children = $childRepository->findAll();
     $weekDays = $weekHelper->getWeekDays();
     $lastSemainier = $semainierRepository->lastSemainier();
- 
+    $semainiers = $semainierRepository->currentMonthSemainier();
 
     foreach ($children as $child) {
         $presences = $plannedPresenceRepo->findByChildAndWeek($child, $startOfWeek, $endOfWeek);
@@ -108,8 +108,10 @@ public function show(
         $departure = $presence->getDepartureTime();
         }
     }
-    
-    // Utilisation du service pour assigner les présences
+    foreach ($semainier as $sem) {
+       echo $sem->getWeekStartDate()->format('d/m/Y');
+    }
+  
 
 
     return $this->render('semainier/show.html.twig', [
@@ -118,6 +120,7 @@ public function show(
         'children' => $children,
         'weekDays' => $weekDays,
         'startOfWeek' => $startOfWeek,
+        'semainiers' => $semainiers,
     ]);
 }
 

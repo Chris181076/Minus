@@ -98,7 +98,11 @@ public function edit(Request $request, Child $child, EntityManagerInterface $ent
     $plannedPresences = $child->getPlannedPresences();
     $monday = (new \DateTimeImmutable('monday this week'))->setTime(0, 0);
     $semainier = $semainierRepository->findOneBy(['week_start_date' => $monday]);
-
+    if (!$semainier) {
+        $semainier = new Semainier();
+        $semainier->setWeekStartDate($monday);
+        $entityManager->persist($semainier);
+    }
 
     // Si pas de plannedPresences, créer des présences par défaut (lundi à vendredi)
     if ($plannedPresences->isEmpty()) {

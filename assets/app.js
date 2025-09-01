@@ -1,5 +1,6 @@
 import './bootstrap.js';
 import './presence.js';
+import './navigation.js';
 
 const aujourdHui = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 const derniereNettoyage = localStorage.getItem("last_clear");

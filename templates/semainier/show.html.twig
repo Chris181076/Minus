@@ -3,21 +3,21 @@
 {% block title %}Semainier index{% endblock %}
 
 {% block body %}
-    <h1>Semainier du : {{ startOfWeek|date('d/m/Y') }}</h1>
+    <h1 class="titreSemainier">Semainier du : {{ startOfWeek|date('d/m/Y') }}</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Enfant</th>
                 {% for day in weekDays %}
-                    <th>{{ day|slice(0, 3) }}</th>
+                    <th>{{ day|trans }}</th>
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
             {% for child in children %}
                 <tr>
-                    <td>{{ child.firstName }} {{ child.lastName }}</td>
+                    <td>{{ child.firstName|capitalize }} {{ child.lastName|capitalize }}</td>
                     {% for day in weekDays %}
                         <td>
                             {% set planned = null %}
@@ -42,6 +42,19 @@
                     <td colspan="{{ weekDays|length + 1 }}">Aucun enfant trouvé</td>
                 </tr>
             {% endfor %}
+
         </tbody>
     </table>
+    
+<h2 class="titreSemainier">Semainiers du mois courant</h2>
+
+<ul class="sem">
+{% for sem in semainiers %}
+    <li>Semaine du {{ sem.week_start_date|date('d/m/Y') }}</li>
+{% else %}
+    <li>Aucun semainier pour ce mois.</li>
+{% endfor %}
+</ul>
+
+<a class="btn" href="{{ path('admin_dashboard') }}">Retour</a>
 {% endblock %}

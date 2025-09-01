@@ -33,7 +33,20 @@ public function lastSemainier()
         ->getQuery()
         ->getOneOrNullResult();
 }
+public function currentMonthSemainier(): array
+{
+    $firstDay = new \DateTimeImmutable('first day of this month 00:00:00');
+    $lastDay  = new \DateTimeImmutable('last day of this month 23:59:59');
 
+    return $this->createQueryBuilder('sem')
+        ->andWhere('sem.week_start_date BETWEEN :start AND :end')
+        ->setParameter('start', $firstDay)
+        ->setParameter('end', $lastDay)
+        ->orderBy('sem.week_start_date', 'DESC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult();
+}
     //    /**
     //     * @return Semainier[] Returns an array of Semainier objects
     //     */
