@@ -12,10 +12,11 @@
 
 
     {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_admin_dashboard_child') }}" class="btn">Retour</a>
-        <form method="post" action="{{ path('app_child_delete', {'id': child.id}) }}" onsubmit="return confirm('Supprimer ce minus ?');" style="display: inline;">
+        <a href="{{ path('app_admin_dashboard_child') }}" class="btn" id="buttonRetour">Retour</a>
+        <form class="formButton" method="post" action="{{ path('app_child_delete', {'id': child.id}) }}" onsubmit="return confirm('Supprimer ce minus ?');" style="display: inline;">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ child.id) }}">
             <button class="btn">Supprimer</button>
+            <button class="btn">{{ button_label|default('Enregistrer') }}</button>
         </form>
     {% endif %}
 </div>

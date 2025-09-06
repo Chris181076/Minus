@@ -4,15 +4,15 @@
 
 {% block body %}
 
-<h1>Créer un éducateur</h1>
-{{ form_start(form) }}
+<h1 class="titre"><img src="{{ asset('Decor/Mask_group__2_-removebg-preview.png') }}" alt="fleur"/>Créer un éducateur</h1>
+{{ form_start(form, {'attr' : {'class' : 'formEducateur'} })}}
 
 {{ form_row(form.firstName) }}
 {{ form_row(form.lastName) }}
 {{ form_row(form.email) }}
 {{ form_row(form.phoneNumber) }}
 
-<button id="button" type="submit">Créer</button>
+<button id="button" class="btn" type="submit">Créer</button>
 <div id="response"></div>
 
 {{ form_end(form) }}

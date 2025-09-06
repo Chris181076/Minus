@@ -33,13 +33,17 @@ class ChildForm extends AbstractType
             ])
             ->add('birthDate', null, [
                 'widget' => 'single_text',
+                'label' => 'Anniversaire',
             ])
           
-            ->add('medicalNotes');
+            ->add('medicalNotes', TextType::class, [
+                'label' => 'Notes médicales',
+            ]);
             if($options['is_admin']){
             $builder->add('created_at', null, [
                 'widget' => 'single_text',
                 'required' => false,
+                'label' => 'Crée le',
             ]);
             }
         
@@ -55,6 +59,7 @@ class ChildForm extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,
                 'required' => false,
+                'label' => 'Régime alimentaire',
             ])
            ->add('icon', EntityType::class, [
                 'class' => Icon::class,
@@ -72,6 +77,7 @@ class ChildForm extends AbstractType
             $builder->add('childGroup', EntityType::class, [
                 'class' => Group::class,
                 'choice_label' => 'name',
+                'label' => 'Groupe',
             ])
             
             ->add('plannedPresences', CollectionType::class, [

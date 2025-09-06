@@ -31,7 +31,6 @@ function syncWithDatabase() {
         resetAllRows();
         loadSavedPresences();
 
-        // Notifier les autres onglets
         channel?.postMessage("sync");
       }
     })
@@ -82,7 +81,6 @@ function loadSavedPresences() {
   const today = new Date().toISOString().split("T")[0];
   const savedPresences = JSON.parse(
   localStorage.getItem(`presences_${today}`) || "{}"
-  
   );
 
   Object.entries(savedPresences).forEach(([childId, presenceData]) => {
@@ -93,7 +91,6 @@ function loadSavedPresences() {
 
         const arrivalCell = row.querySelector(".arrival-time");
 
-        // 👉 Vérifie si le bouton existe déjà
         const existingButton = arrivalCell.querySelector(".edit-hour[data-type='arrival']");
         if (!existingButton) {
           const button = document.createElement("button");
@@ -104,24 +101,6 @@ function loadSavedPresences() {
           arrivalCell.appendChild(button);
         }
       }
-
-      // if (presenceData.departureTime) {
-      //   updateUIWithDeparture(row, presenceData);
-
-      //   const departureCell = row.querySelector(".departure-time");
-      
-
-      //   // 👉 Vérifie si le bouton existe déjà
-      //   const existingButton = departureCell.querySelector(".edit-hour[data-type='departure']");
-      //   if (!existingButton) {
-      //     const button = document.createElement("button");
-      //     button.className = "edit-hour";
-      //     button.dataset.type = "departure";
-      //     button.dataset.id = presenceData.presenceId;
-      //     button.textContent = "🕑";
-      //     departureCell.appendChild(button);
-      //   }
-      // }
     }
   });
 }
@@ -204,11 +183,6 @@ function updateUIWithPresence(row, data) {
 
 function updateUIWithDeparture(row, data) {
  
-  // const departureTimeCell = row.querySelector(".departure-time");
-  // // if (departureTimeCell) {
-  // //   departureTimeCell.textContent = formatToUtcTime(data.departureTime, false);
-  // // }
-
   const departureAction = row.querySelector(".departure-action");
   if (departureAction) {
     departureAction.innerHTML = "✔️";
@@ -348,15 +322,13 @@ if (departureCell) {
     button.dataset.type = "departure";
     button.dataset.id = data.presenceId;
     const departureDate = new Date(data.departureTime);
-    const hour = departureDate.getHours(); // extrait l'heure (0–23)
+    const hour = departureDate.getHours(); 
 
-    // Définir le texte du bouton
     button.textContent = `🕑 ${formatToUtcTime(data.departureTime, false)}`;
 
-    // Ajouter la classe selon l'heure
     button.classList.add(hour < 12 ? "morning" : "afternoon");
 
-    // Ajouter le bouton à la cellule
+
     departureCell.appendChild(button);
   }
 }
@@ -428,15 +400,6 @@ function safeLoadPresences() {
   }
 }
 
-// function getTodayKey() {
-//     const now = new Date();
-//     const year = now.getFullYear();
-//     const month = String(now.getMonth() + 1).padStart(2, '0');
-//     const day = String(now.getDate()).padStart(2, '0');
-//     return `${year}-${month}-${day}`;
-// }
-
-
 function clearActionsCell(row) {
     const actionsCell = row.querySelector(".actions-cell");
     if (actionsCell) {
@@ -463,8 +426,6 @@ function showBanner(message) {
   document.body.appendChild(banner);
   setTimeout(() => banner.remove(), 3000);
 }
-
-
 });
 
 

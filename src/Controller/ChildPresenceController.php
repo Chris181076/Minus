@@ -84,7 +84,6 @@ foreach ($presences as $presence) {
     ]);
 }
 
-
     #[Route('/new', name: 'app_child_presence_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

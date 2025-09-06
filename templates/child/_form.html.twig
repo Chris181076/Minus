@@ -43,8 +43,5 @@
     {{ form_label(form.icon) }}
     {{ form_widget(form.icon) }}
 </div>
-<div class="buttonsInLine"> 
-<button class="btn">{{ button_label|default('Enregistrer') }}</button>
-<button class="btn"><a href="{{ path('admin_dashboard') }}" class="btn-link">Retour</a></button>
-</div>
+
 {{ form_end(form) }}

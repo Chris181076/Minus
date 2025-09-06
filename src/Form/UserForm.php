@@ -51,6 +51,7 @@ class UserForm extends AbstractType
                 ])
             ->add('children', EntityType::class, [
             'class' => Child::class,
+            'label' => 'Enfants',
             'choice_label' => function (Child $child) {
             return $child->getFirstName() . ' ' . $child->getLastName();
             },   
