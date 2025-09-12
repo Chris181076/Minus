@@ -22,6 +22,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Repository\SemainierRepository;
 use App\Service\WeekHelper;
 use App\Entity\Group;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 #[Route('/child')]
 final class ChildController extends AbstractController
@@ -95,6 +96,9 @@ final class ChildController extends AbstractController
     #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
 public function edit(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository, PlannedPresenceRepository $plannedPresenceRepo, SemainierRepository $semainierRepository): Response
 {
+    if (!$this->isGranted('ROLE_ADMIN')) {
+        return $this->render('bundles/TwigBundle/Exception/error403.html.twig', [], new Response('', 403));
+    }
     $plannedPresences = $child->getPlannedPresences();
     $monday = (new \DateTimeImmutable('monday this week'))->setTime(0, 0);
     $semainier = $semainierRepository->findOneBy(['week_start_date' => $monday]);
@@ -104,7 +108,6 @@ public function edit(Request $request, Child $child, EntityManagerInterface $ent
         $entityManager->persist($semainier);
     }
 
-    // Si pas de plannedPresences, créer des présences par défaut (lundi à vendredi)
     if ($plannedPresences->isEmpty()) {
         $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         foreach ($days as $day) {
@@ -142,7 +145,8 @@ public function edit(Request $request, Child $child, EntityManagerInterface $ent
         'child' => $child,
         'form' => $form->createView(),
         'base_template' => $template,  
-        'children' => $children,      
+        'children' => $children,
+              
     ]);
 }
 

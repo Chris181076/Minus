@@ -101,6 +101,25 @@ function loadSavedPresences() {
           arrivalCell.appendChild(button);
         }
       }
+      if (presenceData.departureTime && presenceData.presenceId) {
+        updateUIWithDeparture(row, presenceData);
+
+        const departureCell = row.querySelector(".departure-time");
+        if (departureCell) {
+          const existingButton = departureCell.querySelector(".edit-hour[data-type='departure']");
+          if (!existingButton) {
+            const button = document.createElement("button");
+            button.className = "edit-hour";
+            button.dataset.type = "departure";
+            button.dataset.id = presenceData.presenceId;
+            const departureDate = new Date(presenceData.departureTime);
+            const hour = departureDate.getHours();
+            button.textContent = `🕑 ${formatToUtcTime(presenceData.departureTime, false)}`;
+            button.classList.add(hour < 12 ? "morning" : "afternoon");
+            departureCell.appendChild(button);
+          }
+        }
+      }
     }
   });
 }

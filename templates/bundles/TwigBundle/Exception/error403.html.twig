@@ -1,0 +1,15 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+ <div class="text-center mt-5">
+        <h1 class="display-4 text-danger"><img src={{asset('icons/interdit.png')}} alt="interdit"</h1>
+        <p class="lead">Vous n’avez pas les droits nécessaires pour accéder à cette page.</p>
+ 
+        {% if is_granted('ROLE_USER')%}
+            <a href="{{ path('app_page') }}" class="btn centerButton">Retour à l’accueil</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn centerButton">Se connecter</a>
+        {% endif %}
+    </div>
+{% endblock %}

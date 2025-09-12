@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use App\Form\UserForm;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 
 class ChildForm extends AbstractType
@@ -31,7 +32,7 @@ class ChildForm extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom de famille'
             ])
-            ->add('birthDate', null, [
+            ->add('birthDate', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Anniversaire',
             ])
@@ -40,10 +41,10 @@ class ChildForm extends AbstractType
                 'label' => 'Notes médicales',
             ]);
             if($options['is_admin']){
-            $builder->add('created_at', null, [
+            $builder->add('created_at', DateType::class, [
                 'widget' => 'single_text',
                 'required' => false,
-                'label' => 'Crée le',
+                'label' => 'Créé le',
             ]);
             }
         

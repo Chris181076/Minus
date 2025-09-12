@@ -101,73 +101,13 @@ class EmailController extends AbstractController
         }
     }
 
-    /*#[Route('/api/resend-activation/{id}', name: 'api_resend_activation', methods: ['POST'])]
-    public function resendActivation(
-        int $id,
-        EntityManagerInterface $em,
-        MailerInterface $mailer,
-        LoggerInterface $logger
-    ): Response {
-        $user = $em->getRepository(User::class)->find($id);
-
-        if (!$user) {
-            return $this->json(['error' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
-        }
-
-        if ($user->isActive()) {
-            return $this->json(['message' => 'Ce compte est déjà activé'], Response::HTTP_OK);
-        }
-
-        try {
-            if (!$user->getActivationToken()) {
-                $activationToken = Uuid::v4()->toRfc4122();
-                $user->setActivationToken($activationToken);
-                $em->flush();
-            }
-
-            $activationUrl = $this->generateUrl(
-                'app_user_activate',
-                ['token' => $user->getActivationToken()],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-
-            $emailMessage = (new Email())
-                ->from('no-reply@minus.fr')
-                ->to($user->getEmail())
-                ->subject('Rappel : activation de votre compte')
-                ->html("
-                    <h2>Rappel</h2>
-                    <p>Bonjour {$user->getFirstName()} {$user->getLastName()},</p>
-                    <p>Votre compte n'est pas encore activé. Cliquez ci-dessous pour l'activer :</p>
-                    <p><a href=\"$activationUrl\">Activer mon compte</a></p>
-                ");
-
-            $logger->info("Envoi de rappel à {$user->getEmail()}");
-            $mailer->send($emailMessage);
-
-            return $this->json([
-                'message' => 'Email de rappel envoyé avec succès'
-            ]);
-
-        } catch (\Exception $e) {
-            $logger->error("Erreur lors de l'envoi de l'email : " . $e->getMessage());
-            return $this->json([
-                'error' => 'Erreur lors de l\'envoi de l\'email',
-                'details' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }*/
-
-
-
-
 #[Route('/test-mail', name: 'test_mail')]
     public function testMail(MailerInterface $mailer, LoggerInterface $logger): JsonResponse
     {
         try {
             $email = (new Email())
                 ->from('no-reply@minus.fr')
-                ->to('test@example.com') // Remplace par une adresse valide si besoin
+                ->to('test@example.com') 
                 ->subject('Test depuis le contrôleur')
                 ->text('Ceci est un email de test envoyé via Symfony Mailer.');
 

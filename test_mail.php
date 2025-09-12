@@ -11,7 +11,7 @@ $mailer = new Mailer($transport);
 
 $email = (new Email())
     ->from('noreply@minus.fr')
-    ->to('ton-email-ici@example.com')  // Mets ton email ici
+    ->to('ton-email-ici@example.com')  
     ->subject('Test email')
     ->text('Test envoi mail via Symfony Mailer');
 
