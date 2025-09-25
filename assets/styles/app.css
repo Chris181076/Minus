@@ -372,7 +372,15 @@ p {
   margin-top: 0.5rem;
   font-size: 1.5rem;
 }
-
+#rgpd{
+  display: block;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-size: 1.2rem;
+  background-color: #754294;
+  color: #fff;
+  text-align: center;
+}
 /* AccueilAdmin */
 #accueilAdmin{
   display:flex;
@@ -987,7 +995,9 @@ p {
   border-radius: 4px;
   padding: 0.25rem;
 }
-
+.titre .name {
+  white-space: nowrap;
+}
 /* Inputs du formulaire */
 #journal_form_entries_0_action,
 #journal_form_entries_0_description,
@@ -1245,6 +1255,24 @@ background-color: #FFD4E9;
   margin: 0 auto;
   background-color: #FFD4E9;
 }
+
+/* Index RGPD */
+
+#textRgpd>h1{
+font-size: 1.5rem;
+margin: 2rem 0;
+font-weight: 600;
+text-align: center;
+}
+#textRgpd>h2{
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: 600;
+}
+#textRgpd p{
+  font-size: 1.2rem;
+  text-align: left;
+}
 /* ----------- 1065px ----------- */
 @media (max-width: 1065px) {
   /* Burger menu */
@@ -1324,7 +1352,7 @@ background-color: #FFD4E9;
   }
     .titre{
    width: 20rem;
-   margin:0 auto;
+   margin:1rem auto;
    padding: 0.5rem;
   }
     .sidebar {
@@ -1422,6 +1450,9 @@ background-color: #FFD4E9;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  .titre .name{
+    display: block;
   }
 
 }

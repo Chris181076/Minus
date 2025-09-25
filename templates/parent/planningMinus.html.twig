@@ -8,7 +8,7 @@
    
 
 
-<table>
+<table class="table">
     {% if planned_presences is not empty %}
         <thead>
             <tr>
@@ -20,7 +20,7 @@
         <tbody>
             {% for presence in planned_presences %}
                 <tr>
-                    <td>{{ presence.weekDay }}</td>
+                    <td>{{ presence.weekDay|trans}}</td>
                     <td>{{ presence.arrivalTime ? presence.arrivalTime|date('H:i') : '_' }}</td>
                     <td>{{ presence.departureTime ? presence.departureTime|date('H:i') : '_' }}</td>
                 </tr>

@@ -32,7 +32,7 @@ public function findOneByChildAndDate(Child $child, \DateTimeInterface $date): ?
         ->andWhere('j.child = :child')
         ->andWhere('j.date = :date')
         ->setParameter('child', $child)
-        ->setParameter('date', $date->format('Y-m-d')) // si champ Doctrine "date" est de type date
+        ->setParameter('date', $date->format('Y-m-d')) 
         ->getQuery()
         ->getOneOrNullResult();
 }
@@ -43,7 +43,7 @@ public function findTodayJournalByChildAndUser(Child $child, User $user): ?Journ
         ->join('c.users', 'u')
         ->andWhere('j.child = :child')
         ->andWhere('u = :user')
-        ->andWhere('j.date = :today')  // si tu as un champ 'date' dans Journal
+        ->andWhere('j.date = :today')  
         ->setParameter('child', $child)
         ->setParameter('user', $user)
         ->setParameter('today', new \DateTimeImmutable('today'))

@@ -1,5 +1,4 @@
 // BroadcastChannel global
-
 const channel =
   typeof BroadcastChannel !== "undefined"
     ? new BroadcastChannel("presence_updates")
@@ -7,14 +6,10 @@ const channel =
 
 // Flag pour éviter les appels concurrents
 let syncInProgress = false;
-
-// Fonction principale de synchronisation
 function syncWithDatabase() {
   if (syncInProgress) return;
   syncInProgress = true;
-
   const today = new Date().toISOString().split("T")[0];
-
   fetch(`/child/presence/sync/${today}`, {
     method: "GET",
     headers: {

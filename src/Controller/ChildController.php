@@ -91,11 +91,11 @@ final class ChildController extends AbstractController
         'child' => $child,
         'form' => $form->createView(),
     ]);
-}
+    }
 
     #[Route('/{id}/edit', name: 'app_child_edit', methods: ['GET', 'POST'])]
-public function edit(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository, PlannedPresenceRepository $plannedPresenceRepo, SemainierRepository $semainierRepository): Response
-{
+    public function edit(Request $request, Child $child, EntityManagerInterface $entityManager, ChildRepository $childRepository, PlannedPresenceRepository $plannedPresenceRepo, SemainierRepository $semainierRepository): Response
+    {
     if (!$this->isGranted('ROLE_ADMIN')) {
         return $this->render('bundles/TwigBundle/Exception/error403.html.twig', [], new Response('', 403));
     }

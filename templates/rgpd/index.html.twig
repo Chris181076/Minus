@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité - RGPD{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" id="textRgpd">
+        <h1>Politique de protection des données (RGPD)</h1>
+
+        <p>Dans le cadre de l’utilisation de l’application <strong>Crèche Minus</strong>, nous collectons et traitons certaines données personnelles vous concernant, conformément au Règlement Général sur la Protection des Données et à la législation française en vigueur.</p><br><br>
+
+        <h2>1. Données collectées</h2><br>
+        <p>Informations concernant les enfants : prénom, nom, date de naissance, groupe, notes médicales nécessaires à la prise en charge.</p>
+        <P>Informations concernant les parents ou tuteurs : nom, prénom, coordonnées de contact.</p>
+        <p>Informations de connexion et d’utilisation de l’application (journal d’accès, préférences).</p><br>
+
+        <h2>2. Finalité du traitement</h2><br>
+        <p>Les données sont collectées uniquement dans le cadre de :</p>
+        <p>La gestion administrative et pédagogique des enfants au sein de la crèche.</p>
+        <p>La communication avec les parents ou tuteurs.</p>
+        <p>Le suivi des présences, des régimes alimentaires et des éventuelles allergies.</p>
+        <p>Le respect des obligations légales et réglementaires.</p>
+        <P>Aucune donnée n’est utilisée à des fins commerciales ou de profilage.</p><br>
+
+        <h2>3. Durée de conservation</h2><br>
+        <p>Les données sont conservées pendant la durée d’inscription de l’enfant à la crèche, puis archivées pour une durée maximale de 6 années avant suppression définitive.</p><br>
+
+        <h2>4. Destinataires des données</h2><br>
+        <p>Le personnel autorisé de la crèche.</p>
+        <p>Les autorités administratives si la loi l’exige.</p><br>
+
+        <h2>3. Vos droits</h2><br>
+        <p>Vous pouvez demander l’accès, la rectification, l’effacement ou la portabilité de vos données.</p>
+        <p>Contact : <a href="mailto:contact@crecheminus.fr">contact@crecheminus.fr</a></p><br>
+
+        <p class="mt-4"><em>Dernière mise à jour : {{ "now"|date("d/m/Y") }}</em></p>
+    </div>
+{% endblock %}
+

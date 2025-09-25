@@ -3,33 +3,32 @@
 {% block title %}Journal{% endblock %}
 
 {% block body %}
-    <h1 class="titre"><img src="{{ asset('Decor/feuilleParent-removebg-preview.png') }}" alt="fleur" />Journal de {{ child.firstName }} {{ child.lastName }}</h1>
+    <h1 class="titre"><img src="{{ asset('Decor/feuilleParent-removebg-preview.png') }}" alt="fleur" />Journal de <span class="name">{{ child.firstName }} {{ child.lastName }}</span></h1>
 
     {% if journal and journal.entries is defined and journal.entries|length > 0 %}
-        <table>
+        <table class="table">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Repas</th>
-                    <th>Sieste</th>
-                    <th>Couches</th>
-                    <th>Activité</th>
-                    <th>Note</th>
-                    <th>Actions</th>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Action</th>
+                <th>Description</th>
+                <th>Note</th>
                 </tr>
             </thead>
             <tbody>
                 {% for entry in journal.entries %}
                     <tr>
-                        <td>{{ entry.date|date('d/m/Y') }}</td>
-                        <td>{{ entry.meal }}</td>
-                        <td>{{ entry.nap ? entry.nap|date('H:i') : '' }}</td>
-                        <td>{{ entry.diaperType }} {{ entry.diaperTime ? entry.diaperTime|date('H:i') : '' }}</td>
-                        <td>{{ entry.activity }}</td>
+                       <td>{{ entry.journal.date|date('d/m/Y') }}</td>
+                        <td>{{ entry.heure ? entry.heure|date('H:i') : '' }}</td>
+                        <td>{{ entry.action }}</td>
+                        <td>{{ entry.description }}</td>
                         <td>{{ entry.note }}</td>
-                        <td>
+                        {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_journal_edit', {'id': journal.id}) }}">Éditer</a>
+                            
                             {{ include('journal/_delete_form.html.twig', { journal: journal }) }}
+                        {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

@@ -33,40 +33,6 @@ class JournalEntry
     #[ORM\JoinColumn(nullable: false)]
     private ?Journal $journal = null;
 
-    #[ORM\OneToMany(mappedBy: 'journal', targetEntity: JournalEntry::class, cascade: ['persist', 'remove'])]
-    private Collection $entries;
-
-        public function __construct()
-        {
-            $this->entries = new ArrayCollection();
-        }
-
-        public function getEntries(): Collection
-        {
-            return $this->entries;
-        }
-            public function addEntry(JournalEntry $entry): static
-        {
-            if (!$this->entries->contains($entry)) {
-                $this->entries->add($entry);
-                $entry->setJournal($this);
-            }
-
-            return $this;
-        }
-
-        public function removeEntry(JournalEntry $entry): static
-        {
-            if ($this->entries->removeElement($entry)) {
-                // set the owning side to null (unless already changed)
-                if ($entry->getJournal() === $this) {
-                    $entry->setJournal(null);
-                }
-            }
-
-            return $this;
-        }
-
     public function getId(): ?int
     {
         return $this->id;

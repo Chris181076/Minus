@@ -44,7 +44,7 @@ class SetPasswordForm extends AbstractType
                         'max' => 255,
                     ]),
                     new Regex([
-                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
+                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/',
                         'message' => 'Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre'
                     ])
                 ],

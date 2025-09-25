@@ -33,9 +33,9 @@ final class AdminController extends AbstractController
     {
         $lastSemainier = $semainierRepository->lastSemainier();
          $formatter = new IntlDateFormatter(
-            'fr_FR', // Locale française
-            IntlDateFormatter::FULL, // Format date (jour complet, mois complet...)
-            IntlDateFormatter::NONE  // Pas d'heure
+            'fr_FR', 
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::NONE  
         );
 
         $dateDuJour = $formatter->format(new \DateTime());

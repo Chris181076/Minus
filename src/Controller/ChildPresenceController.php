@@ -166,11 +166,6 @@ public function delete(
     ]);
 }
 
-
-
-
-
-
 #[Route('/mark-arrival/{id}', name: 'app_mark_arrival', methods: ['POST'])]
 public function markArrival(
     Request $request,
@@ -267,19 +262,17 @@ public function markArrival(
             'message' => 'Présence non trouvée'
         ], 404);
     }
-
     if ($childPresence->getDepartureTime() !== null) {
         return $this->json([
             'success' => false,
             'message' => 'Le départ a déjà été marqué'
         ], 400);
     }
-
-    $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
-    $childPresence->setDepartureTime($now);
-
+    $timezone = new \DateTimeZone('Europe/Paris');
+    $todayDateStr = $now->format('Y-m-d');
+    $today = new \DateTimeImmutable($todayDateStr, $timezone);
+    $childPresence->setDepartureTime($today);
     $em->flush();
-
     return $this->json([
         'success' => true,
         'departureTime' => $childPresence->getDepartureTime()->format('c')
